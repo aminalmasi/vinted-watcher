@@ -2,7 +2,9 @@ name: watch
 
 on:
   schedule:
-    - cron: '*/20 * * * *'   # every 20 min (GitHub often fires this 5-20 min late)
+    # HOURLY while the repo is private: 2000 free min/mo cannot fund a
+    # 20-min poll. Restore '*/20 * * * *' once the repo is public again.
+    - cron: '7 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:

@@ -49,7 +49,7 @@ class VintedClient:
                 "Accept-Encoding": "gzip, deflate",
             }
         )
-        self.bytes_on_wire = 0
+        self.bytes_uncompressed = 0
         self.token_cache = dict(token_cache or {})
         self._restore_cookies()
 
@@ -103,13 +103,13 @@ class VintedClient:
                 self.session.close()
                 time.sleep(min(3 * 2**attempt, 30))
                 continue
-            # Vinted replies chunked, so content-length is usually absent;
-            # raw.tell() counts the *compressed* bytes actually read, which is
-            # what the proxy meters.
+            # Vinted replies chunked, so content-length is absent and the raw
+            # stream is already drained by the time we look. This is therefore
+            # the DECOMPRESSED size — an upper bound on the metered traffic,
+            # which is gzipped and roughly 5-10x smaller.
             try:
-                r.content  # force the body to be consumed before measuring
-                self.bytes_on_wire += r.raw.tell() or int(r.headers.get("content-length") or 0)
-            except (AttributeError, ValueError, TypeError):
+                self.bytes_uncompressed += len(r.content)
+            except (AttributeError, TypeError):
                 pass
             return r
         return None

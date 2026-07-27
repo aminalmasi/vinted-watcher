@@ -198,7 +198,8 @@ def main() -> int:
     st["token"] = client.token_cache
     st["last_run"] = now
     state_mod.save(st)
-    log.info("proxy traffic this run: ~%.1f KB", client.bytes_on_wire / 1024)
+    log.info("traffic this run: %.0f KB uncompressed (metered ~%.0f KB gzipped)",
+             client.bytes_uncompressed / 1024, client.bytes_uncompressed / 1024 / 7)
     return 0
 
 

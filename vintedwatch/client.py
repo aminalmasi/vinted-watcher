@@ -12,7 +12,9 @@ from __future__ import annotations
 import logging
 import os
 import re
+import socket
 import time
+from urllib.parse import urlsplit
 
 import requests
 
@@ -35,13 +37,41 @@ _STATE_RE = {
 }
 
 
+def _gateway_urls(proxy_url: str) -> list[str]:
+    """Expand the proxy URL into one variant per gateway IP.
+
+    gw.dataimpulse.com has several A records and they are not equally healthy.
+    Within a single process the resolver order is stable, so a run that latches
+    onto a sick gateway fails *every* retry — which is exactly what we saw.
+    Addressing each gateway explicitly lets a retry escape a bad one. The proxy
+    hop is plain HTTP, so there is no certificate to mismatch.
+    """
+    parsed = urlsplit(proxy_url)
+    host, port = parsed.hostname, parsed.port
+    if not host:
+        return [proxy_url]
+    try:
+        ips = sorted({ai[4][0] for ai in socket.getaddrinfo(host, port, socket.AF_INET)})
+    except OSError as exc:
+        log.warning("could not resolve %s (%s) — using the name as given", host, exc)
+        return [proxy_url]
+    auth = ""
+    if parsed.username:
+        auth = parsed.username + (f":{parsed.password}" if parsed.password else "") + "@"
+    urls = [f"{parsed.scheme}://{auth}{ip}:{port}" for ip in ips]
+    log.info("proxy gateway has %d address(es): %s", len(ips), ", ".join(ips))
+    return urls or [proxy_url]
+
+
 class VintedClient:
     def __init__(self, token_cache: dict | None = None):
-        self.session = requests.Session()
         proxy = os.environ.get("PROXY_URL")
         if not proxy:
             raise RuntimeError("PROXY_URL is required — Vinted blocks datacenter IPs")
-        self.session.proxies = {"http": proxy, "https": proxy}
+        self._gateways = _gateway_urls(proxy)
+        self._gw = 0
+        self.session = requests.Session()
+        self._apply_gateway()
         self.session.headers.update(
             {
                 "User-Agent": UA,
@@ -52,6 +82,16 @@ class VintedClient:
         self.bytes_uncompressed = 0
         self.token_cache = dict(token_cache or {})
         self._restore_cookies()
+
+    def _apply_gateway(self):
+        url = self._gateways[self._gw % len(self._gateways)]
+        self.session.proxies = {"http": url, "https": url}
+
+    def _next_gateway(self):
+        if len(self._gateways) > 1:
+            self._gw += 1
+            self._apply_gateway()
+            log.info("switched to proxy gateway #%d", self._gw % len(self._gateways))
 
     # ---- token cache -----------------------------------------------------
 
@@ -99,8 +139,10 @@ class VintedClient:
                 )
                 # The pooled CONNECT tunnel is dead — reusing it just fails
                 # again. Dropping the pool forces a new tunnel, and with it a
-                # new residential exit IP.
+                # new residential exit IP. Move to the next gateway too, in
+                # case this one is the sick address.
                 self.session.close()
+                self._next_gateway()
                 time.sleep(min(3 * 2**attempt, 30))
                 continue
             # Vinted replies chunked, so content-length is absent and the raw

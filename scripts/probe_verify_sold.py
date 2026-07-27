@@ -10,7 +10,7 @@ Sold listings are found via seller closets: a member page lists that seller's
 items including the ones already sold.
 """
 
-import json
+import logging
 import re
 import sys
 import os
@@ -62,7 +62,19 @@ def inspect(client, item_id, label):
 
 
 def main():
+    logging.basicConfig(level=logging.INFO,
+                        format="%(levelname)-7s %(name)s: %(message)s")
     client = VintedClient()
+    print(f"gateways in use: {len(client._gateways)}")
+
+    # Surface the raw failure instead of the swallowed 'no response'.
+    import requests
+    try:
+        r = client.session.get(BASE + "/", timeout=(15, 75))
+        print(f"raw homepage probe: HTTP {r.status_code}, {len(r.content)}B")
+    except requests.RequestException as exc:
+        print(f"raw homepage probe FAILED: {type(exc).__name__}: {exc}")
+
     client.bootstrap()
 
     feed = client.search({"search_text": "prada shoes", "order": "newest_first", "per_page": 24})

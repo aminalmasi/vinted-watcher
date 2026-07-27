@@ -153,7 +153,28 @@ and the most recent `watch` run in Actions. Check whether any SOLD alert has fir
   **Never run `curl -v` through the proxy in CI.**
 - ~~Rotate the password~~ **done 2026-07-27**; repo is **public** again and the cron
   is back to **every 20 min** (public repos get unlimited free Actions minutes).
-- **No real SOLD event observed yet.** Every confirmation so far correctly returned
-  `live`. The sold branch is exercised only when a tracked listing actually sells;
-  worth checking the first alert against the listing by hand.
+- **⚠️ THE SOLD BRANCH IS STILL UNVERIFIED, and it cannot be tested on demand.**
+  Vinted hides sold listings from *every* public surface: the catalog feed, the
+  wardrobe endpoint (`/api/v2/wardrobe/{uid}/items` — 273 listings across 12
+  sellers, **zero** closed/hidden), and every filter tried (`status=sold`,
+  `is_closed=true`, `include_sold=true` all return only live items). So there is
+  no way to manufacture a sold listing to test against.
+  What IS confirmed: item pages fetch and parse; `item_closing_action` occurs
+  **exactly once** per page and always on the listing itself; the page's i18n
+  bundle carries `"item.status.sold":"Venduto"` and `"item.status.hidden":"Nascosto"`,
+  so the status concept exists. What is INFERRED: that a sale sets
+  `item_closing_action` / `is_closed`. `check_sold()` now dumps the raw JSON
+  window on any non-live verdict, so the first genuine event can be checked
+  against the listing by hand — do that before trusting the stream.
+- **⚠️ `is_hidden` must never drive a verdict.** It appears ~53x per item page
+  because every photo carries one, and no anchoring window reliably separates the
+  listing's flag from a photo's — reading it gave contradictory verdicts for the
+  same listing an hour apart. Verdicts rest on `item_closing_action` and `is_closed`.
+- **⚠️ The GitHub cron has never actually fired.** Every run so far is
+  `workflow_dispatch`. Config is correct (default branch, workflow `active`,
+  cron on `main`), so this is GitHub's scheduler being unreliable — it deprioritises
+  and drops scheduled runs, especially on round-minute crons. Changed `*/20` to
+  `7,27,47` to dodge the contended boundaries. **If it still does not fire, the
+  watcher is not actually running** — check `gh run list --workflow=watch.yml`
+  for `event=schedule` before assuming it works.
 - Phases 2-4 (eBay sold-comps, SigLIP visual verify, arbitrage alerts) are untouched.

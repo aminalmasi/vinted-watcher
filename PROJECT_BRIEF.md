@@ -23,8 +23,11 @@ Secrets already set on the repo: `PROXY_URL`, `TELEGRAM_BOT_TOKEN`. Local copies
 - **State:** commit `data/state.json` (tracked listings) back to the repo each run. No DB server needed.
 
 ### ⚠️ Proxy data budget (€5 PAYG is metered by GB)
-The homepage bootstrap is **2.3 MB**; the search response is **0.43 MB**. Bootstrapping every run = ~2.7 MB × 72/day ≈ **5.8 GB/month** — would burn the credit fast.
-**Fix: cache the `access_token_web` cookie in the state file** and only re-bootstrap on 401/403. That drops each poll to ~0.43 MB ≈ 0.9 GB/month.
+Sizes are *decompressed*; the metered figure is gzipped, roughly 7x smaller.
+Homepage 2.3 MB, a 24-item feed page ~110 KB, an **item page 2.4 MB (~340 KB
+metered)** — item pages dominate, which is why confirmations are rationed.
+Measured steady state: **~575 KB metered per run** ≈ 415 MB/month hourly.
+The anon token is cached in the state file so most runs skip the homepage.
 
 ## SPECIFIC GOAL (user, 2026-07-27) — first concrete watcher
 Example search: **"Prada shoes" any size, on Vinted ITALY** (vinted.it — the user cares about listings shown to *them* in Italy).
@@ -45,58 +48,48 @@ The catalog feed **only ever returns live items** — there is no sold flag in t
 - HTTP 404/410 → seller deleted it → silent
 - still live → it merely fell off the paged feed → keep tracking
 
-⚠️ The feed is ordered `newest_first` and we read only ~190 listings, so listings
-drop out of our window by **ageing**, not only by selling. The watcher therefore
-compares a missing listing against the feed's **age floor** (oldest `photo_ts`
-seen this run): missing *and newer than the floor* = genuinely gone → confirm;
-missing *and older* = merely aged out → re-check on a slow cadence. If any feed
-page fails, the floor is distrusted for that run.
+⚠️ A listing missing from one poll is usually just search churn, not a sale —
+see finding 3 below for how "really gone" is decided.
 
-## STATUS 2026-07-27 (end of session)
-**Working:** proxy → catalog feed → parse → dedupe → state committed to git.
-~190 listings tracked per run, ~580 KB metered traffic per run, no retries.
+## STATUS 2026-07-27 — WORKING END TO END
+Feed → parse → dedupe → **confirmation** → state committed to git. Verified in
+production: 15/15 item pages fetched and their state JSON parsed correctly.
+~189 listings tracked, **~575 KB metered traffic per run** (~415 MB/month hourly).
+No SOLD alert has fired yet — that needs a tracked listing to actually sell,
+which happens on its own schedule.
 
-**⛔ BLOCKED — the confirmation step.** `https://www.vinted.it/items/{id}` now
-returns **HTTP 403** for every request from our proxy exits, even with full
-browser navigation headers, 4 s spacing, and exit rotation. It worked at 14:52
-and has 403'd consistently since ~15:00, so it is reputation/bot-detection on
-the **HTML** path (the JSON catalog API from the same exits is fine).
-The watcher fails **safe**: an unconfirmable listing returns `unknown`, stays
-tracked, and never produces an alert. So it under-reports; it never lies.
+Telegram is live: **@vinted_ads_bot**, chat_id `276987728`, secret set, test
+message delivered.
 
-**Ideas to unblock, cheapest first:**
-1. Re-bootstrap a *fresh* homepage token immediately before item-page fetches —
-   the one success came right after a bootstrap, the 403s came on a 35-min-old token.
-2. Retry `/api/v2/items/{id}` (JSON) with the anon token + full browser headers;
-   the JSON path is not being blocked the way HTML is.
-3. Drop confirmation entirely: treat "vanished while newer than the age floor,
-   still absent after N consecutive polls" as sold. Zero extra requests, but it
-   cannot tell a sale from a seller deletion — would need saying so in the alert.
-4. Add a sticky-session DataImpulse port so one exit IP builds reputation
-   instead of hopping every request.
+### Three findings that shaped the design
+1. **`gw.dataimpulse.com` alternates between two DNS answer sets and one is dead.**
+   Across nine runs, every run resolving to `185.209.176.103` / `69.67.149.191`
+   succeeded; every run resolving to the `64.34.81.x` block failed on *all*
+   addresses with `RemoteDisconnected`. Resolution is stable within a process, so
+   an unlucky run was doomed from its first request. `KNOWN_GOOD_GATEWAYS` in
+   `client.py` pins the working addresses and keeps DNS as a fallback.
+2. **A 403 on an item page means "stale session", not "blocked".** Vinted serves
+   the page happily to a session that has *just* loaded the homepage. A run of
+   solid 403s turned into HTTP 200 immediately after a fresh bootstrap, so the
+   watcher re-bootstraps before the confirmation phase and again on any 403,
+   with `vinted.com` as a last resort.
+3. **`photo_ts` is useless for deciding "aged out of the feed".** The feed's
+   oldest photo is ~8 weeks older than its newest because listings get bumped and
+   photos re-uploaded — ordering has nothing to do with photo date. The original
+   age-floor rule therefore marked nearly every absent listing as "vanished" and
+   spent 15 page fetches a run (~6 MB, ~3.7 GB/month — more than the €5 buys).
+   Replaced with **persistence**: Vinted's search churns a few results every poll
+   (187/190/188 for the same query), so a listing must be absent from **three
+   consecutive polls** before earning a confirmation, capped at 6 per run.
 
-**Proxy flakiness (resolved enough):** `gw.dataimpulse.com` returns a varying set
-of A records (seen: `69.67.149.191`/`185.209.176.103`, later `64.34.81.65/89/101`)
-and goes through multi-minute windows where *all* of them refuse connections.
-Retries rotate across every resolved gateway; a run that still fails aborts
-without touching state, so nothing is corrupted and the next run recovers.
-
-**⚠️ CREDENTIAL EXPOSURE (2026-07-27 ~14:49–14:51):** a diagnostic step ran
-`curl -v` through the proxy, and the `Proxy-Authorization: Basic <base64>` header
-was printed into an Actions log while the repo was briefly public. GitHub masks
-`PROXY_URL` but not its base64 encoding. The run log was deleted and the repo set
-back to private within ~2 min. **The DataImpulse password should be rotated**, and
-the `PROXY_URL` secret + `~/.config/proxy.env` updated. Never run `curl -v`
-through the proxy in CI again.
-
-**Repo visibility:** currently **private**, so the cron is **hourly** (`7 * * * *`)
-to stay inside the 2000 free min/mo. The user chose public + 20-min polling; once
-the proxy password is rotated, flip back to public and restore `*/20 * * * *`.
-
-**Still needed from the user:** `TELEGRAM_CHAT_ID`. `getUpdates` is empty because
-nobody has messaged the bot. Press Start on **t.me/vinted_ads_bot**, then read the
-id from `getUpdates` and set it as a repo secret. Until then `notify.send()` logs
-the message and drops it.
+### Safety properties worth keeping
+- A run that cannot fetch the feed **aborts without touching state** — no
+  corruption, next run recovers.
+- An **incomplete** feed skips confirmations entirely; absence means nothing when
+  half the window is missing.
+- An unconfirmable listing returns `unknown`, stays tracked, and **never alerts**.
+  The watcher under-reports rather than lying.
+- Three consecutive failed confirmations abort the rest of the run's checks.
 
 ## Goal
 Two capabilities:
@@ -145,4 +138,21 @@ Vinted item → LLM extract (brand/model/attrs) → build query
 - **Phase 4:** deploy self-perpetuating on cluster (or off-IP), like job-monitor's `slurm_auto.sbatch`.
 
 ## First step when resuming
-"Read this brief. I bought DataImpulse (Italy). Let's do Phase 0: minimal Vinted watcher for one saved search through the proxy → new bot." Then set up `~/.config/proxy.env`, a new Telegram bot, and copy the job-monitor skeleton into `/home/malmasik/vinted/`.
+Phase 0 is **done and live** — read "STATUS" above, then `git -C /extra/malmasik/vinted log`
+and the most recent `watch` run in Actions. Check whether any SOLD alert has fired.
+
+## OPEN ITEMS
+- **⚠️ Rotate the DataImpulse password.** On 2026-07-27 ~14:49 a diagnostic ran
+  `curl -v` through the proxy and printed `Proxy-Authorization: Basic <base64>`
+  into an Actions log while the repo was briefly public. GitHub masks `PROXY_URL`
+  but not its base64 encoding. The run log was deleted and the repo made private
+  within ~2 min; the password is still the leaked one. After rotating, update
+  `~/.config/proxy.env` **and** the `PROXY_URL` repo secret.
+  **Never run `curl -v` through the proxy in CI.**
+- **Repo is private, so the cron is hourly** (`7 * * * *`) to stay inside the 2000
+  free min/mo. The user's choice was public + 20-min polling: once the password is
+  rotated, flip the repo public and restore `*/20 * * * *` in `.github/workflows/watch.yml`.
+- **No real SOLD event observed yet.** Every confirmation so far correctly returned
+  `live`. The sold branch is exercised only when a tracked listing actually sells;
+  worth checking the first alert against the listing by hand.
+- Phases 2-4 (eBay sold-comps, SigLIP visual verify, arbitrage alerts) are untouched.

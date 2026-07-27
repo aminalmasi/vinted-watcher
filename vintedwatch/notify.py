@@ -69,10 +69,12 @@ def format_sold(item: dict, hours_listed: float | None) -> str:
             + (f"  (con protezione: {e(total)} {e(cur)})" if total and total != price else "")
         )
     if hours_listed is not None:
+        # We only know how long WE watched it, not how long it was listed —
+        # most listings were already on sale when tracking began.
         bits.append(
-            f"⏱ venduto dopo ~{hours_listed:.0f} h"
+            f"⏱ visto in vendita per ~{hours_listed:.0f} h"
             if hours_listed < 48
-            else f"⏱ venduto dopo ~{hours_listed / 24:.0f} giorni"
+            else f"⏱ visto in vendita per ~{hours_listed / 24:.0f} giorni"
         )
     if item.get("url"):
         bits.append(f'\n<a href="{e(item["url"])}">{e(item["url"])}</a>')

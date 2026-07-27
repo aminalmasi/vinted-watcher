@@ -288,16 +288,19 @@ class VintedClient:
 
         html = r.text
 
-        # Anchor on `item_closing_action`, which appears exactly once and only
-        # on the item itself, then read its siblings from the surrounding JSON
-        # object. Searching the whole page would be wrong: `is_hidden` occurs
-        # ~53 times because every photo carries one, and the first hit is a
-        # photo's flag, not the listing's.
-        anchor = html.find("item_closing_action")
-        window = html[max(0, anchor - 3000):anchor + 3000] if anchor != -1 else html
+        # The listing's state lives in an "item_status" plugin block that also
+        # carries its item_id — confirmed against two real sales:
+        #   {"name":"item_status",...,"data":{"item_id":9505849905,...,
+        #    "is_closed":true,"item_closing_action":"sold",...}}
+        # Anchoring on that block and checking the id means we cannot read a
+        # photo's is_hidden (there are ~53 per page) or another listing's state.
+        anchor = html.find(f'\\"item_id\\":{item_id}')
         if anchor == -1:
-            log.warning("item %s: no item_closing_action anchor; falling back to whole page",
-                        item_id)
+            anchor = html.find(f'"item_id":{item_id}')
+        if anchor == -1:
+            anchor = html.find("item_closing_action")
+            log.warning("item %s: no item_status block for this id; falling back", item_id)
+        window = html[max(0, anchor - 500):anchor + 1200] if anchor != -1 else html
 
         found = {}
         for key, rx in _STATE_RE.items():

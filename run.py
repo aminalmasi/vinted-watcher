@@ -4,17 +4,13 @@
 Per the brief: new listings are tracked *silently*; only a sale produces a
 message.
 
-The tricky part is that "missing from the feed" does not mean "sold". The
-catalog is ordered newest_first and we only read a few pages, so every listing
-eventually drops out of our window simply by ageing. We therefore compare each
-missing listing against the feed's age floor:
+The tricky part is that "missing from the feed" does not mean "sold". Vinted's
+search churns between polls, so a listing can drop out and come back. Only a
+listing absent from several consecutive polls is really gone, and only then do
+we spend a page fetch to find out whether it sold, was removed, or is fine.
 
-  * missing but NEWER than the floor -> it should have been there; it is gone
-    for real -> confirm against its item page (sold / removed / still live).
-  * missing and OLDER than the floor -> it merely aged out of our window; keep
-    it, but only re-check it every RECHECK_HOURS so the proxy bill stays flat.
-
-Confirmations are capped per run so a bad day cannot blow the data budget.
+Confirmations are capped per run: each item page costs ~340 KB of metered
+residential proxy traffic, which is the real budget here.
 """
 
 from __future__ import annotations
@@ -39,8 +35,8 @@ SEARCH = {
 # exits regularly fail to deliver inside the timeout. 24 items is ~110 KB.
 MAX_PAGES = 8               # ~192 newest listings per poll
 SEED_DAYS = 5               # first run: only remember the last 5 days
-RECHECK_HOURS = 6           # how often to re-check a listing that aged out
-MAX_CHECKS_PER_RUN = 15     # hard cap on item-page fetches (traffic control)
+MISSING_RUNS = 3            # consecutive absences before a listing is suspicious
+MAX_CHECKS_PER_RUN = 6      # hard cap on item-page fetches (~340 KB each, metered)
 MAX_TRACK_DAYS = 30         # give up on a listing that never sells
 UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing off
 DAY = 86400
@@ -77,29 +73,30 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]
     return items, floor, complete
 
 
-def pick_checks(tracked: dict, live_ids: set, floor: int | None, now: float) -> list[dict]:
-    """Choose which vanished listings to confirm, cheapest-signal first."""
-    urgent, stale = [], []
-    for key, rec in tracked.items():
-        if int(key) in live_ids:
-            continue
-        last_check = rec.get("last_check", 0)
-        photo_ts = rec.get("photo_ts") or 0
-        vanished_early = floor is not None and photo_ts >= floor
-        if vanished_early:
-            # Disappeared while still inside the feed window -> check now.
-            urgent.append((last_check, rec))
-        elif now - last_check > RECHECK_HOURS * 3600:
-            stale.append((last_check, rec))
-    urgent.sort(key=lambda t: t[0])
-    stale.sort(key=lambda t: t[0])
-    chosen = [r for _, r in urgent] + [r for _, r in stale]
-    if len(chosen) > MAX_CHECKS_PER_RUN:
-        log.warning(
-            "%d listings need confirming, checking the %d oldest this run",
-            len(chosen), MAX_CHECKS_PER_RUN,
-        )
-    return chosen[:MAX_CHECKS_PER_RUN]
+def pick_checks(tracked: dict, live_ids: set) -> list[dict]:
+    """Choose which vanished listings are worth spending a page fetch on.
+
+    An item's `photo_ts` looked like a way to tell "vanished" from "aged out of
+    our window", but it is not: photos get re-uploaded and listings bumped, so
+    the feed's oldest photo is weeks older than its newest while both sit in the
+    same 190 results. The ordering is simply not by photo date.
+
+    What does hold is persistence. Vinted's search churns a little every poll —
+    the same query returns 187, then 190, then 188 listings, with membership
+    wobbling at the edges. A listing absent from several consecutive polls is
+    genuinely gone; one absent from a single poll is usually just churn. So we
+    only pay for a confirmation after MISSING_RUNS consecutive absences.
+    """
+    candidates = [
+        rec for key, rec in tracked.items()
+        if int(key) not in live_ids and rec.get("missing_runs", 0) >= MISSING_RUNS
+    ]
+    # Longest-unresolved first, so nothing starves behind the per-run cap.
+    candidates.sort(key=lambda r: (r.get("last_check", 0), -r.get("missing_runs", 0)))
+    if len(candidates) > MAX_CHECKS_PER_RUN:
+        log.info("%d listings await confirmation, checking %d this run (rest carry over)",
+                 len(candidates), MAX_CHECKS_PER_RUN)
+    return candidates[:MAX_CHECKS_PER_RUN]
 
 
 def main() -> int:
@@ -135,13 +132,13 @@ def main() -> int:
         if key in tracked:
             tracked[key].update(item)
             tracked[key]["last_seen"] = now
-            tracked[key]["missing_since"] = None
+            tracked[key]["missing_runs"] = 0
             continue
         if first_run and item.get("photo_ts") and now - item["photo_ts"] > SEED_DAYS * DAY:
             skipped += 1
             continue  # brief: seed only the last 5 days
         tracked[key] = dict(item, first_seen=now, last_seen=now,
-                            missing_since=None, last_check=0)
+                            missing_runs=0, last_check=0)
         seeded += 1
     if first_run:
         log.info("seeded %d listings from the last %d days (%d older skipped)",
@@ -149,9 +146,12 @@ def main() -> int:
     elif seeded:
         log.info("%d new listings now tracked (silently — no alert)", seeded)
 
-    for key, rec in tracked.items():
-        if int(key) not in live and not rec.get("missing_since"):
-            rec["missing_since"] = now
+    if complete:
+        for key, rec in tracked.items():
+            if int(key) not in live:
+                rec["missing_runs"] = rec.get("missing_runs", 0) + 1
+        absent = sum(1 for r in tracked.values() if r.get("missing_runs", 0))
+        log.info("%d tracked listings absent from this poll", absent)
 
     # --- confirm the ones that vanished ---------------------------------
     sold_msgs, drop = [], []
@@ -163,7 +163,7 @@ def main() -> int:
         checks = []
         log.warning("feed incomplete — skipping confirmations this run")
     else:
-        checks = pick_checks(tracked, set(live), floor, now)
+        checks = pick_checks(tracked, set(live))
     if checks:
         # Vinted only serves item pages to a session that has just loaded the
         # site; a stale anon token earns a 403. One homepage hit up front makes
@@ -205,7 +205,7 @@ def main() -> int:
         elif verdict == "removed":
             drop.append(key)  # seller pulled it — not a sale, stay quiet
         elif verdict == "live":
-            rec["missing_since"] = None
+            rec["missing_runs"] = 0  # feed churn, not a disappearance
 
     for key in drop:
         tracked.pop(key, None)

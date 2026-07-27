@@ -1,0 +1,11 @@
+name = "vinted-watcher-cron"
+main = "src/worker.js"
+compatibility_date = "2026-07-01"
+
+# Every 20 minutes. Cloudflare cron triggers are on the free plan and, unlike
+# GitHub's `schedule:`, they actually fire on time.
+[triggers]
+crons = ["*/20 * * * *"]
+
+# No secrets here — GITHUB_TOKEN and TRIGGER_KEY are set with
+# `wrangler secret put`, so nothing sensitive lands in this public repo.

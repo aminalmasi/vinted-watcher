@@ -154,7 +154,21 @@ and the most recent `watch` run in Actions. Check whether any SOLD alert has fir
 - ~~Rotate the password~~ **done 2026-07-27**; repo is **public** (unlimited free
   Actions minutes).
 
-## SCHEDULING — use SLURM, not cron, not GitHub's `schedule:`
+## SCHEDULING — Cloudflare Worker (NOT the cluster)
+**Deliberate decision 2026-07-28:** the cluster is no longer used as the clock.
+It only ever made a 2-second `gh` call, but at 20-min cadence that is ~2,200
+SLURM jobs/month named `vinted-trigger` on university research HPC for a personal
+bot — trivial CPU, but highly visible in `sacct` and hard to justify. The SLURM
+chain was cancelled; `scheduler/slurm_auto.sbatch` is kept only as a fallback and
+should stay unused.
+
+**Live trigger: `scheduler/cloudflare/`** — a Worker on Cloudflare's free plan
+fires `*/20` and POSTs to the GitHub API. 72 requests/day against a 100k/day
+allowance. Setup and verification in that directory's README. The scraping is
+unchanged: it still runs on GitHub Actions, the only host that can reach the
+DataImpulse proxy.
+
+### Schedulers that do NOT work here
 Two schedulers were tried and both failed on 2026-07-27:
 - **GitHub `schedule:`** fired **once in 3.5 hours** where `*/20` should have fired
   ~10 times. Workflow `active`, cron valid, on the default branch, Actions enabled
@@ -163,17 +177,12 @@ Two schedulers were tried and both failed on 2026-07-27:
   active) but **never executes** — zero heartbeats from a `* * * * *` job in 200s.
   Do not waste time on it again.
 
-**What works: `scheduler/slurm_auto.sbatch`**, mirroring job-monitor's
-self-perpetuating pattern — it re-arms itself (`sbatch --begin=now+20minutes`)
-*before* doing anything, so a failure cannot break the chain. The cluster cannot
-reach the proxy, so it does not scrape: it only calls `gh workflow run watch.yml`
-(~2 s), and GitHub Actions does the scraping from an IP that can reach DataImpulse.
+**Fallback only — `scheduler/slurm_auto.sbatch`** (self-perpetuating, re-arms
+before working, verified 2026-07-27). Use it only if Cloudflare is unavailable
+and you accept the cluster footprint.
 
     START:  sbatch scheduler/slurm_auto.sbatch
     STOP:   scancel -n vinted-trigger
-    WATCH:  squeue -n vinted-trigger ; tail -f data/logs/slurm_auto_*.out
-
-Verified 2026-07-27 23:57 local: job ran, dispatched, and queued its successor.
 - **✅ SOLD DETECTION VERIFIED against two real sales (2026-07-27 18:56Z).**
   `9505849905` (2000s Prada Sport suede shoes, €70) and `9493035670` (Zara shoes
   inspired by Prada, €18) both sold and were correctly reported to Telegram.

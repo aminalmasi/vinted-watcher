@@ -287,15 +287,35 @@ class VintedClient:
             return "unknown"
 
         html = r.text
+
+        # Anchor on `item_closing_action`, which appears exactly once and only
+        # on the item itself, then read its siblings from the surrounding JSON
+        # object. Searching the whole page would be wrong: `is_hidden` occurs
+        # ~53 times because every photo carries one, and the first hit is a
+        # photo's flag, not the listing's.
+        anchor = html.find("item_closing_action")
+        window = html[max(0, anchor - 3000):anchor + 3000] if anchor != -1 else html
+        if anchor == -1:
+            log.warning("item %s: no item_closing_action anchor; falling back to whole page",
+                        item_id)
+
         found = {}
         for key, rx in _STATE_RE.items():
-            m = rx.search(html)
+            m = rx.search(window)
             if m:
                 found[key] = m.group(1).strip('\\"')
         log.info("item %s page state: %s", item_id, found or "(no state json)")
 
         if not found:
             return "unknown"
+
+        # The 'sold' branch has never been observed against a real sale, so when
+        # anything other than 'live' comes back, record the raw evidence. The
+        # first genuine sale is the only chance to confirm this mapping.
+        if found.get("item_closing_action") not in ("null", None) or found.get("is_closed") == "true":
+            log.warning("item %s NON-LIVE state, raw window for verification: %s",
+                        item_id, window[max(0, window.find("item_closing_action") - 400):
+                                        window.find("item_closing_action") + 400])
         closing = found.get("item_closing_action")
         if closing not in (None, "null", ""):
             # e.g. "sold" — the seller closed it via a transaction.

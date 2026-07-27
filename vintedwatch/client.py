@@ -143,7 +143,7 @@ class VintedClient:
                     continue
             except requests.RequestException as exc:
                 log.warning(
-                    "GET %s failed (%s: %.180s), retry %d/%d",
+                    "GET %s failed (%s: %.400s), retry %d/%d",
                     url, type(exc).__name__, exc, attempt + 1, tries,
                 )
                 # The pooled CONNECT tunnel is dead — reusing it just fails

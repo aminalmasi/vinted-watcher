@@ -8,3 +8,4 @@ data/*.sqlite3
 data/*.db
 *.log
 .DS_Store
+scheduler/trigger.log

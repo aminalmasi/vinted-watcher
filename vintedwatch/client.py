@@ -37,30 +37,38 @@ _STATE_RE = {
 }
 
 
-def _gateway_urls(proxy_url: str) -> list[str]:
-    """Expand the proxy URL into one variant per gateway IP.
+# gw.dataimpulse.com alternates between two DNS answer sets, and they are not
+# equally alive. Measured 2026-07-27 across nine runs: every run that resolved to
+# 185.209.176.103 / 69.67.149.191 succeeded, and every run that resolved to the
+# 64.34.81.x block failed outright with RemoteDisconnected on every address.
+# Resolution is stable within a process, so an unlucky run had no way out.
+# We therefore always try the known-good addresses first, whatever DNS says.
+KNOWN_GOOD_GATEWAYS = ("185.209.176.103", "69.67.149.191")
 
-    gw.dataimpulse.com has several A records and they are not equally healthy.
-    Within a single process the resolver order is stable, so a run that latches
-    onto a sick gateway fails *every* retry — which is exactly what we saw.
-    Addressing each gateway explicitly lets a retry escape a bad one. The proxy
-    hop is plain HTTP, so there is no certificate to mismatch.
+
+def _gateway_urls(proxy_url: str) -> list[str]:
+    """Expand the proxy URL into one candidate per gateway address.
+
+    Known-good addresses lead; anything else DNS offers follows as a fallback,
+    so this still works if DataImpulse renumbers. The proxy hop is plain HTTP,
+    so addressing it by IP mismatches no certificate.
     """
     parsed = urlsplit(proxy_url)
     host, port = parsed.hostname, parsed.port
     if not host:
         return [proxy_url]
     try:
-        ips = sorted({ai[4][0] for ai in socket.getaddrinfo(host, port, socket.AF_INET)})
+        resolved = sorted({ai[4][0] for ai in socket.getaddrinfo(host, port, socket.AF_INET)})
     except OSError as exc:
-        log.warning("could not resolve %s (%s) — using the name as given", host, exc)
-        return [proxy_url]
+        log.warning("could not resolve %s (%s)", host, exc)
+        resolved = []
+    ordered = list(KNOWN_GOOD_GATEWAYS) + [ip for ip in resolved if ip not in KNOWN_GOOD_GATEWAYS]
     auth = ""
     if parsed.username:
         auth = parsed.username + (f":{parsed.password}" if parsed.password else "") + "@"
-    urls = [f"{parsed.scheme}://{auth}{ip}:{port}" for ip in ips]
-    log.info("proxy gateway has %d address(es): %s", len(ips), ", ".join(ips))
-    return urls or [proxy_url]
+    log.info("gateways: %s (DNS offered %s)",
+             ", ".join(ordered), ", ".join(resolved) or "nothing")
+    return [f"{parsed.scheme}://{auth}{ip}:{port}" for ip in ordered] or [proxy_url]
 
 
 class VintedClient:

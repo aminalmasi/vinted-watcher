@@ -105,20 +105,37 @@ class VintedClient:
                 self.session.cookies.set(name, value, domain=".vinted.it")
         log.info("restored cached anon token (age %ds)", int(time.time() - saved_at))
 
+    def _cookie(self, name: str) -> str | None:
+        """Last value for a cookie name.
+
+        Restored cookies are scoped to `.vinted.it` while Vinted sets its own on
+        `www.vinted.it`, so the jar can legitimately hold two of each and
+        `cookies.get()` raises CookieConflictError. Later entries win, matching
+        what the server most recently told us.
+        """
+        value = None
+        for cookie in self.session.cookies:
+            if cookie.name == name:
+                value = cookie.value
+        return value
+
     def _snapshot_cookies(self) -> dict:
         snap = {"saved_at": time.time()}
         for name in TOKEN_COOKIES:
-            value = self.session.cookies.get(name)
+            value = self._cookie(name)
             if value:
                 snap[name] = value
         return snap
 
     @property
     def has_token(self) -> bool:
-        return bool(self.session.cookies.get("access_token_web"))
+        return bool(self._cookie("access_token_web"))
 
     def bootstrap(self):
         """Fetch the homepage to mint a fresh anon token (~250 KB gzipped)."""
+        # Start from an empty jar so restored and freshly-issued cookies cannot
+        # pile up as duplicates across domains.
+        self.session.cookies.clear()
         r = self._get(BASE + "/")
         if r is None or r.status_code != 200:
             raise RuntimeError(f"bootstrap failed: {r.status_code if r else 'no response'}")

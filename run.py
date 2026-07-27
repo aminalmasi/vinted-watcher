@@ -46,8 +46,8 @@ UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing of
 DAY = 86400
 
 
-def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None]:
-    """Read the newest pages of the search. Returns {id: item}, age floor."""
+def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]:
+    """Read the newest pages of the search. Returns {id: item}, age floor, complete."""
     items: dict[int, dict] = {}
     complete = True
     for page in range(1, MAX_PAGES + 1):
@@ -74,7 +74,7 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None]:
     floor = min(stamps) if stamps and complete else None
     log.info("feed: %d listings, age floor=%s%s",
              len(items), floor, "" if complete else " (feed truncated)")
-    return items, floor
+    return items, floor, complete
 
 
 def pick_checks(tracked: dict, live_ids: set, floor: int | None, now: float) -> list[dict]:
@@ -123,7 +123,7 @@ def main() -> int:
     now = time.time()
 
     client = VintedClient(token_cache=st.get("token"))
-    live, floor = fetch_feed(client)
+    live, floor, complete = fetch_feed(client)
     if not live:
         log.error("empty feed — aborting without touching state")
         return 1
@@ -156,7 +156,14 @@ def main() -> int:
     # --- confirm the ones that vanished ---------------------------------
     sold_msgs, drop = [], []
     unknowns = 0
-    checks = pick_checks(tracked, set(live), floor, now)
+    if not complete:
+        # Half the feed is missing, so "absent from the feed" tells us nothing.
+        # Confirming now would spend metered traffic re-checking listings that
+        # never went anywhere. Skip; the next run sees the full window.
+        checks = []
+        log.warning("feed incomplete — skipping confirmations this run")
+    else:
+        checks = pick_checks(tracked, set(live), floor, now)
     if checks:
         # Vinted only serves item pages to a session that has just loaded the
         # site; a stale anon token earns a 403. One homepage hit up front makes
@@ -164,7 +171,9 @@ def main() -> int:
         try:
             client.bootstrap()
         except RuntimeError as exc:
-            log.warning("could not refresh the session (%s) — confirmations may fail", exc)
+            # Without a live session every item page 403s, so do not even try.
+            log.warning("could not refresh the session (%s) — skipping confirmations", exc)
+            checks = []
     for n, rec in enumerate(checks):
         if unknowns >= UNKNOWN_GIVE_UP:
             # Vinted is refusing item pages from our exits right now. Further

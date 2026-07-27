@@ -45,6 +45,59 @@ The catalog feed **only ever returns live items** — there is no sold flag in t
 - HTTP 404/410 → seller deleted it → silent
 - still live → it merely fell off the paged feed → keep tracking
 
+⚠️ The feed is ordered `newest_first` and we read only ~190 listings, so listings
+drop out of our window by **ageing**, not only by selling. The watcher therefore
+compares a missing listing against the feed's **age floor** (oldest `photo_ts`
+seen this run): missing *and newer than the floor* = genuinely gone → confirm;
+missing *and older* = merely aged out → re-check on a slow cadence. If any feed
+page fails, the floor is distrusted for that run.
+
+## STATUS 2026-07-27 (end of session)
+**Working:** proxy → catalog feed → parse → dedupe → state committed to git.
+~190 listings tracked per run, ~580 KB metered traffic per run, no retries.
+
+**⛔ BLOCKED — the confirmation step.** `https://www.vinted.it/items/{id}` now
+returns **HTTP 403** for every request from our proxy exits, even with full
+browser navigation headers, 4 s spacing, and exit rotation. It worked at 14:52
+and has 403'd consistently since ~15:00, so it is reputation/bot-detection on
+the **HTML** path (the JSON catalog API from the same exits is fine).
+The watcher fails **safe**: an unconfirmable listing returns `unknown`, stays
+tracked, and never produces an alert. So it under-reports; it never lies.
+
+**Ideas to unblock, cheapest first:**
+1. Re-bootstrap a *fresh* homepage token immediately before item-page fetches —
+   the one success came right after a bootstrap, the 403s came on a 35-min-old token.
+2. Retry `/api/v2/items/{id}` (JSON) with the anon token + full browser headers;
+   the JSON path is not being blocked the way HTML is.
+3. Drop confirmation entirely: treat "vanished while newer than the age floor,
+   still absent after N consecutive polls" as sold. Zero extra requests, but it
+   cannot tell a sale from a seller deletion — would need saying so in the alert.
+4. Add a sticky-session DataImpulse port so one exit IP builds reputation
+   instead of hopping every request.
+
+**Proxy flakiness (resolved enough):** `gw.dataimpulse.com` returns a varying set
+of A records (seen: `69.67.149.191`/`185.209.176.103`, later `64.34.81.65/89/101`)
+and goes through multi-minute windows where *all* of them refuse connections.
+Retries rotate across every resolved gateway; a run that still fails aborts
+without touching state, so nothing is corrupted and the next run recovers.
+
+**⚠️ CREDENTIAL EXPOSURE (2026-07-27 ~14:49–14:51):** a diagnostic step ran
+`curl -v` through the proxy, and the `Proxy-Authorization: Basic <base64>` header
+was printed into an Actions log while the repo was briefly public. GitHub masks
+`PROXY_URL` but not its base64 encoding. The run log was deleted and the repo set
+back to private within ~2 min. **The DataImpulse password should be rotated**, and
+the `PROXY_URL` secret + `~/.config/proxy.env` updated. Never run `curl -v`
+through the proxy in CI again.
+
+**Repo visibility:** currently **private**, so the cron is **hourly** (`7 * * * *`)
+to stay inside the 2000 free min/mo. The user chose public + 20-min polling; once
+the proxy password is rotated, flip back to public and restore `*/20 * * * *`.
+
+**Still needed from the user:** `TELEGRAM_CHAT_ID`. `getUpdates` is empty because
+nobody has messaged the bot. Press Start on **t.me/vinted_ads_bot**, then read the
+id from `getUpdates` and set it as a repo secret. Until then `notify.send()` logs
+the message and drops it.
+
 ## Goal
 Two capabilities:
 1. **Monitor saved Vinted searches (Italy)** for NEW listings → Telegram alert (a **separate Vinted bot/chat**, not the job-monitor one).

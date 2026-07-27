@@ -42,6 +42,7 @@ SEED_DAYS = 5               # first run: only remember the last 5 days
 RECHECK_HOURS = 6           # how often to re-check a listing that aged out
 MAX_CHECKS_PER_RUN = 15     # hard cap on item-page fetches (traffic control)
 MAX_TRACK_DAYS = 30         # give up on a listing that never sells
+UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing off
 DAY = 86400
 
 
@@ -154,11 +155,19 @@ def main() -> int:
 
     # --- confirm the ones that vanished ---------------------------------
     sold_msgs, drop = [], []
+    unknowns = 0
     for n, rec in enumerate(pick_checks(tracked, set(live), floor, now)):
+        if unknowns >= UNKNOWN_GIVE_UP:
+            # Vinted is refusing item pages from our exits right now. Further
+            # attempts only burn metered traffic; the listings stay tracked and
+            # get re-checked next run.
+            log.warning("%d confirmations failed in a row — skipping the rest this run", unknowns)
+            break
         if n:
             time.sleep(4)  # pace item-page hits; Vinted throttles bursts with 403s
         key = str(rec["id"])
         verdict = client.check_sold(rec["id"], rec.get("url"))
+        unknowns = unknowns + 1 if verdict == "unknown" else 0
         rec["last_check"] = now
         log.info("check %s -> %s (%s)", key, verdict, rec.get("title", "")[:50])
 

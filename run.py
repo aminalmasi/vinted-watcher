@@ -156,7 +156,16 @@ def main() -> int:
     # --- confirm the ones that vanished ---------------------------------
     sold_msgs, drop = [], []
     unknowns = 0
-    for n, rec in enumerate(pick_checks(tracked, set(live), floor, now)):
+    checks = pick_checks(tracked, set(live), floor, now)
+    if checks:
+        # Vinted only serves item pages to a session that has just loaded the
+        # site; a stale anon token earns a 403. One homepage hit up front makes
+        # every confirmation below work.
+        try:
+            client.bootstrap()
+        except RuntimeError as exc:
+            log.warning("could not refresh the session (%s) — confirmations may fail", exc)
+    for n, rec in enumerate(checks):
         if unknowns >= UNKNOWN_GIVE_UP:
             # Vinted is refusing item pages from our exits right now. Further
             # attempts only burn metered traffic; the listings stay tracked and

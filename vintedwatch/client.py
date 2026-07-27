@@ -211,8 +211,28 @@ class VintedClient:
             "Sec-Fetch-Site": "same-origin",
             "Sec-Fetch-User": "?1",
         }
-        r = self._get(url or f"{BASE}/items/{item_id}", tries=3,
-                      retry_statuses=(403, 429), headers=headers)
+        target = url or f"{BASE}/items/{item_id}"
+        r = self._get(target, tries=2, retry_statuses=(403, 429), headers=headers)
+
+        # Vinted serves the item page happily to a session that has *just*
+        # loaded the homepage, and 403s one carrying a stale anon token. So a
+        # 403 means "re-establish the session", not "give up".
+        if r is not None and r.status_code in (403, 429):
+            log.info("item %s: HTTP %d — refreshing the session and retrying",
+                     item_id, r.status_code)
+            try:
+                self.bootstrap()
+            except RuntimeError as exc:
+                log.warning("re-bootstrap failed: %s", exc)
+                return "unknown"
+            r = self._get(target, tries=2, retry_statuses=(429,), headers=headers)
+
+        # Last resort: the same listing on the .com domain, which is served by
+        # the same backend but is policed separately.
+        if r is not None and r.status_code == 403:
+            log.info("item %s: still 403 — trying vinted.com", item_id)
+            r = self._get(f"https://www.vinted.com/items/{item_id}", tries=1, headers=headers)
+
         if r is None:
             return "unknown"
         if r.status_code in (404, 410):

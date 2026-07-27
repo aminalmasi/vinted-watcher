@@ -3,14 +3,47 @@
 > Companion project to **job-monitor** (`/home/malmasik/job-monitor`, github.com/aminalmasi/job-monitor).
 > Same owner, same cluster. This brief + the assistant's memory = full context.
 
-## ⚠️ CRITICAL DEPLOYMENT FINDING (2026-07-27)
-**The cluster CANNOT reach the DataImpulse proxy gateway** — `gw.dataimpulse.com` is refused on all ports (823 & 443) while other hosts/ports work fine, i.e. the **university network blocks the proxy host**. Therefore the Vinted watcher **must run OFF the cluster**: the user's **laptop** (dev) or a **cheap VPS ~€3-5/mo** (24/7 production) or possibly **GitHub Actions** (verify GH runner IPs can reach DataImpulse). The cluster stays only for job-monitor (its ATS polling needs no proxy). Proxy creds are in `~/.config/proxy.env`. **First: user tests the proxy from a non-cluster host:** `curl -x "http://9112e18e79fa2d66e83b__cr.it:PASS@gw.dataimpulse.com:823" http://ip-api.com/json` → expect an Italian IP.
+## ⚠️ DEPLOYMENT — RESOLVED (2026-07-27)
+**The cluster CANNOT reach the DataImpulse proxy gateway** — `gw.dataimpulse.com` is refused on all ports (823 & 443) from `147.162.22.60` (GARR / Univ. Padova), i.e. the **university network blocks the proxy host**. The cluster stays only for job-monitor (its ATS polling needs no proxy).
+
+**Chosen host: GitHub Actions** — verified working, repo `github.com/aminalmasi/vinted-watcher`:
+| Check (runner `40.81.6.242`, Azure US) | Result |
+| --- | --- |
+| `gw.dataimpulse.com:823` | OPEN (`:443` refused — **use 823**) |
+| exit IP via proxy | `87.13.116.149` — Italy, Veneto, Telecom Italia **residential** ✅ |
+| `vinted.it` homepage via proxy | HTTP 200, 2.3 MB ✅ |
+| `/api/v2/catalog/items?search_text=prada+shoes` | HTTP 200, 20 IT listings ✅ |
+
+Secrets already set on the repo: `PROXY_URL`, `TELEGRAM_BOT_TOKEN`. Local copies: `~/.config/proxy.env`, `~/.config/vinted.env` (mode 600).
+
+### GitHub Actions caveats to design around
+- **Free minutes:** private repo = 2000 min/mo, billed per job rounded up. A 20-min poll ≈ 2160 runs/mo ≈ 4300 min → **over budget**. Either make the repo **public** (unlimited free minutes; secrets stay encrypted, only listing metadata becomes public) or poll **hourly** on private.
+- **Cron drift:** scheduled workflows routinely fire 5–20 min late and can be skipped at peak. Fine for sold-detection, which is not latency-critical.
+- **Auto-disable:** scheduled workflows are disabled after 60 days of repo inactivity — the per-run state commit keeps the repo active.
+- **State:** commit `data/state.json` (tracked listings) back to the repo each run. No DB server needed.
+
+### ⚠️ Proxy data budget (€5 PAYG is metered by GB)
+The homepage bootstrap is **2.3 MB**; the search response is **0.43 MB**. Bootstrapping every run = ~2.7 MB × 72/day ≈ **5.8 GB/month** — would burn the credit fast.
+**Fix: cache the `access_token_web` cookie in the state file** and only re-bootstrap on 401/403. That drops each poll to ~0.43 MB ≈ 0.9 GB/month.
 
 ## SPECIFIC GOAL (user, 2026-07-27) — first concrete watcher
 Example search: **"Prada shoes" any size, on Vinted ITALY** (vinted.it — the user cares about listings shown to *them* in Italy).
 - **Seed:** remember all listings published in the **last 5 days** matching the search — store by **description/metadata (title, price, brand, size, url, posted date)**, **NOT images** (to keep data low).
 - **Poll every 20 minutes** through the Italy proxy; **update the list**: add NEW listings, and mark ones that **SOLD/disappeared**.
-- **Report** new + sold to Telegram (a dedicated Vinted bot/chat). Be careful about blocking (gentle, rotating residential proxy) and do NOT expose the cluster.
+- **⚠️ ALERT RULE (user, 2026-07-27): Telegram gets SOLD items ONLY.** Do **not** push new/active listings. New listings are still tracked silently — they are the pool we later detect sales from — but they generate no message.
+- Be careful about blocking (gentle, rotating residential proxy) and do NOT expose the cluster.
+
+## HOW TO DETECT "SOLD" (probed 2026-07-27, settled)
+The catalog feed **only ever returns live items** — there is no sold flag in the search payload. Verified on a real item:
+- `status` is the **condition** ("Discrete"), *not* the sale state. `is_visible` is always `true`. `item_box` carries no sold badge.
+- ⚠️ **Do not text-match "Venduto" on the item page** — a *live* item's page contains it 6× (and "venduto" 37×) as inert UI strings in the JS bundle. Guaranteed false positives.
+- ✅ **Use the JSON embedded in the item page.** A live item shows `is_closed: false`, `is_hidden: false`, `is_reserved: false`, `item_closing_action: null`. A sold item flips `item_closing_action` / `is_closed`.
+- `/api/v2/users/{id}/items` is **404** — the closet API is not at that path, don't rely on it.
+
+**Resulting algorithm:** poll feed → item present = still live; item that *was* tracked and is now missing from the feed = **candidate** → fetch its item page and confirm:
+- `item_closing_action` set / `is_closed: true` → **SOLD → Telegram**
+- HTTP 404/410 → seller deleted it → silent
+- still live → it merely fell off the paged feed → keep tracking
 
 ## Goal
 Two capabilities:

@@ -316,14 +316,17 @@ class VintedClient:
             log.warning("item %s NON-LIVE state, raw window for verification: %s",
                         item_id, window[max(0, window.find("item_closing_action") - 400):
                                         window.find("item_closing_action") + 400])
+        # Decide only on item-level fields. `item_closing_action` occurs exactly
+        # once on the page and only on the listing, so it is definitive.
+        # `is_closed` is item-level too. `is_hidden` is NOT usable: it appears
+        # ~53 times because every photo carries one, and no window reliably
+        # separates the listing's from a photo's — reading it produced
+        # contradictory verdicts for the same listing an hour apart.
         closing = found.get("item_closing_action")
         if closing not in (None, "null", ""):
-            # e.g. "sold" — the seller closed it via a transaction.
             return "sold" if "sold" in closing.lower() else "removed"
         if found.get("is_closed") == "true":
             return "sold"
-        if found.get("is_hidden") == "true":
-            return "removed"
         return "live"
 
 

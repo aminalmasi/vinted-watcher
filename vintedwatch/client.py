@@ -87,14 +87,21 @@ class VintedClient:
 
     # ---- transport -------------------------------------------------------
 
-    def _get(self, url, tries=4, **kw):
+    def _get(self, url, tries=5, **kw):
         kw.setdefault("timeout", 45)
         for attempt in range(tries):
             try:
                 r = self.session.get(url, **kw)
             except requests.RequestException as exc:
-                log.warning("GET %s failed (%s), retry %d/%d", url, type(exc).__name__, attempt + 1, tries)
-                time.sleep(2 * (attempt + 1))
+                log.warning(
+                    "GET %s failed (%s: %.180s), retry %d/%d",
+                    url, type(exc).__name__, exc, attempt + 1, tries,
+                )
+                # The pooled CONNECT tunnel is dead — reusing it just fails
+                # again. Dropping the pool forces a new tunnel, and with it a
+                # new residential exit IP.
+                self.session.close()
+                time.sleep(min(3 * 2**attempt, 30))
                 continue
             # Vinted replies chunked, so content-length is usually absent;
             # raw.tell() counts the *compressed* bytes actually read, which is

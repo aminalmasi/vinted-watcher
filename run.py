@@ -49,9 +49,14 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None]:
     complete = True
     for page in range(1, MAX_PAGES + 1):
         raw = client.search(SEARCH, page=page)
-        if not raw:
-            complete = page > 1  # page 1 empty = something is wrong, not the end
+        if raw is None:
+            # A failed page truncates our view of the feed. We cannot tell an
+            # aged-out listing from a vanished one, so distrust the floor.
+            log.warning("page %d failed — age floor will not be trusted", page)
+            complete = False
             break
+        if not raw:
+            break  # genuinely the end of the results
         for r in raw:
             parsed = parse_item(r)
             if parsed["id"]:
@@ -61,9 +66,11 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None]:
         time.sleep(1.5)  # be gentle; this is someone's residential connection
 
     stamps = [i["photo_ts"] for i in items.values() if i.get("photo_ts")]
-    # Only trust the floor if we actually paged to the bottom of our window.
+    # Only trust the floor if we actually paged to the bottom of our window;
+    # a too-high floor would flag healthy listings as vanished.
     floor = min(stamps) if stamps and complete else None
-    log.info("feed: %d listings, age floor=%s", len(items), floor)
+    log.info("feed: %d listings, age floor=%s%s",
+             len(items), floor, "" if complete else " (feed truncated)")
     return items, floor
 
 

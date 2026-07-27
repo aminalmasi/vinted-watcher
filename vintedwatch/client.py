@@ -96,18 +96,25 @@ class VintedClient:
                 log.warning("GET %s failed (%s), retry %d/%d", url, type(exc).__name__, attempt + 1, tries)
                 time.sleep(2 * (attempt + 1))
                 continue
-            # content-length is the *compressed* size = what the proxy meters.
+            # Vinted replies chunked, so content-length is usually absent;
+            # raw.tell() counts the *compressed* bytes actually read, which is
+            # what the proxy meters.
             try:
-                self.bytes_on_wire += int(r.headers.get("content-length") or 0)
-            except ValueError:
+                r.content  # force the body to be consumed before measuring
+                self.bytes_on_wire += r.raw.tell() or int(r.headers.get("content-length") or 0)
+            except (AttributeError, ValueError, TypeError):
                 pass
             return r
         return None
 
     # ---- API -------------------------------------------------------------
 
-    def search(self, params: dict, page: int = 1) -> list[dict]:
-        """One page of the catalog feed. Only ever returns *live* listings."""
+    def search(self, params: dict, page: int = 1) -> list[dict] | None:
+        """One page of the catalog feed. Only ever returns *live* listings.
+
+        Returns None if the page could not be fetched — the caller must not
+        confuse that with an empty page, which means "end of results".
+        """
         if not self.has_token:
             self.bootstrap()
         query = dict(params, page=page)
@@ -120,11 +127,15 @@ class VintedClient:
             r = self._get(url, params=query, headers=headers)
         if r is None:
             log.error("catalog page %d: no response", page)
-            return []
+            return None
         if r.status_code != 200:
             log.error("catalog page %d: HTTP %d", page, r.status_code)
-            return []
-        return r.json().get("items", [])
+            return None
+        try:
+            return r.json().get("items", [])
+        except ValueError:
+            log.error("catalog page %d: body was not JSON", page)
+            return None
 
     def check_sold(self, item_id: int, url: str) -> str:
         """Classify a listing that vanished from the feed.

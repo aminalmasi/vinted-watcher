@@ -153,19 +153,21 @@ and the most recent `watch` run in Actions. Check whether any SOLD alert has fir
   **Never run `curl -v` through the proxy in CI.**
 - ~~Rotate the password~~ **done 2026-07-27**; repo is **public** again and the cron
   is back to **every 20 min** (public repos get unlimited free Actions minutes).
-- **⚠️ THE SOLD BRANCH IS STILL UNVERIFIED, and it cannot be tested on demand.**
-  Vinted hides sold listings from *every* public surface: the catalog feed, the
-  wardrobe endpoint (`/api/v2/wardrobe/{uid}/items` — 273 listings across 12
-  sellers, **zero** closed/hidden), and every filter tried (`status=sold`,
-  `is_closed=true`, `include_sold=true` all return only live items). So there is
-  no way to manufacture a sold listing to test against.
-  What IS confirmed: item pages fetch and parse; `item_closing_action` occurs
-  **exactly once** per page and always on the listing itself; the page's i18n
-  bundle carries `"item.status.sold":"Venduto"` and `"item.status.hidden":"Nascosto"`,
-  so the status concept exists. What is INFERRED: that a sale sets
-  `item_closing_action` / `is_closed`. `check_sold()` now dumps the raw JSON
-  window on any non-live verdict, so the first genuine event can be checked
-  against the listing by hand — do that before trusting the stream.
+- **✅ SOLD DETECTION VERIFIED against two real sales (2026-07-27 18:56Z).**
+  `9505849905` (2000s Prada Sport suede shoes, €70) and `9493035670` (Zara shoes
+  inspired by Prada, €18) both sold and were correctly reported to Telegram.
+  The page structure, captured from the raw evidence dump:
+  ```json
+  {"name":"item_status","data":{"item_id":9505849905,"seller_id":32001697,
+    "is_draft":false,"is_reserved":false,"is_hidden":false,
+    "is_closed":true,"item_closing_action":"sold","transaction_permitted":true}}
+  {"name":"buyer_item_status","data":{"item_id":9505849905,
+    "title":"Venduto","theme":"SUCCESS"}}
+  ```
+  So a sale sets **`is_closed: true` AND `item_closing_action: "sold"`**, and the
+  `buyer_item_status` block is what renders the on-screen "Venduto" badge.
+  `check_sold()` now anchors on `"item_id":<id>` inside that block, so it cannot
+  read a photo's flags or another listing's state.
 - **⚠️ `is_hidden` must never drive a verdict.** It appears ~53x per item page
   because every photo carries one, and no anchoring window reliably separates the
   listing's flag from a photo's — reading it gave contradictory verdicts for the

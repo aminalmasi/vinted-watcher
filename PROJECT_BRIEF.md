@@ -142,16 +142,17 @@ Phase 0 is **done and live** — read "STATUS" above, then `git -C /extra/malmas
 and the most recent `watch` run in Actions. Check whether any SOLD alert has fired.
 
 ## OPEN ITEMS
-- **⚠️ Rotate the DataImpulse password.** On 2026-07-27 ~14:49 a diagnostic ran
+- **✅ DataImpulse password rotated 2026-07-27** (`~/.config/proxy.env` + `PROXY_URL`
+  secret both updated, verified by a clean run). History, so it is not repeated:
+  on 2026-07-27 ~14:49 a diagnostic ran
   `curl -v` through the proxy and printed `Proxy-Authorization: Basic <base64>`
   into an Actions log while the repo was briefly public. GitHub masks `PROXY_URL`
   but not its base64 encoding. The run log was deleted and the repo made private
   within ~2 min; the password is still the leaked one. After rotating, update
   `~/.config/proxy.env` **and** the `PROXY_URL` repo secret.
   **Never run `curl -v` through the proxy in CI.**
-- **Repo is private, so the cron is hourly** (`7 * * * *`) to stay inside the 2000
-  free min/mo. The user's choice was public + 20-min polling: once the password is
-  rotated, flip the repo public and restore `*/20 * * * *` in `.github/workflows/watch.yml`.
+- ~~Rotate the password~~ **done 2026-07-27**; repo is **public** again and the cron
+  is back to **every 20 min** (public repos get unlimited free Actions minutes).
 - **No real SOLD event observed yet.** Every confirmation so far correctly returned
   `live`. The sold branch is exercised only when a tracked listing actually sells;
   worth checking the first alert against the listing by hand.

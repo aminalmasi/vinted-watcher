@@ -27,7 +27,6 @@ UA = (
 )
 # Cookies that together authenticate an anonymous browser session.
 TOKEN_COOKIES = ("access_token_web", "refresh_token_web", "anon_id", "v_udt")
-TOKEN_MAX_AGE = 90 * 60  # re-bootstrap after 90 min even if nothing 401s
 
 # A live item's page carries these as `false`/`null`; a sold one flips them.
 # NB: do NOT text-match "Venduto" — a live page contains it 6x in the JS bundle.
@@ -104,8 +103,16 @@ class VintedClient:
     # ---- token cache -----------------------------------------------------
 
     def _restore_cookies(self):
+        """Reuse the cached anon token regardless of age.
+
+        Cold-loading the homepage is the one request Vinted readily 403s, so a
+        token we already hold is precious. There is no need to guess when it
+        expires: the API answers 401/403 when it has, and that path
+        re-bootstraps. Assuming a 90-minute lifetime only threw away working
+        tokens and bought extra chances to be blocked.
+        """
         saved_at = self.token_cache.get("saved_at", 0)
-        if not saved_at or time.time() - saved_at > TOKEN_MAX_AGE:
+        if not saved_at:
             return
         for name in TOKEN_COOKIES:
             value = self.token_cache.get(name)
@@ -140,11 +147,17 @@ class VintedClient:
         return bool(self._cookie("access_token_web"))
 
     def bootstrap(self):
-        """Fetch the homepage to mint a fresh anon token (~250 KB gzipped)."""
+        """Fetch the homepage to mint a fresh anon token (~250 KB gzipped).
+
+        Vinted blocks a share of residential exits from loading the site cold —
+        a 403 here means "this exit is unwelcome", not "we are banned", so it
+        must be retried from a different address. Everything downstream depends
+        on this succeeding, so it gets the most attempts.
+        """
         # Start from an empty jar so restored and freshly-issued cookies cannot
         # pile up as duplicates across domains.
         self.session.cookies.clear()
-        r = self._get(BASE + "/")
+        r = self._get(BASE + "/", tries=6, retry_statuses=(403, 429))
         if r is None or r.status_code != 200:
             raise RuntimeError(f"bootstrap failed: {r.status_code if r else 'no response'}")
         self.token_cache = self._snapshot_cookies()
@@ -206,7 +219,14 @@ class VintedClient:
         r = self._get(url, params=query, headers=headers)
         if r is not None and r.status_code in (401, 403):
             log.info("catalog returned %d — re-bootstrapping token", r.status_code)
-            self.bootstrap()
+            try:
+                self.bootstrap()
+            except RuntimeError as exc:
+                # Vinted is refusing to hand out a fresh token from these exits.
+                # The token we already had may still be good, so retry with it
+                # rather than losing the whole run.
+                log.warning("%s — retrying with the existing token", exc)
+                self._restore_cookies()
             r = self._get(url, params=query, headers=headers)
         if r is None:
             log.error("catalog page %d: no response", page)

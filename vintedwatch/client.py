@@ -127,11 +127,20 @@ class VintedClient:
 
     # ---- transport -------------------------------------------------------
 
-    def _get(self, url, tries=5, **kw):
+    def _get(self, url, tries=5, retry_statuses=(), **kw):
         kw.setdefault("timeout", (15, 75))  # (connect, read) — residential exits are slow
         for attempt in range(tries):
             try:
                 r = self.session.get(url, **kw)
+                if r.status_code in retry_statuses and attempt < tries - 1:
+                    # Vinted is throttling this exit IP. A different gateway
+                    # gives us a different residential address to come from.
+                    log.warning("HTTP %d from %.60s — rotating exit, retry %d/%d",
+                                r.status_code, url, attempt + 1, tries)
+                    self.session.close()
+                    self._next_gateway()
+                    time.sleep(min(4 * 2**attempt, 30))
+                    continue
             except requests.RequestException as exc:
                 log.warning(
                     "GET %s failed (%s: %.180s), retry %d/%d",
@@ -191,7 +200,19 @@ class VintedClient:
 
         Returns 'sold', 'removed', 'live', or 'unknown'.
         """
-        r = self._get(url or f"{BASE}/items/{item_id}")
+        # Ask for the page the way a browser would; a bare GET gets thrown a
+        # 403 far more readily.
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Referer": BASE + "/catalog",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-User": "?1",
+        }
+        r = self._get(url or f"{BASE}/items/{item_id}", tries=3,
+                      retry_statuses=(403, 429), headers=headers)
         if r is None:
             return "unknown"
         if r.status_code in (404, 410):

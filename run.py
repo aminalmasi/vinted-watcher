@@ -154,7 +154,9 @@ def main() -> int:
 
     # --- confirm the ones that vanished ---------------------------------
     sold_msgs, drop = [], []
-    for rec in pick_checks(tracked, set(live), floor, now):
+    for n, rec in enumerate(pick_checks(tracked, set(live), floor, now)):
+        if n:
+            time.sleep(4)  # pace item-page hits; Vinted throttles bursts with 403s
         key = str(rec["id"])
         verdict = client.check_sold(rec["id"], rec.get("url"))
         rec["last_check"] = now

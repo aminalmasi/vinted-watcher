@@ -17,4 +17,4 @@ jobs:
       - name: Probe Vinted through the Italy proxy
         env:
           PROXY_URL: ${{ secrets.PROXY_URL }}
-        run: python scripts/probe_vinted.py
+        run: python scripts/probe_sold.py

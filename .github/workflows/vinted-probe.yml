@@ -17,4 +17,4 @@ jobs:
       - name: Probe confirmation paths
         env:
           PROXY_URL: ${{ secrets.PROXY_URL }}
-        run: python scripts/probe_check_absent.py
+        run: python scripts/probe_find_sold.py

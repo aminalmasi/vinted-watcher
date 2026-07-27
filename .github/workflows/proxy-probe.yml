@@ -1,0 +1,41 @@
+name: proxy-probe
+
+# One-off connectivity test: can a GitHub-hosted runner reach the DataImpulse
+# residential gateway, and does Vinted IT answer through it?
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Runner's own IP (no proxy)
+        run: curl -s --max-time 20 http://ip-api.com/json | tr ',' '\n'
+
+      - name: TCP reachability of gw.dataimpulse.com
+        run: |
+          for p in 823 443; do
+            if timeout 8 bash -c "cat < /dev/null > /dev/tcp/gw.dataimpulse.com/$p"; then
+              echo "port $p OPEN"
+            else
+              echo "port $p BLOCKED"
+            fi
+          done
+
+      - name: Exit IP through the proxy (expect Italy, residential ISP)
+        env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: |
+          curl -s --max-time 40 -x "$PROXY_URL" http://ip-api.com/json | tr ',' '\n'
+
+      - name: Vinted IT catalog endpoint through the proxy
+        env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: |
+          code=$(curl -s -o /tmp/vinted.txt -w '%{http_code}' --max-time 60 \
+            -x "$PROXY_URL" \
+            -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36' \
+            'https://www.vinted.it/')
+          echo "vinted.it homepage HTTP $code, $(wc -c < /tmp/vinted.txt) bytes"
+          test "$code" = "200"

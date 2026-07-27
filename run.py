@@ -171,9 +171,11 @@ def main() -> int:
         try:
             client.bootstrap()
         except RuntimeError as exc:
-            # Without a live session every item page 403s, so do not even try.
-            log.warning("could not refresh the session (%s) — skipping confirmations", exc)
-            checks = []
+            # Vinted is throttling cold page loads. The cached token still works
+            # for the feed, so try the confirmations with it rather than
+            # abandoning them — a 403 just yields 'unknown', which is safe, and
+            # the consecutive-failure breaker below caps the wasted traffic.
+            log.warning("could not refresh the session (%s) — trying with the cached token", exc)
     for n, rec in enumerate(checks):
         if unknowns >= UNKNOWN_GIVE_UP:
             # Vinted is refusing item pages from our exits right now. Further

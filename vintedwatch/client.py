@@ -155,10 +155,15 @@ class VintedClient:
         on this succeeding, so it gets the most attempts.
         """
         # Start from an empty jar so restored and freshly-issued cookies cannot
-        # pile up as duplicates across domains.
+        # pile up as duplicates across domains — but keep the old token aside,
+        # because a failed bootstrap must not leave us with no credentials at
+        # all. The one we already hold usually still works.
+        previous = self._snapshot_cookies()
         self.session.cookies.clear()
         r = self._get(BASE + "/", tries=6, retry_statuses=(403, 429))
         if r is None or r.status_code != 200:
+            self.token_cache = previous
+            self._restore_cookies()
             raise RuntimeError(f"bootstrap failed: {r.status_code if r else 'no response'}")
         self.token_cache = self._snapshot_cookies()
         log.info("bootstrapped anon token; cookies=%s", sorted(self.session.cookies.keys()))

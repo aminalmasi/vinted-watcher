@@ -151,8 +151,29 @@ and the most recent `watch` run in Actions. Check whether any SOLD alert has fir
   within ~2 min; the password is still the leaked one. After rotating, update
   `~/.config/proxy.env` **and** the `PROXY_URL` repo secret.
   **Never run `curl -v` through the proxy in CI.**
-- ~~Rotate the password~~ **done 2026-07-27**; repo is **public** again and the cron
-  is back to **every 20 min** (public repos get unlimited free Actions minutes).
+- ~~Rotate the password~~ **done 2026-07-27**; repo is **public** (unlimited free
+  Actions minutes).
+
+## SCHEDULING — use SLURM, not cron, not GitHub's `schedule:`
+Two schedulers were tried and both failed on 2026-07-27:
+- **GitHub `schedule:`** fired **once in 3.5 hours** where `*/20` should have fired
+  ~10 times. Workflow `active`, cron valid, on the default branch, Actions enabled
+  the whole time. Left in the workflow as a harmless backstop only.
+- **User cron on labsrv7** installs fine (`crontab -l` correct, `cron.service`
+  active) but **never executes** — zero heartbeats from a `* * * * *` job in 200s.
+  Do not waste time on it again.
+
+**What works: `scheduler/slurm_auto.sbatch`**, mirroring job-monitor's
+self-perpetuating pattern — it re-arms itself (`sbatch --begin=now+20minutes`)
+*before* doing anything, so a failure cannot break the chain. The cluster cannot
+reach the proxy, so it does not scrape: it only calls `gh workflow run watch.yml`
+(~2 s), and GitHub Actions does the scraping from an IP that can reach DataImpulse.
+
+    START:  sbatch scheduler/slurm_auto.sbatch
+    STOP:   scancel -n vinted-trigger
+    WATCH:  squeue -n vinted-trigger ; tail -f data/logs/slurm_auto_*.out
+
+Verified 2026-07-27 23:57 local: job ran, dispatched, and queued its successor.
 - **✅ SOLD DETECTION VERIFIED against two real sales (2026-07-27 18:56Z).**
   `9505849905` (2000s Prada Sport suede shoes, €70) and `9493035670` (Zara shoes
   inspired by Prada, €18) both sold and were correctly reported to Telegram.

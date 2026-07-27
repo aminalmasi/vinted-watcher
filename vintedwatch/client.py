@@ -88,7 +88,7 @@ class VintedClient:
     # ---- transport -------------------------------------------------------
 
     def _get(self, url, tries=5, **kw):
-        kw.setdefault("timeout", 45)
+        kw.setdefault("timeout", (15, 75))  # (connect, read) — residential exits are slow
         for attempt in range(tries):
             try:
                 r = self.session.get(url, **kw)

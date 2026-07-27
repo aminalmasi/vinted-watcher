@@ -33,9 +33,11 @@ log = logging.getLogger("vintedwatch")
 SEARCH = {
     "search_text": "prada shoes",
     "order": "newest_first",
-    "per_page": 96,
+    "per_page": 24,
 }
-MAX_PAGES = 3               # ~288 newest listings per poll
+# Small pages on purpose: a 96-item page is ~426 KB, which slow residential
+# exits regularly fail to deliver inside the timeout. 24 items is ~110 KB.
+MAX_PAGES = 8               # ~192 newest listings per poll
 SEED_DAYS = 5               # first run: only remember the last 5 days
 RECHECK_HOURS = 6           # how often to re-check a listing that aged out
 MAX_CHECKS_PER_RUN = 15     # hard cap on item-page fetches (traffic control)

@@ -15,6 +15,10 @@ on:
         description: 'Do not send Telegram messages'
         type: boolean
         default: false
+      force:
+        description: 'Ignore the 50-minute minimum gap between polls'
+        type: boolean
+        default: false
 
 # Never let two runs race on data/state.json.
 concurrency:
@@ -40,7 +44,7 @@ jobs:
           PROXY_URL: ${{ secrets.PROXY_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python run.py ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: python run.py ${{ inputs.dry_run && '--dry-run' || '' }} ${{ inputs.force && '--force' || '' }}
 
       - name: Persist state
         run: |

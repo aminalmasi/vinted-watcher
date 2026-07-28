@@ -217,16 +217,25 @@ def main() -> int:
             key = str(rec["id"])
             verdict = "sold"
 
-            # Second opinion before crying sold. Paging a mutating catalog skips
-            # ~13 of 960 listings per sweep, and those skips looked like
-            # disappearances — the false positives seen on 2026-07-28.
+            # The wardrobe is the ONLY authority here, so verification is
+            # mandatory. `total_entries` is capped at 960 for every query (the
+            # same number comes back for "nike" and "shoes"), so the sweep is a
+            # window, not the whole search: an old listing ages out of it while
+            # staying perfectly live. Absence alone therefore proves nothing.
             listed = client.still_listed(rec["id"], rec.get("seller_id"))
             if listed is True:
-                log.info("%s still in the seller's wardrobe — sweep skipped it, not sold", key)
-                rec["missing_runs"] = 0
+                # Live, but no longer inside the newest-960 window, so the sweep
+                # can never see it again. Keeping it would re-raise it forever.
+                log.info("%s still live but aged out of the window — retiring it", key)
+                drop.append(key)
                 continue
-            if listed is None and rec.get("seller_id"):
-                log.info("%s could not be verified — leaving it for next sweep", key)
+            if listed is None:
+                # Could not verify: no seller_id, wardrobe too large, or the call
+                # failed. Never alert on a guess — that is what leaked before.
+                log.info("%s unverifiable (seller_id=%s) — no alert",
+                         key, rec.get("seller_id"))
+                if not rec.get("seller_id"):
+                    drop.append(key)  # legacy record, cannot ever be verified
                 continue
             time.sleep(random.uniform(1.5, 4.0))
             if CONFIRM_VIA_HTML:

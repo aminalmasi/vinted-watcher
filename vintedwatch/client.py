@@ -271,6 +271,42 @@ class VintedClient:
         self.last_pagination = body.get("pagination") or {}
         return body.get("items", [])
 
+    def still_listed(self, item_id: int, seller_id: int) -> bool | None:
+        """Is this listing still in its seller's wardrobe?
+
+        The catalog is paged and mutates while we read it, so a listing can be
+        skipped by a sweep and look gone when it is not. A seller's wardrobe is
+        a short, complete list of what they currently have for sale, so it
+        settles the question in one small JSON call — and it keeps working while
+        .it HTML is blocked.
+
+        Verified 2026-07-28: both known-sold listings were absent from their
+        sellers' wardrobes, while live ones are present.
+
+        Returns True (still listed), False (gone), or None (could not tell).
+        """
+        if not seller_id:
+            return None
+        page, pages = 1, None
+        while page <= 5:
+            r = self._get(f"{BASE}/api/v2/wardrobe/{seller_id}/items",
+                          params={"page": page, "per_page": 96}, tries=2,
+                          headers={"Accept": "application/json", "Referer": BASE + "/"})
+            if r is None or r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
+                return None
+            try:
+                body = r.json()
+            except ValueError:
+                return None
+            if any(i.get("id") == item_id for i in body.get("items", [])):
+                return True
+            pages = pages or (body.get("pagination") or {}).get("total_pages") or 1
+            if page >= pages:
+                return False
+            page += 1
+        # Wardrobe too large to scan cheaply — do not guess.
+        return None
+
     def check_sold(self, item_id: int, url: str) -> str:
         """Classify a listing that vanished from the feed.
 
@@ -381,6 +417,7 @@ def parse_item(raw: dict) -> dict:
         "currency": price.get("currency_code") or "EUR",
         "url": raw.get("url") or (BASE + (raw.get("path") or "")),
         "seller": (raw.get("user") or {}).get("login"),
+        "seller_id": (raw.get("user") or {}).get("id"),
         # The main photo's upload time is the best available proxy for
         # "when was this listed" — the feed carries no created_at.
         "photo_ts": hi.get("timestamp"),

@@ -38,7 +38,7 @@ SEARCH = {
 # by being outranked, and "gone" was unusable. With full coverage, gone is gone.
 MAX_PAGES = 16              # safety stop; ~10 pages is the real depth
 SEED_DAYS = 5               # first run: only remember the last 5 days
-GONE_AFTER_SWEEPS = 2       # complete sweeps a listing must miss before it counts as gone
+GONE_AFTER_SWEEPS = 3       # complete sweeps a listing must miss before it counts as gone
 MAX_CHECKS_PER_RUN = 6      # (HTML confirmation only; disabled — see CONFIRM_VIA_HTML)
 # Vinted blocks .it HTML from our proxy exits, and the owner would rather treat a
 # vanished listing as sold and eyeball the link than have the watcher fight for
@@ -216,6 +216,19 @@ def main() -> int:
         for rec in gone:
             key = str(rec["id"])
             verdict = "sold"
+
+            # Second opinion before crying sold. Paging a mutating catalog skips
+            # ~13 of 960 listings per sweep, and those skips looked like
+            # disappearances — the false positives seen on 2026-07-28.
+            listed = client.still_listed(rec["id"], rec.get("seller_id"))
+            if listed is True:
+                log.info("%s still in the seller's wardrobe — sweep skipped it, not sold", key)
+                rec["missing_runs"] = 0
+                continue
+            if listed is None and rec.get("seller_id"):
+                log.info("%s could not be verified — leaving it for next sweep", key)
+                continue
+            time.sleep(random.uniform(1.5, 4.0))
             if CONFIRM_VIA_HTML:
                 verdict = client.check_sold(rec["id"], rec.get("url"))
                 log.info("check %s -> %s", key, verdict)

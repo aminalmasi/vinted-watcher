@@ -272,3 +272,36 @@ suppresses all absence logic for that run.
 ### Cost
 ~2.7 MB metered per sweep → **~1.9 GB/month hourly** against a €5 (~5 GB) plan.
 Halve it by sweeping every 2 h if the balance gets tight.
+
+## FIELD CHECK + FIX 2026-07-28 (owner verified the first 23 alerts)
+Owner opened all 23: **mostly genuine sales**, some hidden, some removed (no
+page), and **a few still live** — false positives.
+
+**Cause of the false positives:** paging 1..10 over a catalog that mutates
+mid-sweep. Sales remove listings from earlier pages, shifting later ones up, so
+an item can move from page 5 to page 4 *after* page 4 was read. Every sweep
+collects 945-948 of 960; those ~13 skipped listings looked like disappearances.
+The 90% completeness tolerance accepted it.
+
+**Fix:** a listing now needs **three** consecutive complete sweeps of absence
+**and** must be missing from its seller's wardrobe
+(`/api/v2/wardrobe/{seller_id}/items` — short, complete, cheap, and still
+unblocked). Unverifiable cases wait instead of guessing.
+
+**The gate is validated in both directions** (`scripts/probe_still_listed.py`):
+known-sold listings return False, known-live return True, missing seller_id
+returns None. Re-run that probe after touching `still_listed()` — a gate that
+wrongly returned True would silence the watcher with no outward symptom.
+
+### Why missed sales are unlikely
+The failure is asymmetric: a skipped page makes a listing look *absent*, never
+*present*, so this class of bug causes false alarms, not silence. And a sold
+listing stays absent from every later sweep, so a one-off miss is caught on a
+subsequent pass — detection is delayed, not lost.
+
+### Residual limits (by design, owner accepted)
+- **Sold / hidden / deleted are indistinguishable** without the item page, which
+  is blocked. Hence `VENDUTO (probabile)` and "open the link to verify".
+- Sellers with >480 listings cannot be scanned cheaply → `None` → the listing
+  waits for a later sweep rather than being guessed.
+- Detection latency is ~3 sweeps ≈ 3 hours.

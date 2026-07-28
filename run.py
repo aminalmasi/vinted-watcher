@@ -39,6 +39,7 @@ SEARCH = {
 MAX_PAGES = 16              # safety stop; ~10 pages is the real depth
 SEED_DAYS = 5               # first run: only remember the last 5 days
 GONE_AFTER_SWEEPS = 3       # complete sweeps a listing must miss before it counts as gone
+AGED_OUT_AFTER = 4          # times a listing may be verified live-but-absent before we stop watching
 MAX_CHECKS_PER_RUN = 6      # (HTML confirmation only; disabled — see CONFIRM_VIA_HTML)
 # Vinted blocks .it HTML from our proxy exits, and the owner would rather treat a
 # vanished listing as sold and eyeball the link than have the watcher fight for
@@ -224,10 +225,22 @@ def main() -> int:
             # staying perfectly live. Absence alone therefore proves nothing.
             listed = client.still_listed(rec["id"], rec.get("seller_id"))
             if listed is True:
-                # Live, but no longer inside the newest-960 window, so the sweep
-                # can never see it again. Keeping it would re-raise it forever.
-                log.info("%s still live but aged out of the window — retiring it", key)
-                drop.append(key)
+                # Live. Do NOT retire on the strength of one disappearance: the
+                # feed is not ordered strictly by age (page 1 spans ids
+                # 9421425269..9517979705), so bumping reshuffles listings and a
+                # live, recent one can miss three sweeps by pure chance —
+                # 9515145305 did, and retiring it lost a listing we should still
+                # have been watching. Only persistent absence means aged out.
+                rec["missing_runs"] = 0
+                seen_live = rec.get("live_while_absent", 0) + 1
+                rec["live_while_absent"] = seen_live
+                if seen_live >= AGED_OUT_AFTER:
+                    log.info("%s live but absent %d times — genuinely outside the window, retiring",
+                             key, seen_live)
+                    drop.append(key)
+                else:
+                    log.info("%s still live (%d/%d) — sweep missed it, keeping it",
+                             key, seen_live, AGED_OUT_AFTER)
                 continue
             if listed is None:
                 # Could not verify: no seller_id, wardrobe too large, or the call

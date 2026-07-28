@@ -344,3 +344,32 @@ hourly, against a €5 ≈ 5 GB plan). Watch the balance; halve it by sweeping e
 The newest ~960 matches of the search — roughly 1-2 weeks of listings. Older ads
 are retired once confirmed live, because they cannot be watched cheaply. Sales of
 listings older than that window are out of scope by design.
+
+## GUARANTEES AND GAPS (2026-07-28) — what the watcher can and cannot promise
+**It does NOT guarantee that every sale in the last two weeks is caught.** The
+error bias is now toward *silence*, not false alarms: when it cannot verify, it
+says nothing. Known gaps, most likely first:
+
+1. **The window is a ranking, not a date range.** Measured: page 1 spans ids
+   9421425269..9517979705, page 10 spans 8926598821..9305336190. `newest_first`
+   is heavily reshuffled by bumping, so there is no clean "last N days" set. An
+   unbumped listing falls out early; a bumped old one stays.
+2. **Listed and sold between two sweeps** (under ~1 h) is never seen at all.
+3. **Retired listings.** After `AGED_OUT_AFTER` live-but-absent confirmations we
+   stop watching, so a later sale is missed. Deliberate: they cannot be swept.
+4. **Unverifiable sellers.** Wardrobes over ~480 items, or a failed wardrobe
+   call, produce no alert. Usually just a delay (retried next sweep), but a
+   permanently huge wardrobe means that seller's items can never be confirmed.
+5. **Search phrasing.** Only what `search_text="prada shoes"` returns is ever
+   tracked; differently-worded listings never enter the database.
+6. **Sold vs deleted vs hidden** remain indistinguishable without the item page,
+   hence `VENDUTO (probabile)`.
+
+**What it does reliably:** anything currently inside the swept window is
+re-checked every hour, its metadata refreshed, and a disappearance is confirmed
+against the seller's wardrobe before you are told. Latency is ~3 sweeps plus
+verification, so roughly 3-4 hours.
+
+**Do not "fix" gap 1 by widening the sweep** — `total_entries` is capped at 960,
+so there is no wider sweep to take. Covering more would mean several narrower
+searches (by size, price band, or sub-category), each with its own 960 window.

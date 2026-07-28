@@ -6,6 +6,7 @@ whether it reports the sale — if it does, confirmation can move off the 2.4 MB
 HTML page onto a small JSON call that still works from our exits.
 """
 
+import json
 import logging
 import os
 import sys
@@ -31,9 +32,10 @@ def wardrobe_page(client, uid, page):
 
 def main():
     logging.basicConfig(level=logging.INFO, format="%(levelname)-7s %(message)s")
-    client = VintedClient()
-    # Deliberately NOT bootstrapping: prove this works with the cached token
-    # alone, since minting a new .it token is what is currently blocked.
+    # Load the cached .it token from state — minting a new one is exactly what
+    # is currently blocked, so the whole point is to work without bootstrapping.
+    state = json.load(open("data/state.json"))
+    client = VintedClient(token_cache=state.get("token"))
     print(f"has cached token: {client.has_token}\n")
 
     for item_id, uid in KNOWN_SOLD.items():

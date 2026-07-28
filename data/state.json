@@ -18506,16 +18506,6 @@
  "last_run": 1785261638.014212,
  "schema": 2,
  "sold": {
-  "8816402278": {
-   "confirmed": false,
-   "currency": "EUR",
-   "hours_exact": true,
-   "hours_listed": 3.0,
-   "price": "6.0",
-   "reported_at": 1785261638.014212,
-   "title": "Prada black sneakers 40",
-   "url": "https://www.vinted.it/items/8816402278-prada-black-sneakers-40"
-  },
   "9006117182": {
    "confirmed": false,
    "currency": "EUR",
@@ -18535,16 +18525,6 @@
    "reported_at": 1785261638.014212,
    "title": "prada heels",
    "url": "https://www.vinted.it/items/9100346010-prada-heels"
-  },
-  "9258549163": {
-   "confirmed": false,
-   "currency": "EUR",
-   "hours_exact": true,
-   "hours_listed": 2.1,
-   "price": "178.0",
-   "reported_at": 1785258032.036431,
-   "title": "Escarpins Prada nude ajourés cuir Made in Italy",
-   "url": "https://www.vinted.it/items/9258549163-escarpins-prada-nude-ajoures-cuir-made-in-italy"
   },
   "9444645044": {
    "confirmed": false,

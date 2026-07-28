@@ -39,6 +39,7 @@ MISSING_RUNS = 3            # consecutive absences before a listing is suspiciou
 MAX_CHECKS_PER_RUN = 6      # hard cap on item-page fetches (~340 KB each, metered)
 MAX_TRACK_DAYS = 30         # give up on a listing that never sells
 UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing off
+BLOCK_BACKOFF_H = 3         # how long to stop touching HTML after a 403 wall
 DAY = 86400
 
 
@@ -164,18 +165,31 @@ def main() -> int:
         log.warning("feed incomplete — skipping confirmations this run")
     else:
         checks = pick_checks(tracked, set(live))
+    blocked_until = st.get("html_blocked_until", 0)
+    if checks and now < blocked_until:
+        # Vinted is refusing HTML from our exits. Retrying six times a run, three
+        # times an hour, only feeds whatever reputation system imposed the block.
+        # Stand down and let it decay; the feed keeps polling on the cached token
+        # and the queue simply waits.
+        mins = (blocked_until - now) / 60
+        log.warning("HTML blocked — standing down for another %.0f min, %d listings queued",
+                    mins, len(checks))
+        checks = []
     if checks:
         # Vinted only serves item pages to a session that has just loaded the
         # site; a stale anon token earns a 403. One homepage hit up front makes
         # every confirmation below work.
         try:
             client.prepare_confirmations()
+            st.pop("html_blocked_until", None)
         except RuntimeError as exc:
             # Vinted is throttling cold page loads. The cached token still works
             # for the feed, so try the confirmations with it rather than
             # abandoning them — a 403 just yields 'unknown', which is safe, and
             # the consecutive-failure breaker below caps the wasted traffic.
-            log.warning("could not refresh the session (%s) — trying with the cached token", exc)
+            log.warning("could not refresh the session (%s) — backing off HTML for %dh", exc, BLOCK_BACKOFF_H)
+            st["html_blocked_until"] = now + BLOCK_BACKOFF_H * 3600
+            checks = []
     for n, rec in enumerate(checks):
         if unknowns >= UNKNOWN_GIVE_UP:
             # Vinted is refusing item pages from our exits right now. Further

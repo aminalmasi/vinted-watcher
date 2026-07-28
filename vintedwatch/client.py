@@ -170,7 +170,7 @@ class VintedClient:
         # all. The one we already hold usually still works.
         previous = self._snapshot_cookies()
         self.session.cookies.clear()
-        r = self._get(base + "/", tries=6, retry_statuses=(403, 429))
+        r = self._get(base + "/", tries=2, retry_statuses=(403, 429))
         if r is None or r.status_code != 200:
             self.token_cache = previous
             self._restore_cookies()
@@ -187,13 +187,8 @@ class VintedClient:
         back to .com when .it HTML is blocked, which is the situation whenever
         the feed still works but every page 403s.
         """
-        try:
-            self.bootstrap(BASE, persist=True)
-            self.items_base = BASE
-        except RuntimeError as exc:
-            log.warning("%s — falling back to %s for item pages", exc, ITEM_FALLBACK)
-            self.bootstrap(ITEM_FALLBACK, persist=False)
-            self.items_base = ITEM_FALLBACK
+        self.bootstrap(BASE, persist=True)
+        self.items_base = BASE
         return self.items_base
 
     # ---- transport -------------------------------------------------------

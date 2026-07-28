@@ -52,6 +52,14 @@ Wait one 20-minute boundary and check again — a new run with event
 wrangler tail        # live logs, shows "dispatched watch.yml"
 ```
 
+## Deployed and verified (2026-07-28)
+
+Worker: `https://vinted-watcher-cron.aminalmasi1998.workers.dev`
+- Manual fire with the key returned `{"ok":true,"status":204}`.
+- The `*/20` cron tick at 12:00:00Z produced a GitHub run at **12:00:19Z** —
+  19 seconds late, against GitHub's own scheduler which was firing 2-3 *hours*
+  apart on the same workflow.
+
 ## Cost
 
 Free plan: 100,000 requests/day and cron triggers included. This uses **72

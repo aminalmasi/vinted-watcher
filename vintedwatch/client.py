@@ -93,6 +93,7 @@ class VintedClient:
             }
         )
         self.bytes_uncompressed = 0
+        self.last_pagination: dict = {}
         self.items_base = BASE
         self.token_cache = dict(token_cache or {})
         self._restore_cookies()
@@ -263,10 +264,12 @@ class VintedClient:
             log.error("catalog page %d: HTTP %d", page, r.status_code)
             return None
         try:
-            return r.json().get("items", [])
+            body = r.json()
         except ValueError:
             log.error("catalog page %d: body was not JSON", page)
             return None
+        self.last_pagination = body.get("pagination") or {}
+        return body.get("items", [])
 
     def check_sold(self, item_id: int, url: str) -> str:
         """Classify a listing that vanished from the feed.

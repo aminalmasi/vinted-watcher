@@ -30,14 +30,20 @@ log = logging.getLogger("vintedwatch")
 SEARCH = {
     "search_text": "prada shoes",
     "order": "newest_first",
-    "per_page": 24,
+    "per_page": 96,
 }
-# Small pages on purpose: a 96-item page is ~426 KB, which slow residential
-# exits regularly fail to deliver inside the timeout. 24 items is ~110 KB.
-MAX_PAGES = 8               # ~192 newest listings per poll
+# The whole result set is ~960 listings (the API reports total_entries), so at
+# 96 per page the ENTIRE search is 10 requests. Sweeping all of it is the point:
+# while we only watched the newest ~190, a listing could vanish from view merely
+# by being outranked, and "gone" was unusable. With full coverage, gone is gone.
+MAX_PAGES = 16              # safety stop; ~10 pages is the real depth
 SEED_DAYS = 5               # first run: only remember the last 5 days
-MISSING_RUNS = 3            # consecutive absences before a listing is suspicious
-MAX_CHECKS_PER_RUN = 6      # hard cap on item-page fetches (~340 KB each, metered)
+GONE_AFTER_SWEEPS = 2       # complete sweeps a listing must miss before it counts as gone
+MAX_CHECKS_PER_RUN = 6      # (HTML confirmation only; disabled — see CONFIRM_VIA_HTML)
+# Vinted blocks .it HTML from our proxy exits, and the owner would rather treat a
+# vanished listing as sold and eyeball the link than have the watcher fight for
+# access. Absence from a complete sweep is the signal; no page fetch is made.
+CONFIRM_VIA_HTML = False
 SPREAD_MINUTES = 40         # spread those checks across the hour, never in a burst
 MIN_RUN_GAP_S = 50 * 60     # refuse to poll again sooner than this, whatever triggers us
 MAX_TRACK_DAYS = 30         # give up on a listing that never sells
@@ -52,32 +58,43 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]
     """Read the newest pages of the search. Returns {id: item}, age floor, complete."""
     items: dict[int, dict] = {}
     complete = True
-    for page in range(1, MAX_PAGES + 1):
+    total_pages = None
+    page = 1
+    while page <= MAX_PAGES:
         raw = client.search(SEARCH, page=page)
         if raw is None:
-            # A failed page truncates our view of the feed. We cannot tell an
-            # aged-out listing from a vanished one, so distrust the floor.
-            log.warning("page %d failed — age floor will not be trusted", page)
+            # One failed page means we no longer hold the whole set, so an
+            # absence this run proves nothing. Say so and let the run skip it.
+            log.warning("page %d failed — sweep is incomplete", page)
             complete = False
             break
+        if total_pages is None:
+            total_pages = (client.last_pagination or {}).get("total_pages")
         if not raw:
-            break  # genuinely the end of the results
+            break
         for r in raw:
             parsed = parse_item(r)
             if parsed["id"]:
                 items[parsed["id"]] = parsed
-        if len(raw) < SEARCH["per_page"]:
+        if len(raw) < SEARCH["per_page"] or (total_pages and page >= total_pages):
             break
+        page += 1
         # Jittered, not a metronome — fixed intervals are themselves a signal.
         time.sleep(random.uniform(2.0, 6.0))
+    else:
+        # Hit MAX_PAGES without reaching the end: coverage is partial.
+        complete = False
+        log.warning("stopped at MAX_PAGES=%d before the end of the results", MAX_PAGES)
 
-    stamps = [i["photo_ts"] for i in items.values() if i.get("photo_ts")]
-    # Only trust the floor if we actually paged to the bottom of our window;
-    # a too-high floor would flag healthy listings as vanished.
-    floor = min(stamps) if stamps and complete else None
-    log.info("feed: %d listings, age floor=%s%s",
-             len(items), floor, "" if complete else " (feed truncated)")
-    return items, floor, complete
+    expected = (client.last_pagination or {}).get("total_entries")
+    if complete and expected and len(items) < expected * 0.9:
+        # Sanity check: the API says there are more listings than we collected.
+        log.warning("swept %d listings but the API reports %d — treating as incomplete",
+                    len(items), expected)
+        complete = False
+    log.info("sweep: %d listings over %d pages (API says %s)%s",
+             len(items), page, expected, "" if complete else " — INCOMPLETE")
+    return items, expected, complete
 
 
 def pick_checks(tracked: dict, live_ids: set) -> list[dict]:
@@ -154,8 +171,10 @@ def main() -> int:
         if first_run and item.get("photo_ts") and now - item["photo_ts"] > SEED_DAYS * DAY:
             skipped += 1
             continue  # brief: seed only the last 5 days
+        # `seen_as_new` means we watched it appear, so first_seen really is
+        # close to its listing time. Seeded listings were already on sale.
         tracked[key] = dict(item, first_seen=now, last_seen=now,
-                            missing_runs=0, last_check=0)
+                            missing_runs=0, last_check=0, seen_as_new=not first_run)
         seeded += 1
     if first_run:
         log.info("seeded %d listings from the last %d days (%d older skipped)",
@@ -170,73 +189,38 @@ def main() -> int:
         absent = sum(1 for r in tracked.values() if r.get("missing_runs", 0))
         log.info("%d tracked listings absent from this poll", absent)
 
-    # --- confirm the ones that vanished ---------------------------------
+    # --- decide what is gone ---------------------------------------------
+    # No page fetches. A complete sweep already answers the only question that
+    # matters: is the listing still in the search or not.
     sold_msgs, drop = [], []
-    unknowns = 0
     if not complete:
-        # Half the feed is missing, so "absent from the feed" tells us nothing.
-        # Confirming now would spend metered traffic re-checking listings that
-        # never went anywhere. Skip; the next run sees the full window.
-        checks = []
-        log.warning("feed incomplete — skipping confirmations this run")
+        log.warning("sweep incomplete — absence proves nothing this run, skipping")
     else:
-        checks = pick_checks(tracked, set(live))
-    blocked_until = st.get("html_blocked_until", 0)
-    if checks and now < blocked_until:
-        # Vinted is refusing HTML from our exits. Retrying six times a run, three
-        # times an hour, only feeds whatever reputation system imposed the block.
-        # Stand down and let it decay; the feed keeps polling on the cached token
-        # and the queue simply waits.
-        mins = (blocked_until - now) / 60
-        log.warning("HTML blocked — standing down for another %.0f min, %d listings queued",
-                    mins, len(checks))
-        checks = []
-    if checks:
-        # Vinted only serves item pages to a session that has just loaded the
-        # site; a stale anon token earns a 403. One homepage hit up front makes
-        # every confirmation below work.
-        try:
-            client.prepare_confirmations()
-            # Recovered: forget the block so the next failure starts at 3h again.
-            for k in ("html_blocked_until", "block_backoff_h", "blocked_since", "stale_alerted"):
-                st.pop(k, None)
-        except RuntimeError as exc:
-            # Vinted is throttling cold page loads. The cached token still works
-            # for the feed, so try the confirmations with it rather than
-            # abandoning them — a 403 just yields 'unknown', which is safe, and
-            # the consecutive-failure breaker below caps the wasted traffic.
-            prev = st.get("block_backoff_h", 0)
-            back = min(max(BLOCK_BACKOFF_H, prev * 2), MAX_BACKOFF_H)
-            st["block_backoff_h"] = back
-            st["html_blocked_until"] = now + back * 3600
-            st.setdefault("blocked_since", now)
-            log.warning("could not refresh the session (%s) — backing off HTML for %dh", exc, back)
-            checks = []
-    for n, rec in enumerate(checks):
-        if unknowns >= UNKNOWN_GIVE_UP:
-            # Vinted is refusing item pages from our exits right now. Further
-            # attempts only burn metered traffic; the listings stay tracked and
-            # get re-checked next run.
-            log.warning("%d confirmations failed in a row — skipping the rest this run", unknowns)
-            break
-        if n:
-            # Spread the checks across most of the hour with jitter, so our
-            # traffic looks like someone browsing rather than a scraper burst.
-            gap = 4 if args.no_spread else random.uniform(
-                SPREAD_MINUTES * 60 / max(len(checks), 1) * 0.6,
-                SPREAD_MINUTES * 60 / max(len(checks), 1) * 1.4)
-            log.info("waiting %.1f min before the next confirmation", gap / 60)
-            time.sleep(gap)
-        key = str(rec["id"])
-        verdict = client.check_sold(rec["id"], rec.get("url"))
-        unknowns = unknowns + 1 if verdict == "unknown" else 0
-        rec["last_check"] = now
-        log.info("check %s -> %s (%s)", key, verdict, rec.get("title", "")[:50])
+        st["last_complete_sweep"] = now
+        st.pop("stale_alerted", None)
+        gone = [rec for key, rec in tracked.items()
+                if int(key) not in live and rec.get("missing_runs", 0) >= GONE_AFTER_SWEEPS]
+        if gone:
+            log.info("%d listings absent from %d consecutive complete sweeps",
+                     len(gone), GONE_AFTER_SWEEPS)
+        for rec in gone:
+            key = str(rec["id"])
+            verdict = "sold"
+            if CONFIRM_VIA_HTML:
+                verdict = client.check_sold(rec["id"], rec.get("url"))
+                log.info("check %s -> %s", key, verdict)
+                if verdict == "live":
+                    rec["missing_runs"] = 0
+                    continue
+                if verdict == "unknown":
+                    continue  # try again next sweep
 
-        if verdict == "sold":
-            listed = rec.get("first_seen") or rec.get("photo_ts")
+            # Elapsed time is only honest for listings we watched arrive; the
+            # rest were already on sale when tracking began.
+            listed = rec.get("first_seen")
             hours = (now - listed) / 3600 if listed else None
-            sold_msgs.append((rec, hours))
+            exact = bool(rec.get("seen_as_new"))
+            sold_msgs.append((rec, hours, exact, verdict == "sold" and not CONFIRM_VIA_HTML))
             st["sold"][key] = {
                 "reported_at": now,
                 "title": rec.get("title"),
@@ -244,12 +228,10 @@ def main() -> int:
                 "currency": rec.get("currency"),
                 "url": rec.get("url"),
                 "hours_listed": round(hours, 1) if hours else None,
+                "hours_exact": exact,
+                "confirmed": bool(CONFIRM_VIA_HTML),
             }
             drop.append(key)
-        elif verdict == "removed":
-            drop.append(key)  # seller pulled it — not a sale, stay quiet
-        elif verdict == "live":
-            rec["missing_runs"] = 0  # feed churn, not a disappearance
 
     for key in drop:
         tracked.pop(key, None)
@@ -260,27 +242,27 @@ def main() -> int:
             tracked.pop(key, None)
 
     # --- notify -----------------------------------------------------------
-    for rec, hours in sold_msgs:
-        text = notify.format_sold(rec, hours)
+    for rec, hours, exact, probable in sold_msgs:
+        text = notify.format_sold(rec, hours, exact=exact, probable=probable)
         if args.dry_run:
             log.info("[dry-run] would send:\n%s", text)
         else:
             notify.send(text)
     log.info("SOLD this run: %d", len(sold_msgs))
 
-    # A block that hides is worse than a block: today's went unnoticed for hours
-    # because the feed kept working and only the confirmations were dead.
-    blocked_since = st.get("blocked_since")
-    if blocked_since and now - blocked_since > STALE_ALERT_H * 3600 and not st.get("stale_alerted"):
-        hrs = (now - blocked_since) / 3600
+    # Silence must never be ambiguous: if no complete sweep has succeeded for a
+    # long time, the watcher is blind and should say so once.
+    last_ok = st.get("last_complete_sweep", now)
+    if now - last_ok > STALE_ALERT_H * 3600 and not st.get("stale_alerted"):
+        hrs = (now - last_ok) / 3600
         notify.send(
-            f"⚠️ <b>Watcher degradato</b>\nVinted blocca le pagine da ~{hrs:.0f} h, "
-            f"quindi non posso confermare le vendite.\n"
-            f"{len(tracked)} annunci ancora monitorati, {len(pick_checks(tracked, set(live)))} in attesa.\n"
-            f"Il feed funziona: nessun annuncio perso, solo conferme sospese."
+            f"⚠️ <b>Watcher cieco</b>\nNessuna scansione completa da ~{hrs:.0f} h "
+            f"(proxy o Vinted irraggiungibili).\n"
+            f"{len(tracked)} annunci ancora in memoria: nulla è perso, "
+            f"ma non posso rilevare vendite finché non torna."
         )
         st["stale_alerted"] = True
-        log.warning("sent degraded-state alert (blocked %.0f h)", hrs)
+        log.warning("sent blind-state alert (%.0f h without a complete sweep)", hrs)
 
     st["token"] = client.token_cache
     st["last_run"] = now

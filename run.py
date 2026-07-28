@@ -145,6 +145,16 @@ def main() -> int:
     first_run = not tracked
     now = time.time()
 
+    # The absence counters were built while we only saw the newest ~190 of 960
+    # listings, where "absent" mostly meant "outranked". They cannot be trusted
+    # under full-sweep semantics, so reset them once on upgrade.
+    if st.get("schema", 1) < 2:
+        for rec in tracked.values():
+            rec["missing_runs"] = 0
+        st["schema"] = 2
+        log.warning("schema 1 -> 2: cleared %d absence counters built from partial sweeps",
+                    len(tracked))
+
     since = now - st.get("last_run", 0)
     if not first_run and since < MIN_RUN_GAP_S and not args.force:
         # A burst of polls is exactly what gets an IP blocked. Trigger frequency
@@ -266,7 +276,11 @@ def main() -> int:
 
     st["token"] = client.token_cache
     st["last_run"] = now
-    state_mod.save(st)
+    if args.dry_run:
+        log.info("[dry-run] state NOT saved (%d tracked, %d sold would have been written)",
+                 len(tracked), len(st["sold"]))
+    else:
+        state_mod.save(st)
     log.info("traffic this run: %.0f KB uncompressed (metered ~%.0f KB gzipped)",
              client.bytes_uncompressed / 1024, client.bytes_uncompressed / 1024 / 7)
     return 0

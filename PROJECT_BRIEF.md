@@ -242,9 +242,9 @@ slower detection. Do NOT raise the retry counts.
 ## ARCHITECTURE CHANGE 2026-07-28 — full sweep, JSON only
 The old design watched the newest ~190 listings and used a 2.4 MB HTML page to
 decide whether a vanished one had sold. Both halves were wrong:
-- The API reports **`total_entries` = 960** for "prada shoes", so the window was
-  only ~20% of the search. A listing could disappear from view purely by being
-  outranked, which is why "gone" needed an expensive tie-breaker at all.
+- ~~The API reports `total_entries` = 960, so the window was only ~20%~~
+  **WRONG — see the 960 CAP section below.** `total_entries` is capped at 960 for
+  *every* query; the sweep is a wider window, never the whole search.
 - At `per_page=96` the **entire** result set is **10 requests, ~2.7 MB metered,
   ~30 s** — fewer requests than the 8-page partial sweep it replaced.
 
@@ -305,3 +305,42 @@ subsequent pass — detection is delayed, not lost.
 - Sellers with >480 listings cannot be scanned cheaply → `None` → the listing
   waits for a later sweep rather than being guessed.
 - Detection latency is ~3 sweeps ≈ 3 hours.
+
+## ⚠️ THE 960 IS A CAP (2026-07-28) — read before trusting any "absence" logic
+`total_entries` comes back as **exactly 960 for every query**: "prada shoes",
+"prada", "nike", "shoes". Vinted Italy plainly has more than 960 pairs of Nikes.
+So the API caps the reported result set, and a "full sweep" is **still a window**
+— just 960 wide instead of 190.
+
+**Consequence:** an old listing ages out of the newest-960 while remaining
+perfectly on sale. Absence from the sweep therefore does NOT mean gone, and any
+design that alerts on absence alone will report live ads as sold. It did.
+
+**The only authority is the seller's wardrobe** (`/api/v2/wardrobe/{id}/items`),
+which is short, complete for that seller, and unaffected by the cap. The sweep is
+now just a cheap candidate generator; the wardrobe decides.
+
+### The leak that produced live-ad alerts
+Two listings the owner flagged (`8816402278`, `9258549163`) were confirmed still
+live by title search, and `still_listed()` returns True for both — the gate was
+right. It simply **never ran**: they had been dropped from tracking before
+`seller_id` existed, so verification returned None and the code alerted anyway.
+
+**Rules now, do not weaken them:**
+- Verification is **mandatory**. `still_listed() is None` → **no alert**, ever.
+- `still_listed() is True` while absent from the sweep → the listing aged out of
+  the window; **retire it**, since the sweep can never see it again and it would
+  otherwise be re-raised forever.
+- Records without `seller_id` can never be verified → dropped silently.
+
+First run after the fix: 6 candidates, all verified still live, **0 alerts**.
+
+### Cost of being correct
+Wardrobe checks push a run from ~2.7 MB to ~3.6 MB metered (~2.5 GB/month
+hourly, against a €5 ≈ 5 GB plan). Watch the balance; halve it by sweeping every
+2 h if needed.
+
+### What is actually monitored
+The newest ~960 matches of the search — roughly 1-2 weeks of listings. Older ads
+are retired once confirmed live, because they cannot be watched cheaply. Sales of
+listings older than that window are out of scope by design.

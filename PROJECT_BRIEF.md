@@ -238,3 +238,37 @@ the block. The feed keeps polling and the queue waits — nothing is lost.
 **If it does not clear on its own:** rotate to a different proxy pool or provider
 (a fresh IP range is the direct fix), or drop the cadence to hourly and accept
 slower detection. Do NOT raise the retry counts.
+
+## ARCHITECTURE CHANGE 2026-07-28 — full sweep, JSON only
+The old design watched the newest ~190 listings and used a 2.4 MB HTML page to
+decide whether a vanished one had sold. Both halves were wrong:
+- The API reports **`total_entries` = 960** for "prada shoes", so the window was
+  only ~20% of the search. A listing could disappear from view purely by being
+  outranked, which is why "gone" needed an expensive tie-breaker at all.
+- At `per_page=96` the **entire** result set is **10 requests, ~2.7 MB metered,
+  ~30 s** — fewer requests than the 8-page partial sweep it replaced.
+
+**Now:** sweep all ~960 every hour; a listing absent from **two consecutive
+complete sweeps** is reported as `VENDUTO (probabile)` with its link.
+`CONFIRM_VIA_HTML = False` — no item pages are fetched, so the .it HTML block is
+irrelevant. The owner prefers eyeballing the link over the watcher fighting for
+access.
+
+**Completeness is checked, not assumed:** a failed page, hitting `MAX_PAGES`, or
+collecting fewer than 90% of `total_entries` marks the sweep incomplete and
+suppresses all absence logic for that run.
+
+**Honest timing:** listings we watch arrive get `seen_as_new`, so "venduto dopo
+~7 h" is only claimed when it is real; seeded ones say "visto in vendita per".
+
+### Two traps this change exposed (do not reintroduce)
+1. **`--dry-run` was writing state.** A run advertised as safe moved 23 listings
+   to `sold` and dropped them from tracking. Dry-run now saves nothing.
+2. **Absence counters cannot survive a semantics change.** `missing_runs` built
+   under the 190-window meant "outranked"; under full-sweep it means "gone".
+   Carrying them over fired 23 alerts off a single sweep. A `schema` bump clears
+   them — do the same for any future change to what absence means.
+
+### Cost
+~2.7 MB metered per sweep → **~1.9 GB/month hourly** against a €5 (~5 GB) plan.
+Halve it by sweeping every 2 h if the balance gets tight.

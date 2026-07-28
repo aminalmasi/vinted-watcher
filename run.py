@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import random
 import sys
 import time
 
@@ -37,9 +38,13 @@ MAX_PAGES = 8               # ~192 newest listings per poll
 SEED_DAYS = 5               # first run: only remember the last 5 days
 MISSING_RUNS = 3            # consecutive absences before a listing is suspicious
 MAX_CHECKS_PER_RUN = 6      # hard cap on item-page fetches (~340 KB each, metered)
+SPREAD_MINUTES = 40         # spread those checks across the hour, never in a burst
+MIN_RUN_GAP_S = 50 * 60     # refuse to poll again sooner than this, whatever triggers us
 MAX_TRACK_DAYS = 30         # give up on a listing that never sells
 UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing off
-BLOCK_BACKOFF_H = 3         # how long to stop touching HTML after a 403 wall
+BLOCK_BACKOFF_H = 3         # first stand-down after a 403 wall; doubles while it persists
+MAX_BACKOFF_H = 24          # ceiling for that doubling
+STALE_ALERT_H = 8           # warn on Telegram if we have been unable to confirm this long
 DAY = 86400
 
 
@@ -63,7 +68,8 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]
                 items[parsed["id"]] = parsed
         if len(raw) < SEARCH["per_page"]:
             break
-        time.sleep(1.5)  # be gentle; this is someone's residential connection
+        # Jittered, not a metronome — fixed intervals are themselves a signal.
+        time.sleep(random.uniform(2.0, 6.0))
 
     stamps = [i["photo_ts"] for i in items.values() if i.get("photo_ts")]
     # Only trust the floor if we actually paged to the bottom of our window;
@@ -104,6 +110,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true", help="never send Telegram messages")
     ap.add_argument("--test-telegram", action="store_true", help="send a ping and exit")
+    ap.add_argument("--force", action="store_true", help="ignore the minimum gap between polls")
+    ap.add_argument("--no-spread", action="store_true", help="do not pace checks across the hour")
     args = ap.parse_args()
 
     logging.basicConfig(
@@ -119,6 +127,14 @@ def main() -> int:
     tracked = st["items"]
     first_run = not tracked
     now = time.time()
+
+    since = now - st.get("last_run", 0)
+    if not first_run and since < MIN_RUN_GAP_S and not args.force:
+        # A burst of polls is exactly what gets an IP blocked. Trigger frequency
+        # is someone else's decision; the safe interval is enforced here.
+        log.info("last poll was %.0f min ago — skipping (min gap %d min)",
+                 since / 60, MIN_RUN_GAP_S // 60)
+        return 0
 
     client = VintedClient(token_cache=st.get("token"))
     live, floor, complete = fetch_feed(client)
@@ -181,14 +197,20 @@ def main() -> int:
         # every confirmation below work.
         try:
             client.prepare_confirmations()
-            st.pop("html_blocked_until", None)
+            # Recovered: forget the block so the next failure starts at 3h again.
+            for k in ("html_blocked_until", "block_backoff_h", "blocked_since", "stale_alerted"):
+                st.pop(k, None)
         except RuntimeError as exc:
             # Vinted is throttling cold page loads. The cached token still works
             # for the feed, so try the confirmations with it rather than
             # abandoning them — a 403 just yields 'unknown', which is safe, and
             # the consecutive-failure breaker below caps the wasted traffic.
-            log.warning("could not refresh the session (%s) — backing off HTML for %dh", exc, BLOCK_BACKOFF_H)
-            st["html_blocked_until"] = now + BLOCK_BACKOFF_H * 3600
+            prev = st.get("block_backoff_h", 0)
+            back = min(max(BLOCK_BACKOFF_H, prev * 2), MAX_BACKOFF_H)
+            st["block_backoff_h"] = back
+            st["html_blocked_until"] = now + back * 3600
+            st.setdefault("blocked_since", now)
+            log.warning("could not refresh the session (%s) — backing off HTML for %dh", exc, back)
             checks = []
     for n, rec in enumerate(checks):
         if unknowns >= UNKNOWN_GIVE_UP:
@@ -198,7 +220,13 @@ def main() -> int:
             log.warning("%d confirmations failed in a row — skipping the rest this run", unknowns)
             break
         if n:
-            time.sleep(4)  # pace item-page hits; Vinted throttles bursts with 403s
+            # Spread the checks across most of the hour with jitter, so our
+            # traffic looks like someone browsing rather than a scraper burst.
+            gap = 4 if args.no_spread else random.uniform(
+                SPREAD_MINUTES * 60 / max(len(checks), 1) * 0.6,
+                SPREAD_MINUTES * 60 / max(len(checks), 1) * 1.4)
+            log.info("waiting %.1f min before the next confirmation", gap / 60)
+            time.sleep(gap)
         key = str(rec["id"])
         verdict = client.check_sold(rec["id"], rec.get("url"))
         unknowns = unknowns + 1 if verdict == "unknown" else 0
@@ -239,6 +267,20 @@ def main() -> int:
         else:
             notify.send(text)
     log.info("SOLD this run: %d", len(sold_msgs))
+
+    # A block that hides is worse than a block: today's went unnoticed for hours
+    # because the feed kept working and only the confirmations were dead.
+    blocked_since = st.get("blocked_since")
+    if blocked_since and now - blocked_since > STALE_ALERT_H * 3600 and not st.get("stale_alerted"):
+        hrs = (now - blocked_since) / 3600
+        notify.send(
+            f"⚠️ <b>Watcher degradato</b>\nVinted blocca le pagine da ~{hrs:.0f} h, "
+            f"quindi non posso confermare le vendite.\n"
+            f"{len(tracked)} annunci ancora monitorati, {len(pick_checks(tracked, set(live)))} in attesa.\n"
+            f"Il feed funziona: nessun annuncio perso, solo conferme sospese."
+        )
+        st["stale_alerted"] = True
+        log.warning("sent degraded-state alert (blocked %.0f h)", hrs)
 
     st["token"] = client.token_cache
     st["last_run"] = now

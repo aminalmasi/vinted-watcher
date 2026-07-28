@@ -5,9 +5,10 @@ on:
     # Every 20 min. Only affordable because the repo is public (unlimited free
     # Actions minutes); a private repo's 2000 min/mo cannot fund this cadence.
     # GitHub often fires scheduled runs 5-20 min late — fine for sold-detection.
-    # Offset minutes: GitHub's scheduler is heavily contended at :00/:20/:40,
-    # and round-number crons are the ones it drops.
-    - cron: '7,27,47 * * * *'
+    # Hourly. The Cloudflare Worker is the real trigger; this is a backstop.
+    # A run now paces itself across ~40 min, so polling faster only produces
+    # bursts, which is what got our exits blocked in the first place.
+    - cron: '17 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -26,7 +27,7 @@ permissions:
 jobs:
   watch:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

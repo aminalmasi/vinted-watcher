@@ -169,7 +169,7 @@ def main() -> int:
         # site; a stale anon token earns a 403. One homepage hit up front makes
         # every confirmation below work.
         try:
-            client.bootstrap()
+            client.prepare_confirmations()
         except RuntimeError as exc:
             # Vinted is throttling cold page loads. The cached token still works
             # for the feed, so try the confirmations with it rather than

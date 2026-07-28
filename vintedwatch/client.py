@@ -21,6 +21,12 @@ import requests
 log = logging.getLogger(__name__)
 
 BASE = "https://www.vinted.it"
+# Vinted is one platform behind localised domains, and they are blocked
+# independently. On 2026-07-28 every .it HTML page returned 403 from our exits
+# (even robots.txt) while .com and .fr served 200 — yet the .it JSON API kept
+# working with an existing token. So the feed stays on .it and item pages fall
+# back to .com. Tokens are NOT interchangeable: a .com token gets 401 on .it.
+ITEM_FALLBACK = "https://www.vinted.com"
 UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
@@ -87,6 +93,7 @@ class VintedClient:
             }
         )
         self.bytes_uncompressed = 0
+        self.items_base = BASE
         self.token_cache = dict(token_cache or {})
         self._restore_cookies()
 
@@ -146,13 +153,16 @@ class VintedClient:
     def has_token(self) -> bool:
         return bool(self._cookie("access_token_web"))
 
-    def bootstrap(self):
-        """Fetch the homepage to mint a fresh anon token (~250 KB gzipped).
+    def bootstrap(self, base: str = BASE, persist: bool = True):
+        """Fetch a homepage to mint a fresh anon token (~250 KB gzipped).
 
         Vinted blocks a share of residential exits from loading the site cold —
         a 403 here means "this exit is unwelcome", not "we are banned", so it
         must be retried from a different address. Everything downstream depends
         on this succeeding, so it gets the most attempts.
+
+        `persist=False` keeps the result out of token_cache: a .com token must
+        never overwrite the cached .it token, which is what the feed runs on.
         """
         # Start from an empty jar so restored and freshly-issued cookies cannot
         # pile up as duplicates across domains — but keep the old token aside,
@@ -160,13 +170,31 @@ class VintedClient:
         # all. The one we already hold usually still works.
         previous = self._snapshot_cookies()
         self.session.cookies.clear()
-        r = self._get(BASE + "/", tries=6, retry_statuses=(403, 429))
+        r = self._get(base + "/", tries=6, retry_statuses=(403, 429))
         if r is None or r.status_code != 200:
             self.token_cache = previous
             self._restore_cookies()
-            raise RuntimeError(f"bootstrap failed: {r.status_code if r else 'no response'}")
-        self.token_cache = self._snapshot_cookies()
-        log.info("bootstrapped anon token; cookies=%s", sorted(self.session.cookies.keys()))
+            raise RuntimeError(
+                f"bootstrap({base}) failed: {r.status_code if r else 'no response'}")
+        if persist:
+            self.token_cache = self._snapshot_cookies()
+        log.info("bootstrapped anon token on %s", base)
+
+    def prepare_confirmations(self) -> str:
+        """Get a session that can actually load item pages, and say from where.
+
+        Prefers .it so the feed token gets refreshed at the same time; falls
+        back to .com when .it HTML is blocked, which is the situation whenever
+        the feed still works but every page 403s.
+        """
+        try:
+            self.bootstrap(BASE, persist=True)
+            self.items_base = BASE
+        except RuntimeError as exc:
+            log.warning("%s — falling back to %s for item pages", exc, ITEM_FALLBACK)
+            self.bootstrap(ITEM_FALLBACK, persist=False)
+            self.items_base = ITEM_FALLBACK
+        return self.items_base
 
     # ---- transport -------------------------------------------------------
 
@@ -261,7 +289,7 @@ class VintedClient:
             "Sec-Fetch-Site": "same-origin",
             "Sec-Fetch-User": "?1",
         }
-        target = url or f"{BASE}/items/{item_id}"
+        target = f"{self.items_base}/items/{item_id}"
         r = self._get(target, tries=2, retry_statuses=(403, 429), headers=headers)
 
         # Vinted serves the item page happily to a session that has *just*
@@ -271,17 +299,17 @@ class VintedClient:
             log.info("item %s: HTTP %d — refreshing the session and retrying",
                      item_id, r.status_code)
             try:
-                self.bootstrap()
+                self.prepare_confirmations()
+                target = f"{self.items_base}/items/{item_id}"
+                r = self._get(target, tries=2, retry_statuses=(429,), headers=headers)
             except RuntimeError as exc:
                 log.warning("re-bootstrap failed: %s", exc)
-                return "unknown"
-            r = self._get(target, tries=2, retry_statuses=(429,), headers=headers)
 
-        # Last resort: the same listing on the .com domain, which is served by
-        # the same backend but is policed separately.
-        if r is not None and r.status_code == 403:
-            log.info("item %s: still 403 — trying vinted.com", item_id)
-            r = self._get(f"https://www.vinted.com/items/{item_id}", tries=1, headers=headers)
+        # Last resort: the other domain. Previously unreachable — a failed
+        # re-bootstrap returned early, so this never ran when it was needed.
+        if (r is None or r.status_code == 403) and self.items_base != ITEM_FALLBACK:
+            log.info("item %s: still 403 — trying %s", item_id, ITEM_FALLBACK)
+            r = self._get(f"{ITEM_FALLBACK}/items/{item_id}", tries=1, headers=headers)
 
         if r is None:
             return "unknown"

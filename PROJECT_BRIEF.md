@@ -210,3 +210,31 @@ and you accept the cluster footprint.
   watcher is not actually running** — check `gh run list --workflow=watch.yml`
   for `event=schedule` before assuming it works.
 - Phases 2-4 (eBay sold-comps, SigLIP visual verify, arbitrage alerts) are untouched.
+
+## ⛔ CURRENT BLOCKER (2026-07-28) — .it HTML is IP-blocked
+**Symptom:** every confirmation returns `unknown`; the queue grew 37 → 54; only
+the two 2026-07-27 sales are recorded.
+
+**Diagnosis — what was ruled out, so nobody repeats it:**
+- `vinted.it` **HTML** returns 403 from every proxy exit, *including `robots.txt`*.
+- The `.it` **JSON API still works** with the cached token — that is why the feed
+  keeps returning ~190 listings. Losing that token would end the feed too.
+- **Not TLS fingerprinting.** `curl_cffi` impersonating a real Chrome handshake
+  gets the identical 403. Do not bother re-testing this.
+- **`.com` is useless as a fallback.** It serves a page for an IT listing but with
+  no `item_status` block, so there is no verdict to read.
+- **The wardrobe API cannot substitute.** Both known-sold items are *absent* from
+  their sellers' wardrobes (scanned 200 and 70), so the API can say "gone" but
+  never "sold vs deleted".
+
+**Cause:** request volume from a day of debugging burned the exits' reputation on
+the `.it` domain. Self-inflicted.
+
+**Mitigation in place:** a 403 wall sets `html_blocked_until` and confirmations
+pause for `BLOCK_BACKOFF_H` (3h). Bootstrap retries cut 6 → 2. Previously each
+run hit the blocked homepage 6 times, 3 times an hour, which could only prolong
+the block. The feed keeps polling and the queue waits — nothing is lost.
+
+**If it does not clear on its own:** rotate to a different proxy pool or provider
+(a fresh IP range is the direct fix), or drop the cadence to hourly and accept
+slower detection. Do NOT raise the retry counts.

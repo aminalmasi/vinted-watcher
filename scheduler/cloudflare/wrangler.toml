@@ -2,10 +2,11 @@ name = "vinted-watcher-cron"
 main = "src/worker.js"
 compatibility_date = "2026-07-01"
 
-# Every 20 minutes. Cloudflare cron triggers are on the free plan and, unlike
-# GitHub's `schedule:`, they actually fire on time.
+# Hourly. Was */20, but bursts of requests are what got our proxy exits blocked
+# from vinted.it. The watcher also enforces a 50-minute floor itself, so a
+# faster trigger would just produce skipped runs.
 [triggers]
-crons = ["*/20 * * * *"]
+crons = ["0 * * * *"]
 
 # No secrets here — GITHUB_TOKEN and TRIGGER_KEY are set with
 # `wrangler secret put`, so nothing sensitive lands in this public repo.

@@ -60,6 +60,16 @@ Worker: `https://vinted-watcher-cron.aminalmasi1998.workers.dev`
   19 seconds late, against GitHub's own scheduler which was firing 2-3 *hours*
   apart on the same workflow.
 
+## Changing the cadence
+
+The cron lives in the Cloudflare dashboard (**Settings → Triggers → Cron
+Triggers**), so `wrangler.toml` alone does not change a deployed Worker unless
+you redeploy. Current setting: **`0 * * * *`** (hourly).
+
+It was `*/20` until 2026-07-28, when bursty polling got our proxy exits blocked
+from `vinted.it`. The watcher now also refuses to poll within 50 minutes of its
+last run, so a faster trigger only produces skipped runs — not faster detection.
+
 ## Cost
 
 Free plan: 100,000 requests/day and cron triggers included. This uses **72

@@ -55,7 +55,14 @@ jobs:
             echo "no state change"
           else
             git commit -m "state: $(date -u +%Y-%m-%dT%H:%MZ)"
-            # Another run may have landed while we polled.
-            git pull --rebase --autostash origin main
+            # Another run may have landed while we polled. state.json cannot be
+            # merged line-by-line, so on conflict keep the state this run just
+            # computed (-X theirs favours the commit being replayed). Losing the
+            # other run's counters is recoverable; failing the step threw away a
+            # whole sweep's work.
+            git pull --rebase -X theirs --autostash origin main \
+              || { git rebase --abort || true; git fetch origin main; \
+                   git reset --soft origin/main; git add data/state.json; \
+                   git commit -m "state: $(date -u +%Y-%m-%dT%H:%MZ) (recovered)"; }
             git push origin main
           fi

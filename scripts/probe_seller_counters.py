@@ -37,10 +37,10 @@ def main():
             print(f"  user {uid} -> HTTP {r.status_code if r is not None else 'none'}")
             continue
         user = r.json().get("user", r.json())
-        hits = {k: v for k, v in user.items()
-                if any(t in k for t in COUNTERISH) and isinstance(v, (int, float, str))}
         print(f"  user {uid} ({note}), {len(r.content)//1024} KB")
-        print(f"      {json.dumps(hits, ensure_ascii=False)[:420]}")
+        print(f"      ALL keys: {', '.join(sorted(user.keys()))}")
+        nums = {k: v for k, v in user.items() if isinstance(v, (int, float)) and not isinstance(v, bool)}
+        print(f"      numeric fields: {json.dumps(nums, ensure_ascii=False)}")
 
     print("\n=== 2. does the wardrobe response carry the user object too? ===")
     uid = next(iter(SELLERS))

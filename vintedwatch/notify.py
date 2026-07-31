@@ -14,35 +14,56 @@ API = "https://api.telegram.org/bot{token}/sendMessage"
 
 
 def _creds():
+    """Token plus every recipient.
+
+    TELEGRAM_CHAT_ID may hold several ids separated by commas. Telegram bots do
+    not broadcast: a bot can only message a chat that has already started a
+    conversation with it, so each person must press Start and then be added
+    here. For more than a handful of people, post to a channel instead and let
+    them join it.
+    """
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
-    return token, chat_id
+    raw = os.environ.get("TELEGRAM_CHAT_ID") or ""
+    chat_ids = [c.strip() for c in raw.split(",") if c.strip()]
+    return token, chat_ids
 
 
 def send(text: str) -> bool:
-    """Telegram is reached directly, NOT through the metered proxy."""
-    token, chat_id = _creds()
-    if not token or not chat_id:
-        log.warning("Telegram not configured (chat_id=%r) — message dropped:\n%s", chat_id, text)
+    """Deliver to every recipient. Telegram is reached directly, not via proxy.
+
+    Returns True if at least one recipient got it; one bad id must not silence
+    everyone else.
+    """
+    token, chat_ids = _creds()
+    if not token or not chat_ids:
+        log.warning("Telegram not configured (recipients=%r) — message dropped:\n%s",
+                    chat_ids, text)
         return False
-    try:
-        r = requests.post(
-            API.format(token=token),
-            json={
-                "chat_id": chat_id,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": False,
-            },
-            timeout=30,
-        )
-    except requests.RequestException as exc:
-        log.error("Telegram send failed: %s", exc)
-        return False
-    if r.status_code != 200:
-        log.error("Telegram HTTP %d: %s", r.status_code, r.text[:300])
-        return False
-    return True
+
+    delivered = 0
+    for chat_id in chat_ids:
+        try:
+            r = requests.post(
+                API.format(token=token),
+                json={
+                    "chat_id": chat_id,
+                    "text": text,
+                    "parse_mode": "HTML",
+                    "disable_web_page_preview": False,
+                },
+                timeout=30,
+            )
+        except requests.RequestException as exc:
+            log.error("Telegram send to %s failed: %s", chat_id, exc)
+            continue
+        if r.status_code != 200:
+            # 403 here almost always means that person never pressed Start.
+            log.error("Telegram HTTP %d for %s: %s", r.status_code, chat_id, r.text[:200])
+            continue
+        delivered += 1
+    if delivered < len(chat_ids):
+        log.warning("delivered to %d/%d recipients", delivered, len(chat_ids))
+    return delivered > 0
 
 
 def format_sold(item: dict, hours_listed: float | None,

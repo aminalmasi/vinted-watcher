@@ -373,3 +373,36 @@ verification, so roughly 3-4 hours.
 **Do not "fix" gap 1 by widening the sweep** — `total_entries` is capped at 960,
 so there is no wider sweep to take. Covering more would mean several narrower
 searches (by size, price band, or sub-category), each with its own 960 window.
+
+## SOLD vs HIDDEN vs REMOVED — the seller-counter method (found 2026-08-01)
+The item page is the only place carrying `item_closing_action`, and `.it` HTML
+is still 403 four days on: item pages, **HEAD, and Range requests all refused**,
+and `.fr`/`.com` serve the page but strip the `item_status` block for Italian
+listings. The Next.js `_next/data` route could not be reached either. Do not
+re-test these; they are dead ends.
+
+**What works: `/api/v2/users/{id}` — 4 KB of JSON, unblocked.** It carries
+counters that decompose exactly:
+
+    total_items_count = item_count + given_item_count      (verified on 2 sellers:
+    1235 = 203 + 1032,  160 = 70 + 90)
+
+- `item_count` — currently listed
+- `given_item_count` — items actually parted with, i.e. **sold**
+- `total_items_count` — the sum
+
+So when one of a seller's listings vanishes:
+
+| event | item_count | given_item_count | total_items_count |
+| --- | --- | --- | --- |
+| **sold** | -1 | **+1** | unchanged |
+| **deleted/hidden** | -1 | unchanged | **-1** |
+
+**The catch:** this needs a *baseline from before* the listing disappeared — a
+sale is already counted by the time we notice. So seller counters must be
+snapshotted continuously, not on demand. Refreshing a slice of sellers each run
+(~50 x 4 KB = 200 KB) covers every tracked seller roughly daily, which is cheap.
+
+**Residual ambiguity:** if a seller sells several items between snapshots the
+increment cannot be attributed to one listing. Treat a +1 with exactly one of
+our listings gone as strong evidence, and several gone at once as weaker.

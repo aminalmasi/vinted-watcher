@@ -27,18 +27,26 @@ from vintedwatch.client import VintedClient, parse_item
 
 log = logging.getLogger("vintedwatch")
 
-SEARCH = {
-    "search_text": "prada shoes",
-    "order": "newest_first",
-    "per_page": 96,
-}
+# One search per run, taken in turn. Every brand hits the same 960-item cap, so
+# each needs its own sweep; doing all five in one run would fire 50 requests in
+# a burst, which is the pattern that got our exits blocked. Rotating keeps every
+# run at 10 requests — identical to the single-brand load that has been stable.
+SEARCHES = [
+    "prada shoes",
+    "miu miu shoes",
+    "maison margiela shoes",
+    "christian louboutin shoes",
+    "ferragamo shoes",
+]
+SEARCH_BASE = {"order": "newest_first", "per_page": 96}
 # The whole result set is ~960 listings (the API reports total_entries), so at
 # 96 per page the ENTIRE search is 10 requests. Sweeping all of it is the point:
 # while we only watched the newest ~190, a listing could vanish from view merely
 # by being outranked, and "gone" was unusable. With full coverage, gone is gone.
 MAX_PAGES = 16              # safety stop; ~10 pages is the real depth
-SEED_DAYS = 5               # first run: only remember the last 5 days
-GONE_AFTER_SWEEPS = 3       # complete sweeps a listing must miss before it counts as gone
+# Only a cost control, not an accuracy one: the wardrobe check is mandatory and
+# authoritative, so this just decides when we spend a verification call.
+GONE_AFTER_SWEEPS = 2       # complete sweeps a listing must miss before it counts as gone
 AGED_OUT_AFTER = 4          # times a listing may be verified live-but-absent before we stop watching
 MAX_CHECKS_PER_RUN = 6      # (HTML confirmation only; disabled — see CONFIRM_VIA_HTML)
 # Vinted blocks .it HTML from our proxy exits, and the owner would rather treat a
@@ -46,7 +54,7 @@ MAX_CHECKS_PER_RUN = 6      # (HTML confirmation only; disabled — see CONFIRM_
 # access. Absence from a complete sweep is the signal; no page fetch is made.
 CONFIRM_VIA_HTML = False
 SPREAD_MINUTES = 40         # spread those checks across the hour, never in a burst
-MIN_RUN_GAP_S = 50 * 60     # refuse to poll again sooner than this, whatever triggers us
+MIN_RUN_GAP_S = 25 * 60     # refuse to poll again sooner than this, whatever triggers us
 MAX_TRACK_DAYS = 30         # give up on a listing that never sells
 UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing off
 BLOCK_BACKOFF_H = 3         # first stand-down after a 403 wall; doubles while it persists
@@ -55,14 +63,14 @@ STALE_ALERT_H = 8           # warn on Telegram if we have been unable to confirm
 DAY = 86400
 
 
-def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]:
-    """Read the newest pages of the search. Returns {id: item}, age floor, complete."""
+def fetch_feed(client: VintedClient, search_text: str) -> tuple[dict[int, dict], int | None, bool]:
+    """Sweep one search. Returns {id: item}, reported total, complete."""
     items: dict[int, dict] = {}
     complete = True
     total_pages = None
     page = 1
     while page <= MAX_PAGES:
-        raw = client.search(SEARCH, page=page)
+        raw = client.search(dict(SEARCH_BASE, search_text=search_text), page=page)
         if raw is None:
             # One failed page means we no longer hold the whole set, so an
             # absence this run proves nothing. Say so and let the run skip it.
@@ -77,7 +85,7 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]
             parsed = parse_item(r)
             if parsed["id"]:
                 items[parsed["id"]] = parsed
-        if len(raw) < SEARCH["per_page"] or (total_pages and page >= total_pages):
+        if len(raw) < SEARCH_BASE["per_page"] or (total_pages and page >= total_pages):
             break
         page += 1
         # Jittered, not a metronome — fixed intervals are themselves a signal.
@@ -93,35 +101,9 @@ def fetch_feed(client: VintedClient) -> tuple[dict[int, dict], int | None, bool]
         log.warning("swept %d listings but the API reports %d — treating as incomplete",
                     len(items), expected)
         complete = False
-    log.info("sweep: %d listings over %d pages (API says %s)%s",
-             len(items), page, expected, "" if complete else " — INCOMPLETE")
+    log.info("sweep [%s]: %d listings over %d pages (API says %s)%s",
+             search_text, len(items), page, expected, "" if complete else " — INCOMPLETE")
     return items, expected, complete
-
-
-def pick_checks(tracked: dict, live_ids: set) -> list[dict]:
-    """Choose which vanished listings are worth spending a page fetch on.
-
-    An item's `photo_ts` looked like a way to tell "vanished" from "aged out of
-    our window", but it is not: photos get re-uploaded and listings bumped, so
-    the feed's oldest photo is weeks older than its newest while both sit in the
-    same 190 results. The ordering is simply not by photo date.
-
-    What does hold is persistence. Vinted's search churns a little every poll —
-    the same query returns 187, then 190, then 188 listings, with membership
-    wobbling at the edges. A listing absent from several consecutive polls is
-    genuinely gone; one absent from a single poll is usually just churn. So we
-    only pay for a confirmation after MISSING_RUNS consecutive absences.
-    """
-    candidates = [
-        rec for key, rec in tracked.items()
-        if int(key) not in live_ids and rec.get("missing_runs", 0) >= MISSING_RUNS
-    ]
-    # Longest-unresolved first, so nothing starves behind the per-run cap.
-    candidates.sort(key=lambda r: (r.get("last_check", 0), -r.get("missing_runs", 0)))
-    if len(candidates) > MAX_CHECKS_PER_RUN:
-        log.info("%d listings await confirmation, checking %d this run (rest carry over)",
-                 len(candidates), MAX_CHECKS_PER_RUN)
-    return candidates[:MAX_CHECKS_PER_RUN]
 
 
 def main() -> int:
@@ -155,6 +137,18 @@ def main() -> int:
         st["schema"] = 2
         log.warning("schema 1 -> 2: cleared %d absence counters built from partial sweeps",
                     len(tracked))
+    if st.get("schema", 1) < 3:
+        # Everything tracked so far came from the single "prada shoes" search.
+        # Without an owner a listing belongs to no sweep, so it would never be
+        # looked for again and never confirmed.
+        for rec in tracked.values():
+            rec.setdefault("search", SEARCHES[0])
+        st.setdefault("seeded_searches", [])
+        if SEARCHES[0] not in st["seeded_searches"]:
+            st["seeded_searches"].append(SEARCHES[0])
+        st["schema"] = 3
+        log.warning("schema 2 -> 3: assigned %d existing listings to [%s]",
+                    len(tracked), SEARCHES[0])
 
     since = now - st.get("last_run", 0)
     if not first_run and since < MIN_RUN_GAP_S and not args.force:
@@ -164,10 +158,19 @@ def main() -> int:
                  since / 60, MIN_RUN_GAP_S // 60)
         return 0
 
+    # Round-robin: one brand per run. With a 30-minute trigger each brand is
+    # swept every 2.5 h, while any single run stays at ~10 requests.
+    idx = st.get("search_index", 0) % len(SEARCHES)
+    search_text = SEARCHES[idx]
+    seeded_searches = st.setdefault("seeded_searches", [])
+    first_sweep_of_search = search_text not in seeded_searches
+    log.info("this run sweeps [%s] (%d/%d)%s", search_text, idx + 1, len(SEARCHES),
+             " — first sweep, seeding only" if first_sweep_of_search else "")
+
     client = VintedClient(token_cache=st.get("token"))
-    live, floor, complete = fetch_feed(client)
+    live, floor, complete = fetch_feed(client, search_text)
     if not live:
-        log.error("empty feed — aborting without touching state")
+        log.error("empty sweep for [%s] — aborting without touching state", search_text)
         return 1
 
     # --- absorb the feed ------------------------------------------------
@@ -175,30 +178,34 @@ def main() -> int:
     for item_id, item in live.items():
         key = str(item_id)
         if key in tracked:
+            # Seen in ANY sweep means present — a listing can match two brands.
             tracked[key].update(item)
             tracked[key]["last_seen"] = now
             tracked[key]["missing_runs"] = 0
             continue
-        if first_run and item.get("photo_ts") and now - item["photo_ts"] > SEED_DAYS * DAY:
-            skipped += 1
-            continue  # brief: seed only the last 5 days
-        # `seen_as_new` means we watched it appear, so first_seen really is
-        # close to its listing time. Seeded listings were already on sale.
-        tracked[key] = dict(item, first_seen=now, last_seen=now,
-                            missing_runs=0, last_check=0, seen_as_new=not first_run)
+        # `seen_as_new` means we watched it appear, so first_seen is close to its
+        # listing time. Everything in a search's FIRST sweep was already on sale,
+        # so claiming a time-to-sale for those would be fiction.
+        tracked[key] = dict(item, first_seen=now, last_seen=now, missing_runs=0,
+                            last_check=0, seen_as_new=not first_sweep_of_search,
+                            search=search_text)
         seeded += 1
-    if first_run:
-        log.info("seeded %d listings from the last %d days (%d older skipped)",
-                 seeded, SEED_DAYS, skipped)
+    if first_sweep_of_search:
+        log.info("seeded %d listings for [%s] (no alerts from a first sweep)",
+                 seeded, search_text)
     elif seeded:
         log.info("%d new listings now tracked (silently — no alert)", seeded)
 
     if complete:
+        # Only listings belonging to THIS search were looked for, so only they
+        # can be counted absent. Anything owned by another brand is untouched.
         for key, rec in tracked.items():
-            if int(key) not in live:
+            if rec.get("search") == search_text and int(key) not in live:
                 rec["missing_runs"] = rec.get("missing_runs", 0) + 1
-        absent = sum(1 for r in tracked.values() if r.get("missing_runs", 0))
-        log.info("%d tracked listings absent from this poll", absent)
+        mine = sum(1 for r in tracked.values() if r.get("search") == search_text)
+        absent = sum(1 for r in tracked.values()
+                     if r.get("search") == search_text and r.get("missing_runs", 0))
+        log.info("[%s]: %d tracked, %d absent from this sweep", search_text, mine, absent)
 
     # --- decide what is gone ---------------------------------------------
     # No page fetches. A complete sweep already answers the only question that
@@ -209,8 +216,10 @@ def main() -> int:
     else:
         st["last_complete_sweep"] = now
         st.pop("stale_alerted", None)
-        gone = [rec for key, rec in tracked.items()
-                if int(key) not in live and rec.get("missing_runs", 0) >= GONE_AFTER_SWEEPS]
+        gone = [] if first_sweep_of_search else [
+            rec for key, rec in tracked.items()
+            if rec.get("search") == search_text and int(key) not in live
+            and rec.get("missing_runs", 0) >= GONE_AFTER_SWEEPS]
         if gone:
             log.info("%d listings absent from %d consecutive complete sweeps",
                      len(gone), GONE_AFTER_SWEEPS)
@@ -309,6 +318,9 @@ def main() -> int:
         st["stale_alerted"] = True
         log.warning("sent blind-state alert (%.0f h without a complete sweep)", hrs)
 
+    if complete and first_sweep_of_search:
+        seeded_searches.append(search_text)
+    st["search_index"] = (idx + 1) % len(SEARCHES)
     st["token"] = client.token_cache
     st["last_run"] = now
     if args.dry_run:

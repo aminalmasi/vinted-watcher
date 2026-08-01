@@ -406,3 +406,24 @@ snapshotted continuously, not on demand. Refreshing a slice of sellers each run
 **Residual ambiguity:** if a seller sells several items between snapshots the
 increment cannot be attributed to one listing. Treat a +1 with exactly one of
 our listings gone as strong evidence, and several gone at once as weaker.
+
+## DAILY DIGEST + PICKING THE TOP 2 BRANDS (2026-08-01)
+`vintedwatch/report.py` builds a statistics message sent on the first run at or
+after **10:00 Europe/Rome**. It is driven by the watcher itself, not a second
+trigger, so it still arrives when the scheduler is late or skips a slot
+(`st["last_report_date"]` stops it repeating).
+
+Contents: per brand — listings tracked, new listings, sales, average price;
+totals with median/min/max and total value sold; time-to-sale (only for listings
+we watched appear, where the timing is real); and a **7-day sales ranking**.
+
+`python run.py --report-now --dry-run` prints it without sending.
+
+**The 7-day ranking is what the "top 2 get an hourly window" decision must rest
+on — NOT the first day's numbers.** Prada has been tracked since 2026-07-27
+while the other four were seeded on 2026-07-31, so early counts are pure
+head-start, not real demand. Wait until every brand has ~7 full days before
+choosing, otherwise Prada wins by construction.
+
+Sale records are pruned after 7 days; `st["daily"][date][brand]` keeps
+`{new, sales, price_sum}` for 90 days so history survives compactly.

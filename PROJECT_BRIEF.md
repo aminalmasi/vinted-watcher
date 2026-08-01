@@ -427,3 +427,39 @@ choosing, otherwise Prada wins by construction.
 
 Sale records are pruned after 7 days; `st["daily"][date][brand]` keeps
 `{new, sales, price_sum}` for 90 days so history survives compactly.
+
+## SOLD vs HIDDEN CLASSIFIER — LIVE 2026-08-01 (rollback: tag `v1-absence-only`)
+Owner reported many alerts pointing at hidden/removed listings, not sales.
+`/api/v2/users/{id}` (4 KB, unblocked) now separates them:
+
+    total_items_count = item_count + given_item_count
+    sale     -> given_item_count +1, total unchanged
+    deleted  -> given_item_count unchanged, total -1
+
+**Rules:**
+- 120 seller baselines refreshed per run, never-seen first (~4 KB each).
+- On a disappearance: counters FIRST. `given` unchanged since the baseline =
+  positive evidence of no sale -> suppressed, listing stays tracked (a hidden
+  listing can return), nothing sent.
+- `given` increased, or no baseline yet -> still alerts. Only positive evidence
+  silences, so nothing is lost while baselines fill.
+- A counter-confirmed sale loses the `(probabile)` label.
+
+### ⚠️ Cost lesson — order the tests by price
+The first version put the wardrobe scan before the counter test: 75 candidates
+x a full closet walk drove one run to **15.5 MB metered (22 GB/month against a
+5 GB plan)**. A wardrobe entry is ~13 KB, so a 96-item page is ~1.2 MB, while
+the counters are one 4 KB call.
+
+Fixed by testing counters first, capping wardrobe scans at 2 pages and 12 per
+run, and skipping sellers whose counters show >192 listings (the scan could not
+answer anyway). Traffic: 15.5 -> 8.1 -> **3.6 MB metered**, against 2.7 MB before
+the feature.
+
+### Expect ~24h of transition
+Baselines cover only ~220 of 3800 sellers so far, growing ~120/run. Until then
+most disappearances classify as `unknown` and still alert, so the broken-link
+noise continues for about a day before dropping off. Judge the change after
+that, not before.
+
+**Revert with:** `git reset --hard v1-absence-only && git push -f origin main`

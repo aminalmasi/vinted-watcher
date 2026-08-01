@@ -307,6 +307,34 @@ class VintedClient:
         # Wardrobe too large to scan cheaply — do not guess.
         return None
 
+    def seller_counters(self, seller_id: int) -> dict | None:
+        """The seller's own tally: {items, given, total}. ~4 KB.
+
+        Vinted publishes these on /api/v2/users/{id} and they decompose exactly:
+            total_items_count = item_count + given_item_count
+        (verified: 1235 = 203 + 1032, and 160 = 70 + 90)
+
+        `given_item_count` counts items the seller actually parted with, so a
+        sale moves one from `item_count` to `given_item_count` and leaves the
+        total alone, while a deletion drops the total. That is the only signal
+        left that separates SOLD from HIDDEN/REMOVED, now that the item page —
+        the one place carrying item_closing_action — is blocked.
+        """
+        if not seller_id:
+            return None
+        r = self._get(f"{BASE}/api/v2/users/{seller_id}", tries=2,
+                      headers={"Accept": "application/json", "Referer": BASE + "/"})
+        if r is None or r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
+            return None
+        try:
+            u = r.json().get("user") or {}
+        except ValueError:
+            return None
+        if "given_item_count" not in u:
+            return None
+        return {"items": u.get("item_count"), "given": u.get("given_item_count"),
+                "total": u.get("total_items_count"), "at": time.time()}
+
     def check_sold(self, item_id: int, url: str) -> str:
         """Classify a listing that vanished from the feed.
 

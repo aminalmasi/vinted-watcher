@@ -60,6 +60,11 @@ UNKNOWN_GIVE_UP = 3         # consecutive failed confirmations before backing of
 BLOCK_BACKOFF_H = 3         # first stand-down after a 403 wall; doubles while it persists
 MAX_BACKOFF_H = 24          # ceiling for that doubling
 STALE_ALERT_H = 8           # warn on Telegram if we have been unable to confirm this long
+# Seller counters are the only remaining way to tell SOLD from HIDDEN/REMOVED.
+# They need a baseline from BEFORE the listing vanished, so a slice of sellers is
+# refreshed every run (~4 KB each) rather than looked up on demand.
+SELLER_REFRESH_PER_RUN = 40
+CLASSIFY_VIA_COUNTERS = True
 DAY = 86400
 
 
@@ -220,6 +225,24 @@ def main() -> int:
                      if r.get("search") == search_text and r.get("missing_runs", 0))
         log.info("[%s]: %d tracked, %d absent from this sweep", search_text, mine, absent)
 
+    # --- keep seller baselines fresh -------------------------------------
+    sellers = st.setdefault("sellers", {})
+    if CLASSIFY_VIA_COUNTERS and complete:
+        owned = {str(r["seller_id"]) for r in tracked.values() if r.get("seller_id")}
+        # Never-seen sellers first, then the stalest. A baseline is only useful
+        # if it predates the disappearance, so coverage matters more than age.
+        todo = sorted(owned, key=lambda s: sellers.get(s, {}).get("at", 0))
+        refreshed = 0
+        for sid in todo[:SELLER_REFRESH_PER_RUN]:
+            snap = client.seller_counters(int(sid))
+            if snap:
+                sellers[sid] = snap
+                refreshed += 1
+            time.sleep(random.uniform(0.4, 1.2))
+        stale = sum(1 for s in owned if not sellers.get(s))
+        log.info("seller baselines: refreshed %d, %d of %d sellers still without one",
+                 refreshed, stale, len(owned))
+
     # --- decide what is gone ---------------------------------------------
     # No page fetches. A complete sweep already answers the only question that
     # matters: is the listing still in the search or not.
@@ -282,12 +305,43 @@ def main() -> int:
                 if verdict == "unknown":
                     continue  # try again next sweep
 
+            # Sold, or merely hidden/deleted? Compare the seller's counters
+            # against the baseline taken before the listing vanished.
+            reason, delta = "unknown", None
+            if CLASSIFY_VIA_COUNTERS:
+                sid = str(rec.get("seller_id") or "")
+                before = sellers.get(sid)
+                after = client.seller_counters(int(sid)) if sid else None
+                if after:
+                    sellers[sid] = after
+                if before and after and before.get("given") is not None:
+                    delta = (after.get("given") or 0) - (before.get("given") or 0)
+                    # A seller who has parted with nothing since the baseline
+                    # cannot have sold this listing — so it was hidden or
+                    # deleted. That negative is the reliable half of the test.
+                    reason = "sold" if delta > 0 else "gone"
+                log.info("%s classify -> %s (given delta=%s, baseline %s)",
+                         key, reason, delta, "yes" if before else "MISSING")
+                if reason == "gone":
+                    # POSITIVE evidence of no sale: the seller has parted with
+                    # nothing since the baseline, so this was hidden, reserved or
+                    # deleted. Only this case is suppressed — "unknown" (no
+                    # baseline yet) still alerts, because silence there would
+                    # lose real sales while baselines are still filling in.
+                    st.setdefault("suppressed", {})[key] = {
+                        "at": now, "reason": reason, "search": rec.get("search"),
+                    }
+                    drop.append(key)
+                    continue
+
             # Elapsed time is only honest for listings we watched arrive; the
             # rest were already on sale when tracking began.
             listed = rec.get("first_seen")
             hours = (now - listed) / 3600 if listed else None
             exact = bool(rec.get("seen_as_new"))
-            sold_msgs.append((rec, hours, exact, verdict == "sold" and not CONFIRM_VIA_HTML))
+            # A counter-confirmed sale is no longer a guess, so drop "probabile".
+            sold_msgs.append((rec, hours, exact,
+                              not CONFIRM_VIA_HTML and reason != "sold"))
             st["sold"][key] = {
                 "reported_at": now,
                 "search": rec.get("search"),
@@ -297,7 +351,8 @@ def main() -> int:
                 "url": rec.get("url"),
                 "hours_listed": round(hours, 1) if hours else None,
                 "hours_exact": exact,
-                "confirmed": bool(CONFIRM_VIA_HTML),
+                "confirmed": bool(CONFIRM_VIA_HTML) or reason == "sold",
+                "given_delta": delta,
             }
             day["sales"] = day.get("sales", 0) + 1
             try:
@@ -351,6 +406,8 @@ def main() -> int:
     # Keep individual sale records for a week (the digest only looks back 24 h);
     # the per-day tallies in st["daily"] carry the longer history compactly.
     cutoff = now - 7 * DAY
+    for k in [k for k, v in st.get("suppressed", {}).items() if v.get("at", 0) < cutoff]:
+        st["suppressed"].pop(k)
     stale = [k for k, v in st["sold"].items() if v.get("reported_at", 0) < cutoff]
     for k in stale:
         st["sold"].pop(k)

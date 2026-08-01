@@ -116,6 +116,12 @@ def build(state: dict, searches: list[str], hours: int = 24) -> str:
                      f"min {min(all_p):.0f}€ · max {max(all_p):.0f}€")
         lines.append(f"• valore totale venduto: <b>{sum(all_p):.0f}€</b>")
 
+    supp = [v for v in state.get("suppressed", {}).values()
+            if v.get("at", 0) >= cutoff]
+    if supp:
+        lines.append(f"• <i>{len(supp)} spariti ma NON venduti "
+                     f"(nascosti/riservati/cancellati) — non inviati</i>")
+
     # Only listings we watched appear have a real time-to-sale.
     timed = [s for s in recent if s.get("hours_exact") and s.get("hours_listed")]
     if timed:

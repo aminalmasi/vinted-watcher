@@ -63,7 +63,8 @@ STALE_ALERT_H = 8           # warn on Telegram if we have been unable to confirm
 # Seller counters are the only remaining way to tell SOLD from HIDDEN/REMOVED.
 # They need a baseline from BEFORE the listing vanished, so a slice of sellers is
 # refreshed every run (~4 KB each) rather than looked up on demand.
-SELLER_REFRESH_PER_RUN = 40
+SELLER_REFRESH_PER_RUN = 120   # ~4 KB each; ~3800 sellers get a baseline daily
+MAX_GONE_CHECKS = 25           # cap on wardrobe scans (up to ~6 MB EACH)
 CLASSIFY_VIA_COUNTERS = True
 DAY = 86400
 
@@ -259,9 +260,48 @@ def main() -> int:
         if gone:
             log.info("%d listings absent from %d consecutive complete sweeps",
                      len(gone), GONE_AFTER_SWEEPS)
+        counters_cache: dict[str, dict] = {}
+        checked = 0
         for rec in gone:
             key = str(rec["id"])
             verdict = "sold"
+
+            # CHEAP TEST FIRST. A wardrobe scan walks every page of a seller's
+            # listings — up to ~6 MB — while the seller's counters are 4 KB. On
+            # 2026-08-01, 75 candidates in one run drove traffic to 15.5 MB
+            # metered (22 GB/month) because every one of them scanned a wardrobe
+            # before anything cheaper was tried.
+            reason, delta = "unknown", None
+            if CLASSIFY_VIA_COUNTERS and rec.get("seller_id"):
+                sid = str(rec["seller_id"])
+                before = sellers.get(sid)
+                if sid not in counters_cache:
+                    snap = client.seller_counters(int(sid))
+                    if snap:
+                        counters_cache[sid] = snap
+                after = counters_cache.get(sid)
+                if before and after and before.get("given") is not None:
+                    delta = (after.get("given") or 0) - (before.get("given") or 0)
+                    reason = "sold" if delta > 0 else "gone"
+                if after:
+                    sellers[sid] = after
+                if reason == "gone":
+                    # POSITIVE evidence of no sale: this seller has parted with
+                    # nothing since the baseline, so the listing was hidden,
+                    # reserved or deleted. Keep tracking it rather than dropping
+                    # it — a hidden listing can come back — but say nothing.
+                    log.info("%s not sold (seller given delta=0) — hidden/reserved/removed", key)
+                    st.setdefault("suppressed", {})[key] = {
+                        "at": now, "reason": "not_sold", "search": rec.get("search"),
+                    }
+                    rec["missing_runs"] = 0
+                    continue
+
+            if checked >= MAX_GONE_CHECKS:
+                log.info("reached %d wardrobe scans this run — %s waits for the next",
+                         MAX_GONE_CHECKS, key)
+                continue
+            checked += 1
 
             # The wardrobe is the ONLY authority here, so verification is
             # mandatory. `total_entries` is capped at 960 for every query (the
@@ -305,34 +345,7 @@ def main() -> int:
                 if verdict == "unknown":
                     continue  # try again next sweep
 
-            # Sold, or merely hidden/deleted? Compare the seller's counters
-            # against the baseline taken before the listing vanished.
-            reason, delta = "unknown", None
-            if CLASSIFY_VIA_COUNTERS:
-                sid = str(rec.get("seller_id") or "")
-                before = sellers.get(sid)
-                after = client.seller_counters(int(sid)) if sid else None
-                if after:
-                    sellers[sid] = after
-                if before and after and before.get("given") is not None:
-                    delta = (after.get("given") or 0) - (before.get("given") or 0)
-                    # A seller who has parted with nothing since the baseline
-                    # cannot have sold this listing — so it was hidden or
-                    # deleted. That negative is the reliable half of the test.
-                    reason = "sold" if delta > 0 else "gone"
-                log.info("%s classify -> %s (given delta=%s, baseline %s)",
-                         key, reason, delta, "yes" if before else "MISSING")
-                if reason == "gone":
-                    # POSITIVE evidence of no sale: the seller has parted with
-                    # nothing since the baseline, so this was hidden, reserved or
-                    # deleted. Only this case is suppressed — "unknown" (no
-                    # baseline yet) still alerts, because silence there would
-                    # lose real sales while baselines are still filling in.
-                    st.setdefault("suppressed", {})[key] = {
-                        "at": now, "reason": reason, "search": rec.get("search"),
-                    }
-                    drop.append(key)
-                    continue
+            log.info("%s -> ALERT (reason=%s, given delta=%s)", key, reason, delta)
 
             # Elapsed time is only honest for listings we watched arrive; the
             # rest were already on sale when tracking began.

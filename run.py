@@ -22,7 +22,7 @@ import random
 import sys
 import time
 
-from vintedwatch import notify, state as state_mod
+from vintedwatch import notify, report as report_mod, state as state_mod
 from vintedwatch.client import VintedClient, parse_item
 
 log = logging.getLogger("vintedwatch")
@@ -112,6 +112,7 @@ def main() -> int:
     ap.add_argument("--test-telegram", action="store_true", help="send a ping and exit")
     ap.add_argument("--force", action="store_true", help="ignore the minimum gap between polls")
     ap.add_argument("--no-spread", action="store_true", help="do not pace checks across the hour")
+    ap.add_argument("--report-now", action="store_true", help="print/send the daily digest and exit")
     args = ap.parse_args()
 
     logging.basicConfig(
@@ -127,6 +128,14 @@ def main() -> int:
     tracked = st["items"]
     first_run = not tracked
     now = time.time()
+
+    if args.report_now:
+        text = report_mod.build(st, SEARCHES)
+        if args.dry_run:
+            print(text)
+        else:
+            notify.send(text)
+        return 0
 
     # The absence counters were built while we only saw the newest ~190 of 960
     # listings, where "absent" mostly meant "outranked". They cannot be trusted
@@ -190,6 +199,10 @@ def main() -> int:
                             last_check=0, seen_as_new=not first_sweep_of_search,
                             search=search_text)
         seeded += 1
+    today = time.strftime("%Y-%m-%d", time.gmtime(now))
+    day = st.setdefault("daily", {}).setdefault(today, {}).setdefault(search_text, {})
+    if not first_sweep_of_search:
+        day["new"] = day.get("new", 0) + seeded
     if first_sweep_of_search:
         log.info("seeded %d listings for [%s] (no alerts from a first sweep)",
                  seeded, search_text)
@@ -277,6 +290,7 @@ def main() -> int:
             sold_msgs.append((rec, hours, exact, verdict == "sold" and not CONFIRM_VIA_HTML))
             st["sold"][key] = {
                 "reported_at": now,
+                "search": rec.get("search"),
                 "title": rec.get("title"),
                 "price": rec.get("price"),
                 "currency": rec.get("currency"),
@@ -285,6 +299,11 @@ def main() -> int:
                 "hours_exact": exact,
                 "confirmed": bool(CONFIRM_VIA_HTML),
             }
+            day["sales"] = day.get("sales", 0) + 1
+            try:
+                day["price_sum"] = round(day.get("price_sum", 0.0) + float(rec.get("price") or 0), 2)
+            except (TypeError, ValueError):
+                pass
             drop.append(key)
 
     for key in drop:
@@ -320,6 +339,26 @@ def main() -> int:
 
     if complete and first_sweep_of_search:
         seeded_searches.append(search_text)
+    if report_mod.due(st):
+        text = report_mod.build(st, SEARCHES)
+        if args.dry_run:
+            log.info("[dry-run] daily digest:\n%s", text)
+        else:
+            notify.send(text)
+            st["last_report_date"] = report_mod.local_now().strftime("%Y-%m-%d")
+        log.info("daily digest sent")
+
+    # Keep individual sale records for a week (the digest only looks back 24 h);
+    # the per-day tallies in st["daily"] carry the longer history compactly.
+    cutoff = now - 7 * DAY
+    stale = [k for k, v in st["sold"].items() if v.get("reported_at", 0) < cutoff]
+    for k in stale:
+        st["sold"].pop(k)
+    for day in [d for d in st.get("daily", {}) if d < time.strftime("%Y-%m-%d", time.gmtime(now - 90 * DAY))]:
+        st["daily"].pop(day)
+    if stale:
+        log.info("pruned %d sale records older than 7 days (%d kept)", len(stale), len(st["sold"]))
+
     st["search_index"] = (idx + 1) % len(SEARCHES)
     st["token"] = client.token_cache
     st["last_run"] = now

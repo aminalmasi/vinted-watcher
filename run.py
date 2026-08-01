@@ -64,7 +64,7 @@ STALE_ALERT_H = 8           # warn on Telegram if we have been unable to confirm
 # They need a baseline from BEFORE the listing vanished, so a slice of sellers is
 # refreshed every run (~4 KB each) rather than looked up on demand.
 SELLER_REFRESH_PER_RUN = 120   # ~4 KB each; ~3800 sellers get a baseline daily
-MAX_GONE_CHECKS = 25           # cap on wardrobe scans (up to ~6 MB EACH)
+MAX_GONE_CHECKS = 12           # cap on wardrobe scans (~1.2 MB per page)
 CLASSIFY_VIA_COUNTERS = True
 DAY = 86400
 
@@ -296,6 +296,14 @@ def main() -> int:
                     }
                     rec["missing_runs"] = 0
                     continue
+
+            known = sellers.get(str(rec.get("seller_id") or ""), {}).get("items")
+            if known and known > 192:
+                # Two wardrobe pages cannot cover this seller, so the scan would
+                # cost megabytes and still answer "cannot tell".
+                log.info("%s seller has %d listings — too deep to verify, no alert",
+                         key, known)
+                continue
 
             if checked >= MAX_GONE_CHECKS:
                 log.info("reached %d wardrobe scans this run — %s waits for the next",

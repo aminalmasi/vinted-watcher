@@ -287,8 +287,12 @@ class VintedClient:
         """
         if not seller_id:
             return None
+        # Each page is ~1.2 MB (a wardrobe entry is ~13 KB), so scanning deep
+        # closets is the single most expensive thing this watcher can do. Two
+        # pages covers the overwhelming majority of sellers; beyond that we say
+        # "cannot tell" rather than spend megabytes on one listing.
         page, pages = 1, None
-        while page <= 5:
+        while page <= 2:
             r = self._get(f"{BASE}/api/v2/wardrobe/{seller_id}/items",
                           params={"page": page, "per_page": 96}, tries=2,
                           headers={"Accept": "application/json", "Referer": BASE + "/"})

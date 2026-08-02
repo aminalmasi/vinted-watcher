@@ -119,8 +119,15 @@ def build(state: dict, searches: list[str], hours: int = 24) -> str:
     supp = [v for v in state.get("suppressed", {}).values()
             if v.get("at", 0) >= cutoff]
     if supp:
-        lines.append(f"• <i>{len(supp)} spariti ma NON venduti "
-                     f"(nascosti/riservati/cancellati) — non inviati</i>")
+        why = {}
+        for v in supp:
+            why[v.get("reason", "?")] = why.get(v.get("reason", "?"), 0) + 1
+        label = {"not_sold": "nascosti/riservati", "holiday": "venditore in vacanza",
+                 "banned": "account bloccato", "bulk": "chiusura/svuotamento negozio"}
+        detail = ", ".join(f"{label.get(k, k)}: {n}" for k, n in
+                           sorted(why.items(), key=lambda kv: -kv[1]))
+        lines.append(f"• <i>{len(supp)} spariti ma NON venduti — non inviati</i>")
+        lines.append(f"  <i>({detail})</i>")
 
     # Only listings we watched appear have a real time-to-sale.
     timed = [s for s in recent if s.get("hours_exact") and s.get("hours_listed")]

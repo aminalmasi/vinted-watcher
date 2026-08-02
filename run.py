@@ -65,6 +65,8 @@ STALE_ALERT_H = 8           # warn on Telegram if we have been unable to confirm
 # refreshed every run (~4 KB each) rather than looked up on demand.
 SELLER_REFRESH_PER_RUN = 120   # ~4 KB each; ~3800 sellers get a baseline daily
 MAX_GONE_CHECKS = 12           # cap on wardrobe scans (~1.2 MB per page)
+BULK_VANISH = 3                # listings one seller may lose at once before we
+                               # call it a seller-level event rather than sales
 CLASSIFY_VIA_COUNTERS = True
 DAY = 86400
 
@@ -260,6 +262,20 @@ def main() -> int:
         if gone:
             log.info("%d listings absent from %d consecutive complete sweeps",
                      len(gone), GONE_AFTER_SWEEPS)
+        # A seller whose listings vanish EN MASSE did not make several
+        # simultaneous sales — they went on holiday, were banned, deleted their
+        # closet or closed the account. This catches those without needing a
+        # baseline or any extra request.
+        by_seller: dict[str, int] = {}
+        for rec in gone:
+            sid_ = str(rec.get("seller_id") or "")
+            if sid_:
+                by_seller[sid_] = by_seller.get(sid_, 0) + 1
+        bulk = {s for s, n in by_seller.items() if n >= BULK_VANISH}
+        if bulk:
+            log.info("%d sellers lost >=%d listings at once — treating as seller-level, not sales",
+                     len(bulk), BULK_VANISH)
+
         counters_cache: dict[str, dict] = {}
         checked = 0
         for rec in gone:
@@ -272,8 +288,17 @@ def main() -> int:
             # metered (22 GB/month) because every one of them scanned a wardrobe
             # before anything cheaper was tried.
             reason, delta = "unknown", None
+            sid = str(rec.get("seller_id") or "")
+            if sid in bulk:
+                log.info("%s seller %s lost %d listings at once — not a sale",
+                         key, sid, by_seller[sid])
+                st.setdefault("suppressed", {})[key] = {
+                    "at": now, "reason": "bulk", "search": rec.get("search"),
+                }
+                rec["missing_runs"] = 0
+                continue
+
             if CLASSIFY_VIA_COUNTERS and rec.get("seller_id"):
-                sid = str(rec["seller_id"])
                 before = sellers.get(sid)
                 if sid not in counters_cache:
                     snap = client.seller_counters(int(sid))
@@ -285,6 +310,18 @@ def main() -> int:
                     reason = "sold" if delta > 0 else "gone"
                 if after:
                     sellers[sid] = after
+                if after and (after.get("holiday") or after.get("banned")):
+                    # Needs no baseline: the seller's whole wardrobe left the
+                    # search together, so this listing did not sell.
+                    why = "in vacanza" if after.get("holiday") else "account bloccato"
+                    log.info("%s seller %s (%s) — not a sale", key, why, sid)
+                    st.setdefault("suppressed", {})[key] = {
+                        "at": now, "reason": "holiday" if after.get("holiday") else "banned",
+                        "search": rec.get("search"),
+                    }
+                    rec["missing_runs"] = 0
+                    continue
+
                 if reason == "gone":
                     # POSITIVE evidence of no sale: this seller has parted with
                     # nothing since the baseline, so the listing was hidden,
@@ -353,7 +390,11 @@ def main() -> int:
                 if verdict == "unknown":
                     continue  # try again next sweep
 
-            log.info("%s -> ALERT (reason=%s, given delta=%s)", key, reason, delta)
+            if reason == "unknown":
+                why = "no baseline" if not sellers.get(sid) else "counter fetch failed"
+                log.info("%s -> ALERT unverified (%s)", key, why)
+            else:
+                log.info("%s -> ALERT (sale confirmed, given delta=%s)", key, delta)
 
             # Elapsed time is only honest for listings we watched arrive; the
             # rest were already on sale when tracking began.

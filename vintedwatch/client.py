@@ -336,8 +336,15 @@ class VintedClient:
             return None
         if "given_item_count" not in u:
             return None
-        return {"items": u.get("item_count"), "given": u.get("given_item_count"),
-                "total": u.get("total_items_count"), "at": time.time()}
+        return {
+            "items": u.get("item_count"), "given": u.get("given_item_count"),
+            "total": u.get("total_items_count"), "at": time.time(),
+            # A seller switching to holiday mode pulls their WHOLE wardrobe out
+            # of search at once, which looks exactly like every listing selling.
+            # Same for a banned or restricted account.
+            "holiday": bool(u.get("is_on_holiday")),
+            "banned": bool(u.get("is_account_banned")) or (u.get("account_status") not in (0, None)),
+        }
 
     def check_sold(self, item_id: int, url: str) -> str:
         """Classify a listing that vanished from the feed.

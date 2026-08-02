@@ -15,12 +15,13 @@ import logging
 import os
 import random
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from vintedwatch.client import BASE, VintedClient  # noqa: E402
 
-SAMPLE = 30
+SAMPLE = 20
 
 
 def flags(client, sid):
@@ -61,10 +62,15 @@ def main():
     for label, pool in (("VANISHED", vanished[:SAMPLE]), ("PRESENT", present[:SAMPLE])):
         hol = ban = ok = none = 0
         for sid in pool:
+            # Unpaced calls got the whole second batch rate-limited last time,
+            # which silently invalidated the comparison.
+            time.sleep(random.uniform(1.0, 2.0))
             f = flags(client, sid)
             if f is None:
                 none += 1
                 continue
+            print(f"    {sid}: holiday={f['holiday']} banned={f['banned']} "
+                  f"status={f['status']} items={f['items']}")
             if f["holiday"]:
                 hol += 1
             elif f["banned"] or (f["status"] not in (0, None)):

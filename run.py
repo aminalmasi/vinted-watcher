@@ -222,6 +222,8 @@ def main() -> int:
         # can be counted absent. Anything owned by another brand is untouched.
         for key, rec in tracked.items():
             if rec.get("search") == search_text and int(key) not in live:
+                if not rec.get("missing_runs"):
+                    rec["missing_since"] = now
                 rec["missing_runs"] = rec.get("missing_runs", 0) + 1
         mine = sum(1 for r in tracked.values() if r.get("search") == search_text)
         absent = sum(1 for r in tracked.values()
@@ -239,6 +241,17 @@ def main() -> int:
         for sid in todo[:SELLER_REFRESH_PER_RUN]:
             snap = client.seller_counters(int(sid))
             if snap:
+                # Keep the reading we are replacing. Overwriting it destroyed the
+                # only thing that made the counter test work: a baseline from
+                # BEFORE the listing vanished. With just one slot, `before` and
+                # `after` ended up being the same moment, delta was always 0, and
+                # genuine sales were suppressed.
+                old = sellers.get(sid)
+                if old and not old.get("gone"):
+                    snap["prev"] = {"given": old.get("given"), "total": old.get("total"),
+                                    "at": old.get("at")}
+                elif old and old.get("prev"):
+                    snap["prev"] = old["prev"]
                 sellers[sid] = snap
                 refreshed += 1
             time.sleep(random.uniform(0.4, 1.2))
@@ -299,7 +312,15 @@ def main() -> int:
                 continue
 
             if CLASSIFY_VIA_COUNTERS and rec.get("seller_id"):
-                before = sellers.get(sid)
+                # Only a reading taken before the listing vanished can prove
+                # anything; a newer one already includes the sale.
+                snap = sellers.get(sid) or {}
+                vanished_at = rec.get("missing_since") or now
+                before = None
+                if snap.get("at") and snap["at"] < vanished_at and not snap.get("gone"):
+                    before = snap
+                elif snap.get("prev") and (snap["prev"].get("at") or 0) < vanished_at:
+                    before = snap["prev"]
                 if sid not in counters_cache:
                     snap = client.seller_counters(int(sid))
                     if snap:
@@ -308,8 +329,21 @@ def main() -> int:
                 if before and after and before.get("given") is not None:
                     delta = (after.get("given") or 0) - (before.get("given") or 0)
                     reason = "sold" if delta > 0 else "gone"
-                if after:
+                if after and not after.get("gone"):
+                    keep = before or (sellers.get(sid) or {}).get("prev")
+                    if keep:
+                        after = dict(after, prev={"given": keep.get("given"),
+                                                  "total": keep.get("total"),
+                                                  "at": keep.get("at")})
                     sellers[sid] = after
+                if after and after.get("gone"):
+                    log.info("%s seller %s account no longer exists — not a sale", key, sid)
+                    st.setdefault("suppressed", {})[key] = {
+                        "at": now, "reason": "account_gone", "search": rec.get("search"),
+                    }
+                    rec["missing_runs"] = 0
+                    continue
+
                 if after and (after.get("holiday") or after.get("banned")):
                     # Needs no baseline: the seller's whole wardrobe left the
                     # search together, so this listing did not sell.
@@ -391,7 +425,8 @@ def main() -> int:
                     continue  # try again next sweep
 
             if reason == "unknown":
-                why = "no baseline" if not sellers.get(sid) else "counter fetch failed"
+                why = ("no usable baseline (none older than the disappearance)"
+                       if sellers.get(sid) else "counter fetch failed")
                 log.info("%s -> ALERT unverified (%s)", key, why)
             else:
                 log.info("%s -> ALERT (sale confirmed, given delta=%s)", key, delta)

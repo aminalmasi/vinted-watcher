@@ -326,9 +326,16 @@ class VintedClient:
         """
         if not seller_id:
             return None
-        r = self._get(f"{BASE}/api/v2/users/{seller_id}", tries=2,
+        r = self._get(f"{BASE}/api/v2/users/{seller_id}", tries=3, retry_statuses=(429,),
                       headers={"Accept": "application/json", "Referer": BASE + "/"})
-        if r is None or r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
+        if r is None:
+            log.info("seller %s: no response", seller_id)
+            return None
+        if r.status_code in (404, 410):
+            # The account is gone, so its listings went with it. Not a sale.
+            return {"gone": True, "at": time.time()}
+        if r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
+            log.info("seller %s: HTTP %d", seller_id, r.status_code)
             return None
         try:
             u = r.json().get("user") or {}

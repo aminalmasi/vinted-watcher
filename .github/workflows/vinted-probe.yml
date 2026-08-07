@@ -17,4 +17,4 @@ jobs:
       - name: Probe confirmation paths
         env:
           PROXY_URL: ${{ secrets.PROXY_URL }}
-        run: python scripts/probe_holiday.py
+        run: python scripts/probe_audit_alerts.py

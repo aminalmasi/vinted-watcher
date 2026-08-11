@@ -104,9 +104,18 @@ def main() -> int:
     sold.sort(key=lambda r: -r.get("reported_at", 0))
     os.makedirs(args.out, exist_ok=True)
 
-    todo = [r for r in sold
-            if not any(d.endswith(f"_{r['id']}") for d in os.listdir(args.out))]
-    print(f"{len(sold)} sold in {args.days}d | {len(sold)-len(todo)} already archived | "
+    # Listings the seller deleted after the sale can never be archived. Remember
+    # them, or every later run pays the same 6 s to rediscover the same 404.
+    gone_path = os.path.join(args.out, "_gone.json")
+    try:
+        gone_ids = set(json.load(open(gone_path)))
+    except (OSError, ValueError):
+        gone_ids = set()
+
+    have = {d.rsplit("_", 1)[-1] for d in os.listdir(args.out)}
+    todo = [r for r in sold if r["id"] not in have and r["id"] not in gone_ids]
+    print(f"{len(sold)} sold in {args.days}d | {len(sold)-len(todo)} settled "
+          f"({len(gone_ids & {r['id'] for r in sold})} deleted by seller) | "
           f"{len(todo)} to go | doing up to {args.limit} now")
     if args.dry_run:
         for r in todo[:args.limit]:
@@ -136,8 +145,11 @@ def main() -> int:
                   f"Halting immediately.")
             break
         if r.status_code in (404, 410):
-            # Seller deleted it after the sale; nothing to archive.
+            # Seller deleted it after the sale; nothing to archive, ever.
             gone += 1; consecutive = 0
+            gone_ids.add(rec["id"])
+            with open(gone_path, "w") as fh:
+                json.dump(sorted(gone_ids), fh)
             print(f"  {rec['id']}: gone (404)")
             time.sleep(random.uniform(4, 9))
             continue

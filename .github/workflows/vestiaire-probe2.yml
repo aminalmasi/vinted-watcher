@@ -1,0 +1,19 @@
+name: vestiaire-probe2
+
+# Design probe: sold-filter, facet counts, category ids, pagination depth,
+# page size and result shape. Runs direct — probe 1 showed the Actions IP is
+# not walled, so no proxy is involved.
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet requests
+      - run: python scripts/probe_vestiaire2.py

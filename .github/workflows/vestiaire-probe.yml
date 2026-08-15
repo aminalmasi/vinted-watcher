@@ -1,0 +1,22 @@
+name: vestiaire-probe
+
+# One-off reconnaissance: is Vestiaire's brand-search endpoint reachable from a
+# residential Italian exit, when it WAF-403s our university IP? Nothing is built
+# on the answer yet — this only measures.
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet requests
+      - name: Probe Vestiaire hosts
+        env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: python scripts/probe_vestiaire.py

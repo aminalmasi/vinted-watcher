@@ -1,0 +1,55 @@
+name: vestiaire-watch
+
+on:
+  schedule:
+    # Every 2 hours. Unlike the Vinted watcher, lateness costs us NOTHING:
+    # sold listings stay in the API indefinitely, so a missed or delayed run
+    # simply picks the sales up next time. There is no race to lose.
+    - cron: '5 */2 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Report only — send nothing, persist nothing'
+        type: boolean
+        default: false
+
+concurrency:
+  group: vestiaire-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet -r requirements.txt
+
+      - name: Sweep Vestiaire for sold listings
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python vestiaire/run.py ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Persist state
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git config user.name  'vestiaire-watcher[bot]'
+          git config user.email 'vestiaire-watcher@users.noreply.github.com'
+          git add data/vestiaire_state.json
+          if git diff --cached --quiet; then
+            echo "no state change"
+          else
+            git commit -m "vestiaire state: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs --autostash origin main \
+              || { git rebase --abort || true; git fetch origin main; \
+                   git reset --soft origin/main; git add data/vestiaire_state.json; \
+                   git commit -m "vestiaire state: $(date -u +%Y-%m-%dT%H:%MZ) (recovered)"; }
+            git push origin main
+          fi

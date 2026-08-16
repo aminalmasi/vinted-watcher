@@ -61,6 +61,13 @@ def send(text: str) -> bool:
             log.error("Telegram HTTP %d for %s: %s", r.status_code, chat_id, r.text[:200])
             continue
         delivered += 1
+    # Log every outcome, not just failures. A silent success and a message that
+    # went to the wrong chat look identical from the outside, which cost an
+    # evening of "is it working?" — so say who actually received it. Ids are
+    # masked to the last 4 digits: enough to tell recipients apart in a public
+    # log without publishing them.
+    log.info("Telegram: delivered to %d/%d (%s)", delivered, len(chat_ids),
+             ", ".join("…" + c[-4:] for c in chat_ids) or "none")
     if delivered < len(chat_ids):
         log.warning("delivered to %d/%d recipients", delivered, len(chat_ids))
     return delivered > 0

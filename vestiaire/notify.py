@@ -52,3 +52,45 @@ def format_summary(counts: dict, sales: int, elapsed: float) -> str:
     rows = "\n".join(f"  {b}: {n}" for b, n in sorted(counts.items()) if n)
     return (f"📊 Vestiaire — {sales} vendite nuove in {elapsed/60:.0f} min\n"
             f"{rows or '  nessuna'}")
+
+
+def format_digest(sales: list, hours: int = 24) -> str:
+    """The daily 10:00 report.
+
+    `sales` are the records detected since the last digest. Sale time is when we
+    SAW the item turn sold, not Vestiaire's soldDate — the two differ by at most
+    one sweep interval, which is invisible at the resolution this report uses.
+    """
+    e = lambda v: html.escape(str(v)) if v is not None else "—"
+    if not sales:
+        return f"📊 <b>Vestiaire</b> — nessuna vendita nelle ultime {hours}h."
+
+    by_brand: dict[str, list] = {}
+    for r in sales:
+        by_brand.setdefault(r.get("brand") or "?", []).append(r)
+
+    prices = [r["price"] for r in sales if r.get("price")]
+    head = (f"📊 <b>Vestiaire — ultime {hours}h</b>\n"
+            f"<b>{len(sales)}</b> vendite"
+            + (f" · media <b>{sum(prices)/len(prices):.0f} €</b>" if prices else ""))
+
+    rows = []
+    for brand, rs in sorted(by_brand.items(), key=lambda kv: -len(kv[1])):
+        ps = [r["price"] for r in rs if r.get("price")]
+        avg = f"{sum(ps)/len(ps):.0f} €" if ps else "—"
+        rows.append(f"  {e(brand)} — <b>{len(rs)}</b> · media {avg}")
+
+    # The point of the whole exercise: what went fastest.
+    timed = [r for r in sales if r.get("days") is not None]
+    timed.sort(key=lambda r: r["days"])
+    fast = []
+    for r in timed[:5]:
+        d = r["days"]
+        amount = f"{d*24:.0f} ore" if d < 2 else f"{d:.1f} giorni"
+        fast.append(f'  • <a href="{e(r.get("url"))}">{e(str(r.get("name"))[:38])}</a>'
+                    f' — {r["price"]:.0f} € — {amount}')
+
+    parts = [head, "", "\n".join(rows)]
+    if fast:
+        parts += ["", "⚡ <b>Più veloci</b>", "\n".join(fast)]
+    return "\n".join(parts)

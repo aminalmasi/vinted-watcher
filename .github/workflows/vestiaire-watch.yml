@@ -2,14 +2,25 @@ name: vestiaire-watch
 
 on:
   schedule:
-    # Every 2 hours. Unlike the Vinted watcher, lateness costs us NOTHING:
+    # Every 4 hours. Unlike the Vinted watcher, lateness costs us NOTHING:
     # sold listings stay in the API indefinitely, so a missed or delayed run
     # simply picks the sales up next time. There is no race to lose.
-    - cron: '5 */2 * * *'
+    #
+    # Ten brands is ~88 requests a sweep, so this cadence is deliberately half
+    # of what five brands ran at: with a once-daily digest there is nothing to
+    # gain from sweeping more often, and request volume is the main thing that
+    # would ever get us noticed.
+    #
+    # 08:15 UTC lands at 10:15 Europe/Rome, which is what triggers the digest.
+    - cron: '15 */4 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
         description: 'Report only — send nothing, persist nothing'
+        type: boolean
+        default: false
+      report:
+        description: 'Send the daily digest now, whatever the clock says'
         type: boolean
         default: false
 
@@ -35,7 +46,10 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python vestiaire/run.py ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: >
+          python vestiaire/run.py
+          ${{ inputs.dry_run && '--dry-run' || '' }}
+          ${{ inputs.report && '--report' || '' }}
 
       - name: Persist state
         if: ${{ !inputs.dry_run }}

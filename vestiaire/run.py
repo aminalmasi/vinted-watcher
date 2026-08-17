@@ -28,10 +28,13 @@ import os
 import sys
 import time
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from vestiaire.client import Vestiaire, url_of              # noqa: E402
-from vestiaire.notify import format_sale, format_summary    # noqa: E402
+from vestiaire.notify import format_digest                  # noqa: E402
 from vintedwatch.notify import send                         # noqa: E402
 
 log = logging.getLogger("vestiaire")
@@ -39,19 +42,29 @@ log = logging.getLogger("vestiaire")
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE = os.path.join(REPO, "data", "vestiaire_state.json")
 
+# The ten brands that actually move at this price point, ranked by shoes sold
+# above EUR 150 in a 30-day window (see scripts/vc_brand_ranking.py). Together
+# they are ~55% of all such sales; the five we started with were ~15%, and
+# Ferragamo did not even reach the top 25 above the floor.
 BRANDS = {
-    "60":  "Prada",
-    "117": "Miu Miu",
-    "62":  "Maison Margiela",
-    "236": "Christian Louboutin",
-    "186": "Salvatore Ferragamo",
+    "2":    "Gucci",
+    "50":   "Chanel",
+    "14":   "Hermès",
+    "236":  "Christian Louboutin",
+    "10":   "Dior",
+    "60":   "Prada",
+    "3119": "Saint Laurent",
+    "88":   "Valentino Garavani",
+    "809":  "Golden Goose",
+    "115":  "Bottega Veneta",
 }
 SHOES_WOMEN = "3"
 WINDOW_DAYS = 30
 # Entries only need to outlive the window they can still appear in; keeping
 # them longer is how the Vinted state file reached 5.4 MB.
 RETAIN_DAYS = 45
-MAX_ALERTS = 25          # a burst goes to one summary line instead of 25 pings
+REPORT_HOUR = 10         # Europe/Rome
+REPORT_TZ = "Europe/Rome"
 
 
 def load() -> dict:
@@ -101,14 +114,19 @@ def sweep(vc: Vestiaire, st: dict, dry: bool) -> tuple[list, dict]:
             pid = str(it.get("id"))
             if not pid or pid in st["seen"]:
                 continue
+            created = it.get("createdAt")
             rec = {
                 "brand": (it.get("brand") or {}).get("name") or name,
                 "name": it.get("name"),
                 "price": (it.get("price") or {}).get("cents", 0) / 100 or None,
-                "size": (it.get("size") or {}).get("size"),
-                "created_at": it.get("createdAt"),
+                "created_at": created,
                 "url": url_of(it),
                 "first_seen": now,
+                # Time-to-sell, measured from when we SAW it turn sold. That is
+                # within one sweep of the truth, which is far finer than the
+                # daily report resolves — so it is not worth an apiv2 call per
+                # sale just to read the exact soldDate.
+                "days": round((now - created) / 86400, 2) if created else None,
             }
             st["seen"][pid] = rec
             # On a brand's first sweep every sold listing is "new" only because
@@ -122,24 +140,30 @@ def sweep(vc: Vestiaire, st: dict, dry: bool) -> tuple[list, dict]:
     return new_sales, counts
 
 
-def enrich(vc: Vestiaire, st: dict, sales: list) -> None:
-    """One call per sale for the exact soldDate. Only sales, so volume is tiny."""
-    for pid, rec in sales[:MAX_ALERTS]:
-        d = vc.product(pid)
-        if not d:
-            continue
-        rec["sold_date"] = d.get("soldDate")
-        rec["description"] = (d.get("description") or "")[:400]
-        if d.get("price"):
-            rec["price"] = d["price"].get("cents", 0) / 100 or rec.get("price")
-        st["seen"][pid] = rec
+def due_for_report(st: dict, now: float) -> bool:
+    """True once per day, on the first sweep at or after 10:00 Europe/Rome.
+
+    Guarded by the date rather than the hour so a late or missed run still
+    reports (a bit later) instead of skipping the day entirely.
+    """
+    local = datetime.fromtimestamp(now, ZoneInfo(REPORT_TZ))
+    if local.hour < REPORT_HOUR:
+        return False
+    return st.get("last_report_date") != local.date().isoformat()
+
+
+def since_last_report(st: dict, now: float) -> list:
+    """Sales detected since the previous digest (fallback: last 24 h)."""
+    floor = st.get("last_report_at") or (now - 24 * 3600)
+    return [r for r in st["seen"].values() if (r.get("first_seen") or 0) > floor]
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true",
                     help="report, send nothing, persist nothing")
-    ap.add_argument("--quiet", action="store_true", help="no per-sweep summary")
+    ap.add_argument("--report", action="store_true",
+                    help="send the digest now, whatever the clock says")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)-7s %(message)s")
 
@@ -149,16 +173,18 @@ def main() -> int:
 
     sales, counts = sweep(vc, st, args.dry_run)
     log.info("%d new sales", len(sales))
-    if sales:
-        enrich(vc, st, sales)
 
-    if not args.dry_run:
-        for pid, rec in sales[:MAX_ALERTS]:
-            send(format_sale(rec))
-        if len(sales) > MAX_ALERTS:
-            send(f"…e altre {len(sales)-MAX_ALERTS} vendite in questo sweep.")
-        if not args.quiet and (sales or st["runs"] % 12 == 0):
-            send(format_summary(counts, len(sales), time.time() - started))
+    now = time.time()
+    report = args.report or due_for_report(st, now)
+    if report:
+        batch = since_last_report(st, now)
+        hours = int((now - (st.get("last_report_at") or now - 86400)) / 3600)
+        log.info("daily report: %d sales over %dh", len(batch), hours)
+        if not args.dry_run:
+            send(format_digest(batch, hours))
+            st["last_report_date"] = datetime.fromtimestamp(
+                now, ZoneInfo(REPORT_TZ)).date().isoformat()
+            st["last_report_at"] = now
 
     dropped = prune(st, time.time())
     st["runs"] += 1

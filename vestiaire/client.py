@@ -43,6 +43,12 @@ PAGE = 48                # 56 KB, 1.2 KB/item — verified
 OFFSET_CAP = 960         # offset 960 works, 1500 is a 400
 MIN_GAP, MAX_GAP = 6.0, 10.0
 
+# Prices are in cents, and `gte` is the shape the API honours — confirmed by
+# watching the count actually move (8088 sold shoes -> 5744 above EUR 150).
+# This floor is not only a preference: without it Gucci's 30-day sold count sits
+# right on the ~1000 pagination ceiling, and we would silently lose sales.
+FLOOR_CENTS = 15000
+
 
 class Vestiaire:
     def __init__(self) -> None:
@@ -116,6 +122,7 @@ class Vestiaire:
                 "categoryLvl0.id": [category_id],
                 "sold": True,
                 "createdAt": {"gte": created_gte},
+                "price": {"gte": FLOOR_CENTS},
             },
             "locale": LOCALE,
             "sort": "recency",

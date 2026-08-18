@@ -128,6 +128,14 @@ def sweep(vc: Vestiaire, st: dict, dry: bool) -> tuple[list, dict]:
                 # sale just to read the exact soldDate.
                 "days": round((now - created) / 86400, 2) if created else None,
             }
+            if first_time:
+                # A brand's first sweep sees its whole existing sold backlog.
+                # Those are not sales we witnessed, and `days` for them is just
+                # age-at-seeding, so they must never reach a digest. Flagging
+                # beats relying on timestamps: adding a brand later would
+                # otherwise dump its backlog into the next morning's report,
+                # which is exactly what happened on 2026-08-18.
+                rec["seeded"] = True
             st["seen"][pid] = rec
             # On a brand's first sweep every sold listing is "new" only because
             # we have never looked. Record them, alert on none.
@@ -155,7 +163,8 @@ def due_for_report(st: dict, now: float) -> bool:
 def since_last_report(st: dict, now: float) -> list:
     """Sales detected since the previous digest (fallback: last 24 h)."""
     floor = st.get("last_report_at") or (now - 24 * 3600)
-    return [r for r in st["seen"].values() if (r.get("first_seen") or 0) > floor]
+    return [r for r in st["seen"].values()
+            if not r.get("seeded") and (r.get("first_seen") or 0) > floor]
 
 
 def main() -> int:
@@ -174,7 +183,21 @@ def main() -> int:
     sales, counts = sweep(vc, st, args.dry_run)
     log.info("%d new sales", len(sales))
 
+    # Every brand always has hundreds of historical sold listings in the
+    # window, so a total of zero cannot be a quiet day — it means the query
+    # stopped matching, i.e. they changed the API or started blocking us.
+    # Two in a row to ride out a single bad sweep.
     now = time.time()
+    if sum(counts.values()) == 0:
+        st["blind_runs"] = st.get("blind_runs", 0) + 1
+        log.warning("blind sweep %d — every brand returned zero", st["blind_runs"])
+        if st["blind_runs"] == 2 and not args.dry_run:
+            send("⚠️ <b>Vestiaire</b> — due sweep di fila senza risultati per "
+                 "nessun marchio. Probabile cambio API o blocco: le vendite "
+                 "non vengono più rilevate.")
+    else:
+        st["blind_runs"] = 0
+
     report = args.report or due_for_report(st, now)
     if report:
         batch = since_last_report(st, now)

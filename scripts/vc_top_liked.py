@@ -41,7 +41,11 @@ TOP_N = int(os.environ.get("VC_TOP", "20"))
 PAGES_PER_BAND = int(os.environ.get("VC_PAGES", "4"))
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                    "top_liked.html")
-IMG = "https://images.vestiairecollective.com/images/resized/w=400,q=70/produit/{p}"
+PHOTOS = int(os.environ.get("VC_PHOTOS", "1"))      # photos embedded per item
+WIDTH = int(os.environ.get("VC_WIDTH", "400"))      # requested image width
+LAYOUT = os.environ.get("VC_LAYOUT", "grid")        # grid | viewer
+IMG = ("https://images.vestiairecollective.com/images/resized/"
+       "w={w},q=75/produit/{p}")
 
 log = logging.getLogger("top")
 S = requests.Session()
@@ -111,15 +115,18 @@ def main() -> int:
                     if it.get("likes") is None:
                         continue
                     pics = it.get("pictures") or []
-                    pic = pics[0] if pics else None
-                    if isinstance(pic, dict):
-                        pic = pic.get("path") or pic.get("url")
+                    paths = []
+                    for q in pics[:PHOTOS]:
+                        if isinstance(q, dict):
+                            q = q.get("path") or q.get("url")
+                        if q:
+                            paths.append(q)
                     rows.append({
                         "id": str(it.get("id")), "name": it.get("name") or "",
                         "brand": (it.get("brand") or {}).get("name") or name,
                         "price": (it.get("price") or {}).get("cents", 0) / 100,
                         "likes": it["likes"], "created": it.get("createdAt"),
-                        "pic": pic,
+                        "pics": paths,
                         "url": "https://www.vestiairecollective.com" + (it.get("link") or ""),
                     })
         log.info("%-20s pool now %d", name, len(rows))
@@ -142,32 +149,36 @@ def main() -> int:
     # than scattered failures. So fetch photos at the same unhurried pace as
     # everything else, retry once, and SAY when one is missing instead of
     # silently rendering a grey box.
+    want = sum(len(r["pics"]) for r in top)
+    log.info("fetching %d photos for %d items", want, len(top))
     for i, r in enumerate(top, 1):
-        r["img"] = None
-        if not r["pic"]:
-            log.warning("#%d %s: no picture in the listing", i, r["brand"])
-            continue
-        src = (r["pic"] if str(r["pic"]).startswith("http")
-               else IMG.format(p=r["pic"]))
-        for attempt in range(2):
-            time.sleep(random.uniform(6, 10) if attempt == 0 else 30)
-            try:
-                ir = S.get(src, timeout=45,
-                           headers={"Referer": "https://www.vestiairecollective.com/",
-                                    "Accept": "image/avif,image/webp,*/*"})
-            except requests.RequestException as exc:
-                log.warning("#%d image: %s", i, type(exc).__name__)
-                continue
-            if ir.status_code == 200 and ir.content:
-                mime = ir.headers.get("content-type", "image/jpeg").split(";")[0]
-                r["img"] = f"data:{mime};base64," + base64.b64encode(ir.content).decode()
-                break
-            log.warning("#%d image: HTTP %d%s", i, ir.status_code,
-                        " (retrying)" if attempt == 0 else " — giving up")
-    got = sum(1 for r in top if r.get("img"))
-    log.info("embedded %d/%d images", got, len(top))
+        r["imgs"] = []
+        for path in r["pics"]:
+            src = path if str(path).startswith("http") else IMG.format(w=WIDTH, p=path)
+            for attempt in range(2):
+                time.sleep(random.uniform(6, 10) if attempt == 0 else 30)
+                try:
+                    ir = S.get(src, timeout=45,
+                               headers={"Referer": "https://www.vestiairecollective.com/",
+                                        "Accept": "image/avif,image/webp,*/*"})
+                except requests.RequestException as exc:
+                    log.warning("#%d photo: %s", i, type(exc).__name__)
+                    continue
+                if ir.status_code == 200 and ir.content:
+                    mime = ir.headers.get("content-type", "image/jpeg").split(";")[0]
+                    r["imgs"].append(f"data:{mime};base64,"
+                                     + base64.b64encode(ir.content).decode())
+                    break
+                log.warning("#%d photo: HTTP %d%s", i, ir.status_code,
+                            " (retrying)" if attempt == 0 else " - giving up")
+        r["img"] = r["imgs"][0] if r["imgs"] else None
+    got = sum(len(r["imgs"]) for r in top)
+    log.info("embedded %d/%d photos; %d/%d items have at least one",
+             got, want, sum(1 for r in top if r["imgs"]), len(top))
 
-    open(OUT, "w", encoding="utf-8").write(render(top, len(uniq), lte_works))
+    page = (render_viewer(top, len(uniq), lte_works) if LAYOUT == "viewer"
+            else render(top, len(uniq), lte_works))
+    open(OUT, "w", encoding="utf-8").write(page)
     log.info("wrote %s (%.1f MB)", OUT, os.path.getsize(OUT)/1024/1024)
     return 0
 
@@ -248,6 +259,125 @@ footer {{ max-width:1180px; margin:0 auto; padding:0 24px 40px; color:var(--dim)
 <footer>I like sono l'unico segnale pubblico di domanda: Vestiaire tiene private le offerte.
 Non esiste un ordinamento per like, quindi questa è la classifica di un campione, non dell'intero sito.</footer>
 </body></html>"""
+
+
+VIEWER_CSS = """
+:root{color-scheme:light dark;--bg:#f6f5f3;--panel:#fff;--tx:#171717;--dim:#6f6f6f;
+ --line:#e4e1dc;--accent:#b4442f;--shadow:0 8px 30px rgba(0,0,0,.10)}
+@media (prefers-color-scheme:dark){:root{--bg:#111;--panel:#1c1c1c;--tx:#ededed;
+ --dim:#9b9b9b;--line:#2c2c2c;--accent:#ff7a5c;--shadow:0 8px 30px rgba(0,0,0,.5)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 ui-sans-serif,
+ -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+.wrap{height:100vh;display:grid;grid-template-rows:auto 1fr auto}
+.top{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)}
+.counter{font-variant-numeric:tabular-nums;font-weight:650}
+.counter b{color:var(--accent);font-size:19px}
+.title{color:var(--dim);font-size:13px;margin-left:auto;text-align:right}
+.stage{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:0}
+.shot{position:relative;display:grid;place-items:center;padding:18px;min-height:0;background:var(--bg)}
+.shot img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;box-shadow:var(--shadow)}
+.thumbs{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.thumbs img{width:52px;height:52px;object-fit:cover;border-radius:7px;cursor:pointer;
+ border:2px solid transparent;opacity:.6;box-shadow:var(--shadow)}
+.thumbs img.on{border-color:var(--accent);opacity:1}
+.side{border-left:1px solid var(--line);background:var(--panel);padding:26px 24px;
+ overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.brand{font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim)}
+h1{margin:0;font-size:21px;line-height:1.3;font-weight:600;letter-spacing:-.01em}
+.big{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.price{font-size:30px;font-weight:660;letter-spacing:-.02em}
+.likes{font-size:17px;font-weight:650;color:var(--accent)}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:13.5px;
+ border-top:1px solid var(--line);padding-top:16px}
+dt{color:var(--dim)} dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.go{margin-top:auto;display:block;text-align:center;background:var(--accent);color:#fff;
+ text-decoration:none;padding:12px;border-radius:9px;font-weight:600;font-size:14px}
+.bottom{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;
+ border-top:1px solid var(--line)}
+button{background:var(--panel);color:var(--tx);border:1px solid var(--line);border-radius:8px;
+ padding:9px 20px;font:inherit;font-weight:600;cursor:pointer}
+button:hover{border-color:var(--accent);color:var(--accent)}
+.hint{color:var(--dim);font-size:12px;margin-left:12px}
+.noimg{color:var(--dim)}
+@media (max-width:820px){.stage{grid-template-columns:1fr;grid-template-rows:1fr auto}
+ .side{border-left:none;border-top:1px solid var(--line)}body{overflow:auto}.wrap{height:auto}}
+"""
+
+VIEWER_JS = """
+let i=0,p=0;
+const $=s=>document.querySelector(s);
+function draw(){
+  const it=D[i]; p=Math.min(p,Math.max(it.imgs.length-1,0));
+  $('#count').innerHTML='<b>'+(i+1)+'</b> / '+D.length;
+  $('#shot').innerHTML = it.imgs.length
+    ? '<img src="'+it.imgs[p]+'" alt="">'
+    : '<div class="noimg">nessuna immagine</div>';
+  $('#thumbs').innerHTML = it.imgs.length>1
+    ? it.imgs.map((s,k)=>'<img src="'+s+'" class="'+(k===p?'on':'')+'" data-k="'+k+'">').join('')
+    : '';
+  $('#brand').textContent=it.brand; $('#name').textContent=it.name;
+  $('#price').textContent=it.price.toLocaleString('it-IT',{maximumFractionDigits:0})+' \u20ac';
+  $('#likes').textContent=it.likes+' \u2764';
+  $('#up').textContent=it.when; $('#age').textContent=it.age;
+  $('#rank').textContent='#'+(i+1)+' per like';
+  $('#go').href=it.url;
+}
+function go(d){ i=(i+d+D.length)%D.length; p=0; draw(); }
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+  if(e.key==='ArrowDown'){p=(p+1)%Math.max(D[i].imgs.length,1);draw();}
+});
+document.addEventListener('click',e=>{
+  const t=e.target.closest('#thumbs img'); if(t){p=+t.dataset.k;draw();}
+});
+draw();
+"""
+
+
+def render_viewer(top, pool, lte_works) -> str:
+    """One item per screen, arrow keys to move, thumbnails for extra photos."""
+    data = []
+    for r in top:
+        created = r.get("created")
+        data.append({
+            "brand": r["brand"], "name": r["name"], "price": r["price"],
+            "likes": r["likes"], "url": r["url"], "imgs": r.get("imgs") or [],
+            "when": (datetime.fromtimestamp(created, timezone.utc).strftime("%d %b %Y")
+                     if created else "-"),
+            "age": (f"{(time.time()-created)/86400:.0f} giorni in vendita"
+                    if created else ""),
+        })
+    note = ("annunci da 3-12 mesi e sotto i 3 mesi" if lte_works
+            else "solo annunci recenti")
+    return ("<!doctype html>\n<html lang=\"it\"><head><meta charset=\"utf-8\">"
+            "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+            f"<title>Vestiaire - Top {len(top)} per like</title>"
+            f"<style>{VIEWER_CSS}</style></head><body><div class=\"wrap\">"
+            "<div class=\"top\"><span class=\"counter\" id=\"count\"></span>"
+            "<span id=\"rank\" style=\"color:var(--dim);font-size:13px\"></span>"
+            f"<span class=\"title\">scarpe donna &gt; {FLOOR_CENTS//100} &euro; "
+            f"ancora in vendita &middot; {pool:,} annunci esaminati &middot; {note}</span></div>"
+            "<div class=\"stage\"><div class=\"shot\"><div id=\"shot\"></div>"
+            "<div class=\"thumbs\" id=\"thumbs\"></div></div>"
+            "<div class=\"side\"><div><div class=\"brand\" id=\"brand\"></div>"
+            "<h1 id=\"name\"></h1></div>"
+            "<div class=\"big\"><span class=\"price\" id=\"price\"></span>"
+            "<span class=\"likes\" id=\"likes\"></span></div>"
+            "<dl><dt>Caricato il</dt><dd id=\"up\"></dd>"
+            "<dt>Da quanto</dt><dd id=\"age\"></dd></dl>"
+            "<a class=\"go\" id=\"go\" target=\"_blank\" rel=\"noopener\">"
+            "Apri su Vestiaire</a></div></div>"
+            "<div class=\"bottom\"><button onclick=\"go(-1)\">&larr; Precedente</button>"
+            "<button onclick=\"go(1)\">Successivo &rarr;</button>"
+            "<span class=\"hint\">frecce &larr; &rarr; per scorrere, &darr; per le altre foto</span>"
+            "</div></div><script>const D="
+            # Escape inside the DATA only: a product name containing "</script>"
+            # would otherwise close the block early. The document's own closing
+            # tag is appended afterwards and must stay intact.
+            + json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+            + ";" + VIEWER_JS + "</script></body></html>")
 
 
 if __name__ == "__main__":

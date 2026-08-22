@@ -34,6 +34,9 @@ jobs:
           VC_FLOOR_CENTS: ${{ inputs.floor_cents }}
           VC_TOP: ${{ inputs.top }}
           VC_PAGES: ${{ inputs.pages }}
+          VC_LAYOUT: ${{ inputs.layout }}
+          VC_PHOTOS: ${{ inputs.photos }}
+          VC_WIDTH: ${{ inputs.width }}
         run: python scripts/vc_top_liked.py
       - uses: actions/upload-artifact@v4
         with:

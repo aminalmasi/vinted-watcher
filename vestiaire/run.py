@@ -121,6 +121,11 @@ def sweep(vc: Vestiaire, st: dict, dry: bool) -> tuple[list, dict]:
                 "price": (it.get("price") or {}).get("cents", 0) / 100 or None,
                 "created_at": created,
                 "url": url_of(it),
+                # Favourites. Vestiaire keeps offer counts private (they are
+                # seller-only), so this is the nearest public proxy for demand:
+                # the people who liked an item are the pool that makes offers.
+                # It rides along in the search response we already pay for.
+                "likes": it.get("likes"),
                 "first_seen": now,
                 # Time-to-sell, measured from when we SAW it turn sold. That is
                 # within one sweep of the truth, which is far finer than the

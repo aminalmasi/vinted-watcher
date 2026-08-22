@@ -1,0 +1,28 @@
+name: vc-hot-listings
+
+# Which live listings are collecting the most favourites — the nearest public
+# proxy for "which shoes get the most offers", since offer counts are private.
+on:
+  workflow_dispatch:
+    inputs:
+      window_days:
+        description: 'Only listings created within this many days'
+        default: '14'
+      pages:
+        description: 'Pages sampled per brand (48 items each)'
+        default: '8'
+
+jobs:
+  hot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet -r requirements.txt
+      - env:
+          VC_WINDOW_DAYS: ${{ inputs.window_days }}
+          VC_PAGES: ${{ inputs.pages }}
+        run: python scripts/vc_hot_listings.py

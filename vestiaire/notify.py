@@ -90,7 +90,15 @@ def format_digest(sales: list, hours: int = 24) -> str:
         fast.append(f'  • <a href="{e(r.get("url"))}">{e(str(r.get("name"))[:38])}</a>'
                     f' — {r["price"]:.0f} € — {amount}')
 
+    # Most-wanted: likes are the closest public stand-in for offers received.
+    liked = sorted((r for r in sales if r.get("likes")),
+                   key=lambda r: -r["likes"])[:5]
+    hot = [f'  • <a href="{e(r.get("url"))}">{e(str(r.get("name"))[:34])}</a>'
+           f' — {r["likes"]} ❤ — {r["price"]:.0f} €' for r in liked]
+
     parts = [head, "", "\n".join(rows)]
     if fast:
         parts += ["", "⚡ <b>Più veloci</b>", "\n".join(fast)]
+    if hot:
+        parts += ["", "❤️ <b>Più desiderati</b>", "\n".join(hot)]
     return "\n".join(parts)

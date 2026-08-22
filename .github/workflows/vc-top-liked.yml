@@ -15,6 +15,15 @@ on:
       pages:
         description: 'Pages sampled per brand per age band'
         default: '4'
+      layout:
+        description: 'grid (overview) or viewer (one item at a time)'
+        default: 'grid'
+      photos:
+        description: 'Photos embedded per item'
+        default: '1'
+      width:
+        description: 'Image width in px'
+        default: '400'
 
 concurrency:
   group: vestiaire-api

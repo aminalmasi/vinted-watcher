@@ -1,0 +1,42 @@
+name: vc-top-liked
+
+# Builds a self-contained HTML page of the most-liked live listings above a
+# price floor. Uploaded as a workflow artifact — the photos belong to the
+# sellers, so they are not committed into this public repo.
+on:
+  workflow_dispatch:
+    inputs:
+      floor_cents:
+        description: 'Minimum price in cents (20000 = 200 EUR)'
+        default: '20000'
+      top:
+        description: 'How many items on the page'
+        default: '20'
+      pages:
+        description: 'Pages sampled per brand per age band'
+        default: '4'
+
+concurrency:
+  group: vestiaire-api
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet -r requirements.txt
+      - env:
+          VC_FLOOR_CENTS: ${{ inputs.floor_cents }}
+          VC_TOP: ${{ inputs.top }}
+          VC_PAGES: ${{ inputs.pages }}
+        run: python scripts/vc_top_liked.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: top-liked-html
+          path: top_liked.html
+          retention-days: 30

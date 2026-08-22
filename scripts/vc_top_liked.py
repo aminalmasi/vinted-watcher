@@ -84,13 +84,16 @@ def main() -> int:
     # Does the API honour an upper bound on createdAt? If it does we can reach
     # the older, more-liked stock; if not, we are stuck with recent listings and
     # the page should say so rather than pretend otherwise.
-    probe_all = search("2", 0, now - 365*86400, limit=1)
-    probe_old = search("2", 0, now - 365*86400, lte=now - 90*86400, limit=1)
     def hits(j):
         return (j or {}).get("paginationStats", {}).get("totalHits")
-    lte_works = bool(probe_old and hits(probe_old) and hits(probe_old) != hits(probe_all))
-    log.info("createdAt lte supported: %s  (all=%s, older-than-90d=%s)",
-             lte_works, hits(probe_all), hits(probe_old))
+    # Probe on a small brand over a short window: totalHits saturates at 10000,
+    # so a wide probe compares two capped numbers and learns nothing.
+    probe_all = search("115", 0, now - 30*86400, limit=1)
+    probe_cut = search("115", 0, now - 30*86400, lte=now - 15*86400, limit=1)
+    a, b = hits(probe_all), hits(probe_cut)
+    lte_works = bool(a and b and a < 10000 and 0 < b < a)
+    log.info("createdAt lte supported: %s  (30d=%s, 30d capped at 15d=%s)",
+             lte_works, a, b)
 
     bands = ([(now - 365*86400, now - 90*86400, "3-12 months"),
               (now - 90*86400, None, "under 3 months")] if lte_works
@@ -108,12 +111,15 @@ def main() -> int:
                     if it.get("likes") is None:
                         continue
                     pics = it.get("pictures") or []
+                    pic = pics[0] if pics else None
+                    if isinstance(pic, dict):
+                        pic = pic.get("path") or pic.get("url")
                     rows.append({
                         "id": str(it.get("id")), "name": it.get("name") or "",
                         "brand": (it.get("brand") or {}).get("name") or name,
                         "price": (it.get("price") or {}).get("cents", 0) / 100,
                         "likes": it["likes"], "created": it.get("createdAt"),
-                        "pic": (pics[0] or {}).get("path") if pics else None,
+                        "pic": pic,
                         "url": "https://www.vestiairecollective.com" + (it.get("link") or ""),
                     })
         log.info("%-20s pool now %d", name, len(rows))
@@ -136,7 +142,8 @@ def main() -> int:
         if not r["pic"]:
             continue
         try:
-            ir = S.get(IMG.format(p=r["pic"]), timeout=45,
+            src = r["pic"] if str(r["pic"]).startswith("http") else IMG.format(p=r["pic"])
+            ir = S.get(src, timeout=45,
                        headers={"Referer": "https://www.vestiairecollective.com/",
                                 "Accept": "image/avif,image/webp,*/*"})
             if ir.status_code == 200 and ir.content:

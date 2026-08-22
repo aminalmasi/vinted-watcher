@@ -1,0 +1,52 @@
+name: vc-cohort
+
+# Daily longitudinal sample of LIVE listings, so the likes/sold relationship can
+# be measured later against both arms — the ones that sold and the ones that did
+# not. Appends only changes to data/vc_cohort.jsonl.
+on:
+  schedule:
+    # 05:40 UTC — clear of the watcher's 04:15 and 08:15 sweeps, so the two
+    # never contend for the same rate limit.
+    - cron: '40 5 * * *'
+  workflow_dispatch:
+    inputs:
+      window_days:
+        description: 'Sample listings created within this many days'
+        default: '21'
+      pages:
+        description: 'Pages per brand (48 items each)'
+        default: '6'
+
+concurrency:
+  group: vestiaire-api
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  cohort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet -r requirements.txt
+      - env:
+          VC_WINDOW_DAYS: ${{ inputs.window_days }}
+          VC_PAGES: ${{ inputs.pages }}
+        run: python scripts/vc_cohort.py
+      - name: Persist dataset
+        run: |
+          git config user.name  'vestiaire-watcher[bot]'
+          git config user.email 'vestiaire-watcher@users.noreply.github.com'
+          git add data/vc_cohort.jsonl data/vc_cohort_state.json
+          if git diff --cached --quiet; then
+            echo "nothing new"
+          else
+            git commit -m "cohort: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs --autostash origin main || { git rebase --abort || true; }
+            git push origin main
+          fi

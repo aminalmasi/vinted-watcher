@@ -137,21 +137,35 @@ def main() -> int:
     log.info("sampled %d listings; top like count %d, cut-off %d",
              len(uniq), top[0]["likes"], top[-1]["likes"])
 
-    for r in top:
+    # The image host throttles just like the search API: at ~1 req/s the first
+    # nine came back and ranks 10-20 were all refused, a contiguous tail rather
+    # than scattered failures. So fetch photos at the same unhurried pace as
+    # everything else, retry once, and SAY when one is missing instead of
+    # silently rendering a grey box.
+    for i, r in enumerate(top, 1):
         r["img"] = None
         if not r["pic"]:
+            log.warning("#%d %s: no picture in the listing", i, r["brand"])
             continue
-        try:
-            src = r["pic"] if str(r["pic"]).startswith("http") else IMG.format(p=r["pic"])
-            ir = S.get(src, timeout=45,
-                       headers={"Referer": "https://www.vestiairecollective.com/",
-                                "Accept": "image/avif,image/webp,*/*"})
+        src = (r["pic"] if str(r["pic"]).startswith("http")
+               else IMG.format(p=r["pic"]))
+        for attempt in range(2):
+            time.sleep(random.uniform(6, 10) if attempt == 0 else 30)
+            try:
+                ir = S.get(src, timeout=45,
+                           headers={"Referer": "https://www.vestiairecollective.com/",
+                                    "Accept": "image/avif,image/webp,*/*"})
+            except requests.RequestException as exc:
+                log.warning("#%d image: %s", i, type(exc).__name__)
+                continue
             if ir.status_code == 200 and ir.content:
                 mime = ir.headers.get("content-type", "image/jpeg").split(";")[0]
                 r["img"] = f"data:{mime};base64," + base64.b64encode(ir.content).decode()
-        except requests.RequestException:
-            pass
-        time.sleep(random.uniform(0.5, 1.2))
+                break
+            log.warning("#%d image: HTTP %d%s", i, ir.status_code,
+                        " (retrying)" if attempt == 0 else " — giving up")
+    got = sum(1 for r in top if r.get("img"))
+    log.info("embedded %d/%d images", got, len(top))
 
     open(OUT, "w", encoding="utf-8").write(render(top, len(uniq), lte_works))
     log.info("wrote %s (%.1f MB)", OUT, os.path.getsize(OUT)/1024/1024)

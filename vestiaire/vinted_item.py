@@ -58,8 +58,21 @@ def _pick(table, text):
     return [None, None]
 
 
+def clean_url(url: str) -> str:
+    """Tolerate how URLs actually arrive: wrapped in <>, quoted, with stray
+    whitespace, or carrying tracking query junk. A bare InvalidSchema traceback
+    is a hostile way to say "you pasted markdown"."""
+    u = (url or "").strip().strip("<>").strip("\"'").strip()
+    if not u.startswith(("http://", "https://")):
+        raise ValueError(f"not a URL: {url!r}")
+    if "vinted." not in u:
+        raise ValueError(f"not a Vinted URL: {u[:80]!r}")
+    return u.split("?")[0]
+
+
 def parse(url: str, session: requests.Session | None = None) -> dict:
     """Everything we can learn about a Vinted listing, from its public page."""
+    url = clean_url(url)
     s = session or requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9"})
     if not s.cookies.get("access_token_web"):

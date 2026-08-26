@@ -23,6 +23,7 @@ median as an upper bound on realised value, not a receipt.
 from __future__ import annotations
 
 import json, logging, os, random, re, statistics as st, sys, time
+import unicodedata
 import requests
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -84,10 +85,43 @@ def collect(sold: bool):
     return out, total, note
 
 
+# Vinted titles are written in whatever language the seller likes, usually
+# English; Vestiaire's names are Italian. Without this map "High Heels" and
+# "Decollete" share no tokens and EVERY candidate scores 0.00 — which silently
+# turns the top-k into an arbitrary slice rather than the closest matches.
+SYNONYM = {
+    "heel": "decollete", "heels": "decollete", "pump": "decollete",
+    "pumps": "decollete", "tacco": "decollete", "tacchi": "decollete",
+    "sandal": "sandali", "sandals": "sandali", "sandalo": "sandali",
+    "sneaker": "sneakers", "trainer": "sneakers", "trainers": "sneakers",
+    "ginnastica": "sneakers", "boot": "stivali", "boots": "stivali",
+    "ankle": "stivaletti", "bootie": "stivaletti", "booties": "stivaletti",
+    "loafer": "mocassini", "loafers": "mocassini", "mocassino": "mocassini",
+    "ballet": "ballerine", "flats": "ballerine", "ballerina": "ballerine",
+    "clog": "zoccoli", "clogs": "zoccoli", "mule": "zoccoli", "mules": "zoccoli",
+    "slingback": "slingback", "espadrille": "espadrillas",
+    "leather": "pelle", "suede": "scamosciato", "canvas": "tela",
+    "patent": "vernice", "velvet": "velluto", "rubber": "gomma",
+    "satin": "raso", "denim": "jeans",
+}
+STOP = {"in", "con", "di", "e", "the", "and", "a", "shoes", "scarpe", "size",
+        "vintage", "rare", "womens", "woman", "donna", "taglia"}
+
+
+def fold(s: str) -> str:
+    """Strip accents. Italian names are full of them and the tokeniser splits on
+    non-ASCII, so "Decollete" would never match "Decollete" without this."""
+    return "".join(c for c in unicodedata.normalize("NFKD", s or "")
+                   if not unicodedata.combining(c))
+
+
 def tokens(s):
-    stop = {"in", "con", "di", "e", "the", "and", "a", "shoes", "scarpe", "size"}
-    return {t for t in re.split(r"[^a-zA-Z0-9]+", (s or "").lower())
-            if len(t) > 2 and t not in stop}
+    out = set()
+    for t in re.split(r"[^a-zA-Z0-9]+", fold(s).lower()):
+        t = SYNONYM.get(t, t)
+        if len(t) > 2 and t not in STOP:
+            out.add(t)
+    return out
 
 
 def summarise(items, label, total, note):
@@ -112,14 +146,23 @@ def summarise(items, label, total, note):
     q1, q3 = st.quantiles(prices, n=4)[0], st.quantiles(prices, n=4)[2]
     topk = sorted(rows, key=lambda r: -r["sim"])[:K]
     kmed = st.median([r["price"] for r in topk])
+    matched = topk[0]["sim"] > 0 if topk else False
 
     print(f"\n{label}  (sampled {len(rows)} of {total}{'; ' + note if note else ''})")
     print(f"   median  {st.median(prices):>8,.0f} EUR      IQR {q1:,.0f} - {q3:,.0f}")
-    print(f"   top-{K} by name similarity: median {kmed:,.0f} EUR")
-    for r in topk:
-        print(f"      {r['price']:>7,.0f} EUR  sim={r['sim']:.2f}  {r['name'][:44]}")
+    if matched:
+        print(f"   top-{K} by name similarity: median {kmed:,.0f} EUR")
+        for r in topk:
+            print(f"      {r['price']:>7,.0f} EUR  sim={r['sim']:.2f}  {r['name'][:44]}")
+    else:
+        # Every candidate scored zero, so "top-k" would just be an arbitrary
+        # slice. Reporting its median as a price estimate would be inventing a
+        # number. Use the tier-A median above instead.
+        print(f"   top-{K}: NOT MEANINGFUL — no name overlap with any candidate; "
+              f"rely on the median above")
     return {"n": len(rows), "total": total, "median": st.median(prices),
-            "q1": q1, "q3": q3, "topk_median": kmed, "note": note,
+            "q1": q1, "q3": q3, "topk_median": kmed if matched else None,
+            "topk_meaningful": matched, "note": note,
             "topk": topk}
 
 

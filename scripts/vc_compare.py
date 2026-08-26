@@ -144,15 +144,24 @@ def summarise(items, label, total, note):
 
     prices = sorted(r["price"] for r in rows)
     q1, q3 = st.quantiles(prices, n=4)[0], st.quantiles(prices, n=4)[2]
-    topk = sorted(rows, key=lambda r: -r["sim"])[:K]
-    kmed = st.median([r["price"] for r in topk])
-    matched = topk[0]["sim"] > 0 if topk else False
+    # Take everything down to the similarity level that first reaches K, rather
+    # than a hard slice at K. Titles like "Decollete" leave dozens of candidates
+    # tied at the same score, and cutting inside a tie group picks arbitrarily:
+    # on one real query that produced a "top-5 median" of 1,365 EUR for LIVE and
+    # 92 EUR for SOLD on the same shoe. Widening to the whole tie group makes
+    # the number stable and honest about how many items back it.
+    ranked = sorted(rows, key=lambda r: -r["sim"])
+    cutoff = ranked[min(K, len(ranked)) - 1]["sim"] if ranked else 0
+    topk = [r for r in ranked if r["sim"] >= cutoff]
+    kmed = st.median([r["price"] for r in topk]) if topk else 0
+    matched = bool(topk) and cutoff > 0
 
     print(f"\n{label}  (sampled {len(rows)} of {total}{'; ' + note if note else ''})")
     print(f"   median  {st.median(prices):>8,.0f} EUR      IQR {q1:,.0f} - {q3:,.0f}")
     if matched:
-        print(f"   top-{K} by name similarity: median {kmed:,.0f} EUR")
-        for r in topk:
+        tie = f" ({len(topk)} tied at sim>={cutoff:.2f})" if len(topk) > K else ""
+        print(f"   closest by name: median {kmed:,.0f} EUR{tie}")
+        for r in topk[:K]:
             print(f"      {r['price']:>7,.0f} EUR  sim={r['sim']:.2f}  {r['name'][:44]}")
     else:
         # Every candidate scored zero, so "top-k" would just be an arbitrary

@@ -1,0 +1,42 @@
+name: vc-compare
+
+# Prices one Vinted listing against Vestiaire (tier A: brand + subcategory +
+# condition). Attributes are extracted on the cluster, where Vinted answers
+# without a proxy; only the Vestiaire half needs to run here.
+on:
+  workflow_dispatch:
+    inputs:
+      brand_id:     { description: 'Vestiaire brand id', required: true }
+      cat_id:       { description: 'Vestiaire categoryLvl1 id', default: '' }
+      condition_id: { description: 'Vestiaire condition id 1-5', default: '' }
+      title:        { description: 'Vinted title (ranking only)', default: '' }
+      price:        { description: 'Vinted asking price', default: '0' }
+      k:            { description: 'Top-k by name similarity', default: '5' }
+
+concurrency:
+  group: vestiaire-api
+  cancel-in-progress: false
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet -r requirements.txt
+      - env:
+          VC_BRAND_ID:     ${{ inputs.brand_id }}
+          VC_CAT_ID:       ${{ inputs.cat_id }}
+          VC_CONDITION_ID: ${{ inputs.condition_id }}
+          VC_TITLE:        ${{ inputs.title }}
+          VC_PRICE:        ${{ inputs.price }}
+          VC_K:            ${{ inputs.k }}
+        run: python scripts/vc_compare.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compare-json
+          path: compare.json
+          retention-days: 14

@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""vc — the Vestiaire/Vinted toolbox.
+
+Everything built for this project behind one command. Some subcommands run
+locally, some have to be dispatched to GitHub Actions, and which is which is
+not obvious from the outside — Vestiaire's search 403s the university IP while
+Vinted blocks datacenter IPs, so the work is split across two machines. This
+hides that: you say what you want, it runs it in the right place and waits.
+
+    vc compare <vinted-url> [k]   price a Vinted listing against Vestiaire
+    vc status                     watcher health at a glance
+    vc likes                      do likes predict a sale? (local, offline)
+    vc top [floor] [n]            HTML grid of the most-liked live listings
+    vc view [floor] [n]           same, one item per screen, big photos
+    vc hot                        live listings ranked by likes gained per day
+    vc brands                     every brand ranked by sold volume
+    vc digest                     send today's Telegram digest now
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import time
+
+REPO = os.path.dirname(os.path.abspath(__file__))
+GH = "/extra/malmasik/.local/bin/gh"
+PY = "/home/malmasik/.venvs/a100_new_real/bin/python"
+OUTDIR = os.path.expanduser("~/vinted_reports")
+
+
+def sh(*a, **kw):
+    return subprocess.run(a, cwd=REPO, capture_output=True, text=True, **kw)
+
+
+def dispatch(workflow: str, *flags, artifact: str | None = None,
+             show_from: str | None = None):
+    """Fire an Actions workflow, wait for it, then surface what it produced."""
+    r = sh(GH, "workflow", "run", workflow, *flags)
+    if r.returncode:
+        sys.exit(f"dispatch failed: {(r.stderr or r.stdout).strip()[:300]}")
+    print(f"dispatched {workflow}; waiting...")
+    time.sleep(12)
+    rid = ""
+    for _ in range(12):
+        q = sh(GH, "run", "list", f"--workflow={workflow}", "--limit", "1",
+               "--json", "databaseId", "-q", ".[0].databaseId")
+        rid = (q.stdout or "").strip()
+        if rid:
+            break
+        time.sleep(6)
+    if not rid:
+        sys.exit("could not find the dispatched run")
+    subprocess.run([GH, "run", "watch", rid, "--interval", "20"], cwd=REPO)
+
+    if show_from:
+        body = sh(GH, "run", "view", rid, "--log").stdout
+        i = body.find(show_from)
+        if i >= 0:
+            print("\n" + "=" * 68)
+            for line in body[i:].splitlines():
+                line = line.split("\t")[-1]
+                if line.startswith("##[") or "Post job" in line:
+                    break
+                print(line)
+    if artifact:
+        os.makedirs(OUTDIR, exist_ok=True)
+        d = sh(GH, "run", "download", rid, "-n", artifact, "-D", OUTDIR)
+        if d.returncode:
+            print(f"(no artifact: {d.stderr.strip()[:160]})")
+        else:
+            for f in sorted(os.listdir(OUTDIR)):
+                p = os.path.join(OUTDIR, f)
+                print(f"\nsaved {p}  ({os.path.getsize(p)/1024/1024:.1f} MB)")
+    return rid
+
+
+def cmd_status(_):
+    """Is the watcher healthy, and what has it seen lately?"""
+    runs = sh(GH, "run", "list", "--workflow=vestiaire-watch.yml", "--limit", "6",
+              "--json", "createdAt,conclusion",
+              "-q", '.[] | "\(.createdAt[5:16])  \(.conclusion)"').stdout
+    print("recent sweeps:")
+    print("\n".join("  " + l for l in runs.strip().splitlines()) or "  none")
+    body = sh("git", "show", "origin/main:data/vestiaire_state.json").stdout
+    if not body:
+        sh("git", "fetch", "-q", "origin")
+        body = sh("git", "show", "origin/main:data/vestiaire_state.json").stdout
+    try:
+        st = json.loads(body)
+    except ValueError:
+        return print("\n(no state file yet)")
+    seen = st.get("seen", {})
+    # Not "everything without a seeded flag": the flag was added on 2026-08-18,
+    # so the original backlog carries none and would be counted as witnessed.
+    # Recent windows are unambiguous regardless of when the flag arrived.
+    now = time.time()
+    def since(h):
+        return sum(1 for v in seen.values()
+                   if not v.get("seeded") and (v.get("first_seen") or 0) > now - h * 3600)
+    print(f"\ntracked {len(seen)} listings")
+    print(f"sales detected: {since(24)} in 24h, {since(24*7)} in 7d")
+    print(f"last digest: {st.get('last_report_date')}  |  runs: {st.get('runs')}")
+    if st.get("blind_runs"):
+        print(f"!! {st['blind_runs']} blind sweep(s) — the API may have changed")
+    counts = st.get("last_counts") or {}
+    if counts:
+        top = sorted(counts.items(), key=lambda kv: -kv[1])[:5]
+        print("in-window sold, last sweep: "
+              + ", ".join(f"{k} {v}" for k, v in top))
+
+
+def main() -> int:
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
+        print(__doc__)
+        return 0
+    cmd, rest = sys.argv[1], sys.argv[2:]
+
+    if cmd == "compare":
+        if not rest:
+            sys.exit("usage: vc compare <vinted-url> [k]")
+        os.execv(PY, [PY, os.path.join(REPO, "scripts", "compare.py"), *rest])
+    elif cmd == "status":
+        cmd_status(rest)
+    elif cmd == "likes":
+        subprocess.run([PY, os.path.join(REPO, "scripts", "vc_likes_analysis.py")])
+    elif cmd in ("top", "view"):
+        floor = rest[0] if rest else "20000"
+        n = rest[1] if len(rest) > 1 else "20"
+        flags = ["-f", f"floor_cents={floor}", "-f", f"top={n}"]
+        if cmd == "view":
+            flags += ["-f", "layout=viewer", "-f", "photos=1", "-f", "width=900"]
+        dispatch("vc-top-liked.yml", *flags, artifact="top-liked-html")
+    elif cmd == "hot":
+        dispatch("vc-hot-listings.yml", show_from="sampled")
+    elif cmd == "brands":
+        dispatch("vc-brand-ranking.yml", show_from="Brands by SOLD")
+    elif cmd == "digest":
+        dispatch("vestiaire-watch.yml", "-f", "report=true", show_from="daily report")
+    else:
+        print(__doc__)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

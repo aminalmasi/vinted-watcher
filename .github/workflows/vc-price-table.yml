@@ -1,0 +1,41 @@
+name: vc-price-table
+
+# Weekly: what is each (brand, subcategory, condition) actually worth on
+# Vestiaire, from SOLD listings. ~500 cells at a 6-10s pace, so it runs long.
+# Resumable: rerun after a timeout and it skips finished cells.
+on:
+  schedule:
+    - cron: '20 2 * * 1'          # Mondays 02:20 UTC, clear of every other job
+  workflow_dispatch:
+
+concurrency:
+  group: vestiaire-api
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet -r requirements.txt
+      - run: python scripts/vc_price_table.py
+      - name: Persist table
+        if: always()
+        run: |
+          git config user.name  'vestiaire-watcher[bot]'
+          git config user.email 'vestiaire-watcher@users.noreply.github.com'
+          git add data/vc_price_table.json
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "price table: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs --autostash origin main || { git rebase --abort || true; }
+            git push origin main
+          fi

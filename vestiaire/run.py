@@ -126,6 +126,12 @@ def sweep(vc: Vestiaire, st: dict, dry: bool) -> tuple[list, dict]:
                 # the people who liked an item are the pool that makes offers.
                 # It rides along in the search response we already pay for.
                 "likes": it.get("likes"),
+                # Photo path, kept so a price-labelled image index can be built
+                # later. Sold listings drop out of apiv2 within hours, so a
+                # photo not recorded at detection is gone for good — this is
+                # cheap now and unrecoverable afterwards.
+                "pic": (lambda ps: (ps[0].get("path") if isinstance(ps[0], dict)
+                                    else ps[0]) if ps else None)(it.get("pictures") or []),
                 "first_seen": now,
                 # Time-to-sell, measured from when we SAW it turn sold. That is
                 # within one sweep of the truth, which is far finer than the

@@ -24,9 +24,12 @@ COND = os.environ.get("VC_COND", "3")
 WIDTH = os.environ.get("VC_WIDTH", "400")
 GAP = (float(os.environ.get("VC_GAP_MIN", "4.0")),
        float(os.environ.get("VC_GAP_MAX", "6.0")))
+OFFSET = int(os.environ.get("VC_OFFSET", "0"))
+LIMIT = int(os.environ.get("VC_LIMIT", "0"))
 SRC = f"vc_sold_{BRAND}.jsonl"
-OUTDIR = f"img_{BRAND}_{COND}"
-TARBALL = f"images_{BRAND}_{COND}.tar"
+TAG = f"{BRAND}_{COND}_{OFFSET}"
+OUTDIR = f"img_{TAG}"
+TARBALL = f"images_{TAG}.tar"
 IMG = "https://images.vestiairecollective.com/images/resized/w={w},q=75/produit/{p}"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
@@ -49,8 +52,17 @@ def main() -> int:
             continue
         if str(r.get("cond")) == COND and r.get("pic"):
             rows.append(r)
-    log.info("shard brand=%s cond=%s: %d photos to fetch (~%.1f h)",
-             BRAND, COND, len(rows), len(rows) * sum(GAP) / 2 / 3600)
+    # Index-based sharding on a stable sort. (brand, condition) alone gives
+    # wildly uneven shards — Gucci's "Ottimo stato" is ~7,500 photos, which at
+    # a polite pace exceeds the 6-hour job ceiling, while small brands finish in
+    # minutes. Slicing by offset/limit makes every shard the same size and
+    # therefore predictable.
+    rows.sort(key=lambda r: str(r.get("id")))
+    if LIMIT:
+        rows = rows[OFFSET:OFFSET + LIMIT]
+    log.info("shard brand=%s cond=%s offset=%d limit=%s: %d photos (~%.1f h)",
+             BRAND, COND, OFFSET, LIMIT or "all", len(rows),
+             len(rows) * sum(GAP) / 2 / 3600)
     os.makedirs(OUTDIR, exist_ok=True)
 
     ok = miss = 0

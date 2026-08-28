@@ -8,7 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       brand: { description: 'Vestiaire brand id', required: true }
-      cond:  { description: 'Condition id 1-5', required: true }
+      cond:   { description: 'Condition id 1-5', required: true }
+      offset: { description: 'Start index within the shard', default: '0' }
+      limit:  { description: 'Max photos this shard (0 = all)', default: '0' }
 
 jobs:
   images:
@@ -35,11 +37,13 @@ jobs:
           ls -la vc_sold_*.jsonl
       - env:
           VC_BRAND: ${{ inputs.brand }}
-          VC_COND:  ${{ inputs.cond }}
+          VC_COND:   ${{ inputs.cond }}
+          VC_OFFSET: ${{ inputs.offset }}
+          VC_LIMIT:  ${{ inputs.limit }}
         run: python scripts/vc_images.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: images-${{ inputs.brand }}-${{ inputs.cond }}
+          name: images-${{ inputs.brand }}-${{ inputs.cond }}-${{ inputs.offset }}
           path: images_*.tar
           retention-days: 30

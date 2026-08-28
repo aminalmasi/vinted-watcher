@@ -1,0 +1,45 @@
+name: vc-images
+
+# One shard of the photo corpus: (brand, condition). Deliberately NO concurrency
+# group — throughput here comes from running many shards at once, each at the
+# polite 4-6 s the CDN was measured to tolerate. The search API stays sequential
+# elsewhere; this is the image CDN, which is built for exactly this.
+on:
+  workflow_dispatch:
+    inputs:
+      brand: { description: 'Vestiaire brand id', required: true }
+      cond:  { description: 'Condition id 1-5', required: true }
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet -r requirements.txt
+      - name: Fetch this brand's metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rid=$(gh run list --workflow=vc-harvest.yml --status=success --limit 40 \
+                 --json databaseId,displayTitle -q \
+                 '[.[]][0].databaseId')
+          for cand in $(gh run list --workflow=vc-harvest.yml --status=success \
+                        --limit 40 --json databaseId -q '.[].databaseId'); do
+            if gh run download "$cand" -n "sold-${{ inputs.brand }}" 2>/dev/null; then
+              echo "metadata from run $cand"; break
+            fi
+          done
+          ls -la vc_sold_*.jsonl
+      - env:
+          VC_BRAND: ${{ inputs.brand }}
+          VC_COND:  ${{ inputs.cond }}
+        run: python scripts/vc_images.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: images-${{ inputs.brand }}-${{ inputs.cond }}
+          path: images_*.tar
+          retention-days: 30

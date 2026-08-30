@@ -28,11 +28,13 @@ from vestiaire.client import FIELDS, LOCALE, PAGE, SEARCH, UA   # noqa: E402
 from vestiaire.run import BRANDS, SHOES_WOMEN                   # noqa: E402
 
 BRAND = os.environ.get("VC_BRAND", "60")
+# Same walk works for the live catalogue; only the `sold` filter differs.
+SOLD = os.environ.get("VC_SOLD", "1") == "1"
 FROM = os.environ.get("VC_FROM", "2023-01")
 TO = os.environ.get("VC_TO", "")
 CONDITIONS = ["1", "2", "3", "4", "5"]
 SAFE = 900              # stay clear of the ~1000 pagination ceiling
-OUT = f"vc_sold_{BRAND}.jsonl"
+OUT = f"vc_{'sold' if SOLD else 'live'}_{BRAND}.jsonl"
 
 log = logging.getLogger("harvest")
 S = requests.Session()
@@ -51,7 +53,7 @@ def call(cond, gte, lte, offset, limit=PAGE):
     time.sleep(random.uniform(6, 10))
     body = {"pagination": {"offset": offset, "limit": limit}, "fields": FIELDS,
             "filters": {"brand.id": [BRAND], "categoryLvl0.id": [SHOES_WOMEN],
-                        "condition.id": [cond], "sold": True,
+                        "condition.id": [cond], "sold": SOLD,
                         "createdAt": {"gte": gte, "lte": lte}},
             "locale": LOCALE, "sort": "recency"}
     for attempt in range(2):
@@ -137,7 +139,8 @@ def months(a: str, b: str):
 
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
-    log.info("harvesting %s (%s) from %s", BRANDS.get(BRAND, BRAND), BRAND, FROM)
+    log.info("harvesting %s %s (%s) from %s", "SOLD" if SOLD else "LIVE",
+             BRANDS.get(BRAND, BRAND), BRAND, FROM)
     t0, total = time.time(), 0
     with open(OUT, "w", encoding="utf-8") as fh:
         for label, gte, lte in months(FROM, TO):

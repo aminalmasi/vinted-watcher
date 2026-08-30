@@ -12,6 +12,9 @@ on:
       from:
         description: 'Start month YYYY-MM'
         default: '2023-01'
+      sold:
+        description: '1 = sold listings, 0 = live listings'
+        default: '1'
 
 concurrency:
   group: vestiaire-api
@@ -29,10 +32,11 @@ jobs:
       - env:
           VC_BRAND: ${{ inputs.brand }}
           VC_FROM:  ${{ inputs.from }}
+          VC_SOLD:  ${{ inputs.sold }}
         run: python scripts/vc_harvest.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sold-${{ inputs.brand }}
-          path: vc_sold_*.jsonl
+          name: harvest-${{ inputs.sold == '1' && 'sold' || 'live' }}-${{ inputs.brand }}
+          path: vc_*_*.jsonl
           retention-days: 30

@@ -1,0 +1,42 @@
+name: vc-live-photos
+
+# One shard of the live corpus: apiv2 for the photo list, then 3 photos each.
+# No concurrency group — throughput comes from running 5 shards at once, each
+# at the measured-safe rates (apiv2 ~1 s, CDN 4-6 s).
+on:
+  workflow_dispatch:
+    inputs:
+      brand:  { description: 'Vestiaire brand id', required: true }
+      offset: { description: 'Start index', default: '0' }
+      limit:  { description: 'Listings this shard', default: '1000' }
+
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet -r requirements.txt
+      - name: Fetch this brand's live metadata
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          for cand in $(gh run list --workflow=vc-harvest.yml --status=success \
+                        --limit 60 --json databaseId -q '.[].databaseId'); do
+            if gh run download "$cand" -n "harvest-live-${{ inputs.brand }}" 2>/dev/null; then
+              echo "metadata from run $cand"; break
+            fi
+          done
+          ls -la vc_live_*.jsonl
+      - env:
+          VC_BRAND:  ${{ inputs.brand }}
+          VC_OFFSET: ${{ inputs.offset }}
+          VC_LIMIT:  ${{ inputs.limit }}
+        run: python scripts/vc_live_photos.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-${{ inputs.brand }}-${{ inputs.offset }}
+          path: live_*.tar
+          retention-days: 30

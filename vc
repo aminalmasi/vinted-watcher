@@ -84,10 +84,13 @@ def cmd_status(_):
               "-q", '.[] | "\(.createdAt[5:16])  \(.conclusion)"').stdout
     print("recent sweeps:")
     print("\n".join("  " + l for l in runs.strip().splitlines()) or "  none")
+    # Always fetch first. Fetching only when `git show` came back EMPTY meant a
+    # stale-but-present local ref was reported as current — on 2026-09-03 that
+    # showed "0 sales in 24h" and a digest four days old, while the watcher was
+    # in fact fine (170 sales, digest sent). A monitoring tool that quietly
+    # reports old state is worse than no monitoring tool.
+    sh("git", "fetch", "-q", "origin")
     body = sh("git", "show", "origin/main:data/vestiaire_state.json").stdout
-    if not body:
-        sh("git", "fetch", "-q", "origin")
-        body = sh("git", "show", "origin/main:data/vestiaire_state.json").stdout
     try:
         st = json.loads(body)
     except ValueError:

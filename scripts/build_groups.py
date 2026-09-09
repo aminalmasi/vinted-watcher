@@ -96,6 +96,27 @@ def main() -> int:
             continue
         groups[(str(r["brand"]), m, sub_of(r["link"]))].append(r)
 
+    # Two passes, because the first version compared whole token strings and so
+    # only caught bare material words. "cassandra-vinile", "tribute-anguilla"
+    # and "anja-pelli-esotiche" survived it and fragmented their real groups
+    # into singletons. Detecting cross-brand words at the WORD level and
+    # stripping them lets those merge back into cassandra / tribute / anja.
+    word_brands = collections.defaultdict(set)
+    for (b_, m, _s) in groups:
+        for w in m.split("-"):
+            word_brands[w].add(b_)
+    junk_words = {w for w, bs in word_brands.items() if len(bs) >= CROSS_BRAND_MAX}
+    if junk_words:
+        print(f"stripping {len(junk_words)} cross-brand WORDS: "
+              f"{', '.join(sorted(junk_words)[:12])}")
+        merged = collections.defaultdict(list)
+        for (b_, m, sub), v in groups.items():
+            m2 = "-".join(w for w in m.split("-") if w not in junk_words)
+            if m2:
+                merged[(b_, m2, sub)].extend(v)
+        before, groups = len(groups), dict(merged)
+        print(f"  groups {before:,} -> {len(groups):,} after merging fragments")
+
     # A real model name is brand-exclusive: "oran" is Hermes, "so-kate" is
     # Louboutin. A token appearing across many brands is therefore almost
     # certainly a material or style word my stop-list missed - this caught

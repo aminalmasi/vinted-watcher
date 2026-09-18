@@ -1,0 +1,26 @@
+name: vinted-track
+on:
+  schedule:
+    - cron: '25 */3 * * *'
+  workflow_dispatch:
+concurrency: { group: vinted-track, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - run: python scripts/vinted_track.py
+      - name: Persist
+        run: |
+          git config user.name  'vinted-tracker[bot]'
+          git config user.email 'vinted-tracker@users.noreply.github.com'
+          git add data/vinted_track.json
+          git diff --cached --quiet || {
+            git commit -m "vinted track: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort || true
+            git push origin main; }

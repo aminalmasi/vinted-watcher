@@ -25,11 +25,22 @@ N_GROUPS = int(os.environ.get("N_GROUPS", "40"))
 PER_GROUP = int(os.environ.get("PER_GROUP", "12"))
 
 
+THUMB = int(os.environ.get("THUMB", "200"))
+
+
 def b64(rel):
+    """Downscale before embedding. At 400px the page was 10.2 MB and failed to
+    upload; 200px is ample for judging "same product or not" and lands near 3 MB."""
+    from io import BytesIO
+    from PIL import Image
     try:
-        with open(os.path.join(DATA, rel), "rb") as fh:
-            return "data:image/jpeg;base64," + base64.b64encode(fh.read()).decode()
-    except OSError:
+        with Image.open(os.path.join(DATA, rel)) as im:
+            im = im.convert("RGB")
+            im.thumbnail((THUMB, THUMB))
+            buf = BytesIO()
+            im.save(buf, "JPEG", quality=72)
+        return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    except Exception:
         return None
 
 

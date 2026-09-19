@@ -8,18 +8,18 @@ on:
   # One job at the measured-safe rate covers every absent listing in ~22 min at
   # the current corpus size, so this needs no parallelism.
   schedule:
-    # Every two hours, not hourly. Scheduled triggers are best-effort and were
-    # actually landing 2.5-3h apart, so an hourly cron with a 45-minute budget
-    # left most of each window unused while the absent queue went uncovered.
-    # A longer budget on a realistic cadence covers the queue instead.
-    - cron: '25 */2 * * *'
+    # Hourly. A full sweep of every band costs ~250 requests and verifies the
+    # presence of all ~17k listings in ~17 min; only the ~140 that went missing
+    # need a deep check. That is ~390 requests a cycle against a ~1,800 per-IP
+    # ceiling, so the hour is comfortable rather than tight.
+    - cron: '25 * * * *'
   workflow_dispatch:
 concurrency: { group: vinted-track, cancel-in-progress: false }
 permissions: { contents: write }
 jobs:
   track:
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,10 +29,9 @@ jobs:
         env:
           # Must finish inside the hourly cadence with room for the commit;
           # anything not reached simply leads the queue next cycle.
-          # ~1,330 checks, which clears the ~970 absent queue with room for
-          # rotation, and stays under the ~1,800 per-IP ceiling once the ~160
-          # discovery requests are counted.
-          VT_BUDGET_MIN: '80'
+          # Leaves ~28 min for deep checks after the ~17 min full sweep,
+          # which is ~420 checks against ~140 expected absences.
+          VT_BUDGET_MIN: '45'
         run: python scripts/vinted_track.py
       - name: Persist
         run: |

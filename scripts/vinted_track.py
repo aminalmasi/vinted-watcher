@@ -59,14 +59,15 @@ AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
 # Consecutive 403/429 before abandoning the cycle. A run that went 448
 # refusals deep learned nothing after the first few.
 BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
-# Price bands swept per cycle per brand. Discovery shares the ~1,800 per-IP
-# ceiling with the state checks, so sweeping all six every cycle would starve
-# the checks that actually find sales. Measured cost is lower than feared -
-# the adaptive stop ends most bands around page 4, so three bands is ~120
-# requests - and rotation also sets how fast absence can be detected at all:
-# a listing can only be seen missing from a band that was searched, so three
-# of six means full absence coverage every two cycles.
-BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "4"))
+# Price bands swept per cycle per brand; 0 means all of them.
+#
+# Rotation was a false economy. A catalog page carries ~96 listings, so
+# sweeping EVERY band costs only ~250 requests and establishes the presence of
+# all 17k listings in about 17 minutes. Rotating bands saved a trivial number
+# of requests while making absence invisible for hours - and absence is the
+# only thing that triggers a sale check. Sweeping everything every cycle is both
+# cheaper in the way that matters and far faster to detect a sale.
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "0"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
@@ -199,7 +200,7 @@ def sweep(s, brand, bands=None, cycle=0):
     # so full band coverage each cycle would starve the checks that actually
     # find sales. Bands are rotated instead: a price band does not turn over
     # much in an hour, and every band is still visited within a few cycles.
-    if bands and BANDS_PER_CYCLE < len(spans):
+    if bands and 0 < BANDS_PER_CYCLE < len(spans):
         start = (cycle * BANDS_PER_CYCLE) % len(spans)
         spans = [spans[(start + k) % len(spans)] for k in range(BANDS_PER_CYCLE)]
     for lo, hi in spans:

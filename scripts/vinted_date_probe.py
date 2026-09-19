@@ -45,11 +45,17 @@ def main() -> int:
     show("CATALOG page", r.text)
     pairs = re.findall(r"/items/(\d{6,12})-([a-z0-9-]{3,60})", r.text)
     time.sleep(3)
-    if pairs:
-        iid, slug = pairs[0]
+    for iid, slug in pairs[:3]:
+        time.sleep(3)
         r2 = s.get(f"https://www.vinted.it/items/{iid}-{slug}", timeout=60)
-        print(f"\n  item {iid} -> HTTP {r2.status_code}, {len(r2.text)//1024} KB")
-        show("ITEM page", r2.text)
+        print(f"\n  item {iid} -> HTTP {r2.status_code}", flush=True)
+        # Context matters more than the match: pruning on the wrong string
+        # would discard listings that are not old at all.
+        for m in re.finditer(PATTERNS[-1][1], r2.text):
+            a, b = max(0, m.start()-110), min(len(r2.text), m.end()+40)
+            ctx = re.sub(r"\s+", " ", r2.text[a:b])
+            print(f"    >>> {m.group(1)!r}", flush=True)
+            print(f"        ...{ctx}...", flush=True)
     return 0
 
 

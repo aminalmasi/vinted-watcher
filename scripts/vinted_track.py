@@ -59,11 +59,14 @@ AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
 # Consecutive 403/429 before abandoning the cycle. A run that went 448
 # refusals deep learned nothing after the first few.
 BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
-# Price bands swept per cycle per brand. Six bands x ten brands x ten pages
-# would be ~600 discovery requests against a ~1,800 per-IP ceiling shared with
-# the state checks; two bands keeps discovery near 200 and still covers every
-# band every three hours.
-BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "2"))
+# Price bands swept per cycle per brand. Discovery shares the ~1,800 per-IP
+# ceiling with the state checks, so sweeping all six every cycle would starve
+# the checks that actually find sales. Measured cost is lower than feared -
+# the adaptive stop ends most bands around page 4, so three bands is ~120
+# requests - and rotation also sets how fast absence can be detected at all:
+# a listing can only be seen missing from a band that was searched, so three
+# of six means full absence coverage every two cycles.
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "3"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
@@ -152,6 +155,29 @@ def _parse(t, found):
     return len(ids), fresh
 
 
+def covered(rec: dict, swept: dict) -> bool:
+    """Was this listing inside a price band we actually searched this cycle?
+
+    Absence only means something within a span that was searched. A listing
+    priced EUR 300 is not "gone" because we only swept the 0-100 band - it was
+    never looked for. Treating those as absent floods the check queue with
+    listings that are plainly alive: one cycle marked 6,382 absent, of which
+    98.2% came back live.
+    """
+    spans = swept.get(rec.get("brand"))
+    if not spans:
+        return False
+    if spans == [(None, None)]:          # unbanded sweep covers everything
+        return True
+    try:
+        p = float(rec.get("price") or 0)
+    except (TypeError, ValueError):
+        return False
+    if p <= 0:
+        return False
+    return any(lo <= p <= hi for lo, hi in spans)
+
+
 def sweep(s, brand, bands=None, cycle=0):
     """One brand's current listings: id -> price, image, title.
 
@@ -194,7 +220,11 @@ def sweep(s, brand, bands=None, cycle=0):
             # with ten brands times six bands that waste is the whole budget.
             if n == 0 or fresh == 0:
                 break
-    return found
+    # The swept spans come back with the listings, because absence is only
+    # meaningful WITHIN a span that was actually searched. Without this, band
+    # rotation marks every listing in an unswept band as "missing from the
+    # feed" when it was simply never looked for.
+    return found, spans
 
 
 def check_state(s, iid, slug):
@@ -270,14 +300,19 @@ def mode_discover(shard: int, shards: int, out: str) -> int:
     # Band rotation needs the cycle number; plan/ owns incrementing it, so read
     # the current value rather than advancing it here.
     cycle = load_state().get("cycle", 0) + 1
+    swept = {}
     for b in mine:
-        f = sweep(s, b, bands.get(b), cycle)
+        f, spans = sweep(s, b, bands.get(b), cycle)
+        swept[b] = spans
         for iid, v in f.items():
             v["brand"] = b
             found[iid] = v
         print(f"  {b:<20} {len(f):>5} listings"
               f"{'' if b in bands else '  (unbanded)'}", flush=True)
-    json.dump(found, open(out, "w"), separators=(",", ":"))
+    # The swept spans travel with the listings so plan/ can tell a genuine
+    # disappearance from a band that was simply not searched this cycle.
+    json.dump({"found": found, "swept": swept}, open(out, "w"),
+              separators=(",", ":"))
     print(f"shard {shard}: {len(found):,} listings -> {out}", flush=True)
     return 0
 
@@ -286,13 +321,16 @@ def mode_plan(indir: str, out: str) -> int:
     """Merge shard discoveries into state and decide what to check."""
     st, now = load_state(), int(time.time())
     st["cycle"] += 1
-    seen_now = {}
+    seen_now, swept = {}, {}
     for fn in sorted(os.listdir(indir)):
         if fn.endswith(".json"):
-            seen_now.update(json.load(open(os.path.join(indir, fn))))
+            d = json.load(open(os.path.join(indir, fn)))
+            seen_now.update(d.get("found", {}))
+            swept.update(d.get("swept", {}))
     print(f"total distinct discovered: {len(seen_now):,}", flush=True)
 
-    absent_set = {i for i in st["tracked"] if i not in seen_now}
+    absent_set = {i for i in st["tracked"]
+                  if i not in seen_now and covered(st["tracked"][i], swept)}
     due = [i for i in st["tracked"]
            if i in absent_set
            or now - st["tracked"][i].get("last_check", 0) > RECHECK_H * 3600]
@@ -462,8 +500,10 @@ def main_single() -> int:
             print("  no band file - falling back to unbanded search", flush=True)
 
     seen_now = {}
+    swept: dict[str, list] = {}
     for b in BRANDS:
-        f = sweep(s, b, bands.get(b), st["cycle"])
+        f, spans = sweep(s, b, bands.get(b), st["cycle"])
+        swept[b] = spans
         for iid, v in f.items():
             v["brand"] = b
             seen_now[iid] = v
@@ -471,8 +511,12 @@ def main_single() -> int:
               f"{'' if b in bands else '  (unbanded)'}", flush=True)
     print(f"total distinct: {len(seen_now):,}", flush=True)
 
-    absent = [i for i in st["tracked"] if i not in seen_now]
-    print(f"\ntracked {len(st['tracked']):,}, absent from feed {len(absent):,}",
+    absent = [i for i in st["tracked"]
+              if i not in seen_now and covered(st["tracked"][i], swept)]
+    uncovered = len(st["tracked"]) - len(seen_now & st["tracked"].keys()) \
+        - len(absent)
+    print(f"\ntracked {len(st['tracked']):,}, absent from a band we actually "
+          f"swept {len(absent):,} ({uncovered:,} in unswept bands, not absent)",
           flush=True)
 
     # State is now READ, not inferred. Disappearance is only a priority hint:

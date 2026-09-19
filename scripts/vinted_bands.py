@@ -23,6 +23,10 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE = os.path.join(REPO, "data", "vinted_track.json")
 OUT = os.path.join(REPO, "data", "vinted_bands.json")
 NBANDS = int(os.environ.get("VT_NBANDS", "6"))
+# A band holding more than this many listings is at risk of hitting the ~960
+# pagination cap, which silently hides everything behind it. Brands whose
+# corpus has outgrown six bands get more of them.
+TARGET_PER_BAND = int(os.environ.get("VT_TARGET_PER_BAND", "450"))
 OPEN_TOP = 100000
 
 
@@ -60,11 +64,15 @@ def main() -> int:
         if len(ps) < 50:
             print(f"  {b:<22} only {len(ps)} priced - no bands", flush=True)
             continue
-        bands[b] = compute(ps)
+        # Six bands split a 9k corpus evenly; at 17k the same edges left
+        # Gucci and Prada with bands of 916 and 933 against a ~960 cap, so
+        # the count is now driven by the corpus rather than fixed.
+        k = max(NBANDS, -(-len(ps) // TARGET_PER_BAND))
+        bands[b] = compute(ps, k)
         share = [sum(1 for p in ps if bands[b][i] <= p < bands[b][i + 1])
                  for i in range(len(bands[b]) - 1)]
-        print(f"  {b:<22} n={len(ps):>4} {str(bands[b]):<42} "
-              + " ".join(f"{100*x/len(ps):>3.0f}%" for x in share), flush=True)
+        print(f"  {b:<22} n={len(ps):>5}  {len(bands[b])-1} bands, "
+              f"largest {max(share):>4}  {bands[b]}", flush=True)
 
     json.dump(bands, open(OUT, "w"), indent=1)
     print(f"\nwrote {OUT} ({len(bands)} brands)")

@@ -66,7 +66,7 @@ BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
 # requests - and rotation also sets how fast absence can be detected at all:
 # a listing can only be seen missing from a band that was searched, so three
 # of six means full absence coverage every two cycles.
-BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "3"))
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "4"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 

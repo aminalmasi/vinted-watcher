@@ -42,12 +42,28 @@ PAGES = int(os.environ.get("VT_PAGES", "10"))
 # rate proven clean, and the pacer moves it if reality disagrees.
 GAP_FLOOR = float(os.environ.get("VT_GAP", "2.5"))
 GAP_CEIL = 20.0
-MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "2800"))
+# Two ceilings, and the second one only showed up in production. Rate: 2.0s
+# between requests is clean, 1.0s returns 21% HTTP 429. VOLUME: a 2,235-check
+# run went clean for ~1,800 requests and was then 403'd for the remaining 448.
+# So the cap sits well under that, and the clock budget usually binds first.
+MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "1500"))
 # The real limit is the clock, not the count: the Actions job is killed at 180
 # minutes and a killed job never reaches the state save, losing the whole
 # cycle. So checking stops with time to spare and whatever was not reached
 # simply leads the queue next cycle - nothing is lost by stopping early.
 BUDGET_MIN = float(os.environ.get("VT_BUDGET_MIN", "150"))
+# Buckets for "how long had it been gone when we checked it". If deletions are
+# really sales that 404'd first, sold% falls and deleted% rises across these.
+AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
+            (12, 24, "12-24h"), (24, 1e9, ">24h")]
+# Consecutive 403/429 before abandoning the cycle. A run that went 448
+# refusals deep learned nothing after the first few.
+BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
+# Price bands swept per cycle per brand. Six bands x ten brands x ten pages
+# would be ~600 discovery requests against a ~1,800 per-IP ceiling shared with
+# the state checks; two bands keeps discovery near 200 and still covers every
+# band every three hours.
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "2"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
@@ -66,19 +82,39 @@ class Pacer:
         self.gap = gap
         self.ok_streak = 0
         self.throttled = 0
+        self.streak = 0          # consecutive blocks
+
+    @property
+    def blocked(self) -> bool:
+        """Give up for this cycle once it is clearly not a transient refusal.
+
+        Once the cumulative ceiling is hit, every further request is refused;
+        continuing would spend the whole budget learning that repeatedly, and
+        would keep hammering a host that has already said no. Whatever is not
+        checked simply leads the queue next cycle.
+        """
+        return self.streak >= BLOCK_GIVEUP
 
     def wait(self) -> None:
         time.sleep(random.uniform(self.gap, self.gap * 1.4))
 
     def saw(self, status: int | None) -> None:
-        if status == 429:
+        # 403 counts as a block, not an error. A 2,235-check run stayed clean
+        # for ~1,800 requests and then returned 448 consecutive 403s - a
+        # CUMULATIVE volume ceiling, which no fixed gap avoids and which a
+        # short rate probe cannot see. Because only 429 was handled, the run
+        # sailed through every one of them without slowing down.
+        if status in (429, 403):
             self.throttled += 1
             self.ok_streak = 0
+            self.streak += 1
             self.gap = min(GAP_CEIL, self.gap * 1.8)
-            print(f"    429 - slowing to {self.gap:.1f}s", flush=True)
+            print(f"    HTTP {status} - slowing to {self.gap:.1f}s "
+                  f"({self.streak} in a row)", flush=True)
             time.sleep(30)
         elif status == 200:
             self.ok_streak += 1
+            self.streak = 0
             # Only creep back down after a long clean run, and never below the
             # rate that was actually proven clean.
             if self.ok_streak >= 50 and self.gap > GAP_FLOOR:
@@ -100,26 +136,64 @@ def get(s, url, **kw):
     return r
 
 
-def sweep(s, brand):
-    """One brand's current listings: id -> price, image, title."""
+def _parse(t, found):
+    """Pull ids, prices and one image each out of a catalog page."""
+    ids = re.findall(r"/items/(\d{6,12})-([a-z0-9-]{3,60})", t)
+    pmap = dict(re.findall(
+        r'\\?"id\\?":(\d{6,12}),.{0,400}?\\?"amount\\?":\\?"([\d.]+)', t))
+    imgs = dict(re.findall(
+        r'\\?"id\\?":(\d{6,12}),.{0,3000}?(https://images\d*\.vinted\.net/[^"\\\s]+/f800/[^"\\\s]+)', t))
+    fresh = 0
+    for iid, slug in ids:
+        if iid not in found:
+            found[iid] = {"slug": slug, "price": pmap.get(iid),
+                          "img": imgs.get(iid)}
+            fresh += 1
+    return len(ids), fresh
+
+
+def sweep(s, brand, bands=None, cycle=0):
+    """One brand's current listings: id -> price, image, title.
+
+    Vinted stops paginating at ~960 results, so a single query per brand has a
+    hard ceiling no number of pages can lift. Price bands each get their own
+    depth, which is how the corpus grows past it; a probe confirmed the price
+    filter is honoured exactly, so the bands really do partition.
+
+    Bands overlap slightly at their shared edges (Vinted treats both ends as
+    inclusive, and prices cluster on round numbers like exactly 45 or 60), so
+    ids are deduplicated across bands - measured at 6-14% duplication, which
+    costs a little budget but loses nothing.
+    """
     found = {}
-    for page in range(1, PAGES + 1):
-        r = get(s, "https://www.vinted.it/catalog",
-                params={"search_text": f"{brand} shoes", "page": page})
-        if r is None or r.status_code != 200:
-            break
-        t = r.text
-        ids = re.findall(r"/items/(\d{6,12})-([a-z0-9-]{3,60})", t)
-        prices = re.findall(r'\\?"id\\?":(\d{6,12}),.{0,400}?\\?"amount\\?":\\?"([\d.]+)', t)
-        pmap = dict(prices)
-        imgs = dict(re.findall(
-            r'\\?"id\\?":(\d{6,12}),.{0,3000}?(https://images\d*\.vinted\.net/[^"\\\s]+/f800/[^"\\\s]+)', t))
-        for iid, slug in ids:
-            if iid not in found:
-                found[iid] = {"slug": slug, "price": pmap.get(iid),
-                              "img": imgs.get(iid)}
-        if len(ids) == 0:
-            break
+    spans = [(b, bands[i + 1]) for i, b in enumerate(bands[:-1])] if bands \
+        else [(None, None)]
+    # Sweeping every band every hour would spend ~600 requests on discovery,
+    # and those come out of the SAME per-IP ceiling that the state checks do -
+    # so full band coverage each cycle would starve the checks that actually
+    # find sales. Bands are rotated instead: a price band does not turn over
+    # much in an hour, and every band is still visited within a few cycles.
+    if bands and BANDS_PER_CYCLE < len(spans):
+        start = (cycle * BANDS_PER_CYCLE) % len(spans)
+        spans = [spans[(start + k) % len(spans)] for k in range(BANDS_PER_CYCLE)]
+    for lo, hi in spans:
+        for page in range(1, PAGES + 1):
+            par = {"search_text": f"{brand} shoes", "page": page}
+            if lo is not None:
+                par["currency"] = "EUR"
+                if lo:
+                    par["price_from"] = lo
+                if hi and hi < 100000:
+                    par["price_to"] = hi
+            r = get(s, "https://www.vinted.it/catalog", params=par)
+            if r is None or r.status_code != 200:
+                break
+            n, fresh = _parse(r.text, found)
+            # Stop as soon as a page adds nothing new: a band shallower than
+            # PAGES otherwise burns a full page request per empty page, and
+            # with ten brands times six bands that waste is the whole budget.
+            if n == 0 or fresh == 0:
+                break
     return found
 
 
@@ -145,11 +219,234 @@ def check_state(s, iid, slug):
     return ("reserved" if det["reserved"] else "sold"), det
 
 
-def main() -> int:
+def load_state() -> dict:
     try:
         st = json.load(open(STATE))
     except (OSError, ValueError):
         st = {"cycle": 0, "tracked": {}, "sold": {}, "events": []}
+    # Every listing ever discovered, with the state it ended in. This is the
+    # dataset; tracked/ is only the working set.
+    st.setdefault("archive", {})
+    return st
+
+
+def save_state(st: dict) -> None:
+    os.makedirs(os.path.dirname(STATE), exist_ok=True)
+    tmp = STATE + ".tmp"
+    json.dump(st, open(tmp, "w"), separators=(",", ":"))
+    os.replace(tmp, STATE)
+
+
+def session():
+    s = requests.Session()
+    s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9"})
+    s.get("https://www.vinted.it/", timeout=45)
+    return s
+
+
+def load_bands() -> dict:
+    if os.environ.get("VT_BANDS", "1") == "0":
+        return {}
+    try:
+        return json.load(open(os.path.join(REPO, "data", "vinted_bands.json")))
+    except (OSError, ValueError):
+        print("  no band file - falling back to unbanded search", flush=True)
+        return {}
+
+
+# --------------------------------------------------------------- shard modes
+#
+# One job doing everything cannot be split, because it reads and writes state
+# in the same process. These four modes separate the work that can run in
+# parallel (sweeping, checking - neither touches state) from the work that
+# must not (planning, applying - single writer, so shards never conflict).
+
+
+def mode_discover(shard: int, shards: int, out: str) -> int:
+    """Sweep this shard's brands. Touches no state, so shards cannot collide."""
+    mine = [b for i, b in enumerate(BRANDS) if i % shards == shard]
+    print(f"discover shard {shard}/{shards}: {mine}", flush=True)
+    s, bands, found = session(), load_bands(), {}
+    # Band rotation needs the cycle number; plan/ owns incrementing it, so read
+    # the current value rather than advancing it here.
+    cycle = load_state().get("cycle", 0) + 1
+    for b in mine:
+        f = sweep(s, b, bands.get(b), cycle)
+        for iid, v in f.items():
+            v["brand"] = b
+            found[iid] = v
+        print(f"  {b:<20} {len(f):>5} listings"
+              f"{'' if b in bands else '  (unbanded)'}", flush=True)
+    json.dump(found, open(out, "w"), separators=(",", ":"))
+    print(f"shard {shard}: {len(found):,} listings -> {out}", flush=True)
+    return 0
+
+
+def mode_plan(indir: str, out: str) -> int:
+    """Merge shard discoveries into state and decide what to check."""
+    st, now = load_state(), int(time.time())
+    st["cycle"] += 1
+    seen_now = {}
+    for fn in sorted(os.listdir(indir)):
+        if fn.endswith(".json"):
+            seen_now.update(json.load(open(os.path.join(indir, fn))))
+    print(f"total distinct discovered: {len(seen_now):,}", flush=True)
+
+    absent_set = {i for i in st["tracked"] if i not in seen_now}
+    due = [i for i in st["tracked"]
+           if i in absent_set
+           or now - st["tracked"][i].get("last_check", 0) > RECHECK_H * 3600]
+    due.sort(key=lambda i: (0 if i in absent_set else 1,
+                            st["tracked"][i].get("last_check", 0)))
+    # How long a listing has been missing from the feed, carried into the
+    # queue. Deletions run ~1:1 with sales, and the suspicion is that many are
+    # sales that 404'd before we arrived - if so, sold-rate should FALL and
+    # deleted-rate RISE with absence age, which is what makes faster checking
+    # worth paying for. That is measurable, so measure it.
+    queue = [{"id": i, "slug": st["tracked"][i].get("slug", ""),
+              "absent": i in absent_set,
+              "gone_h": round((now - st["tracked"][i].get("last_seen", now))
+                              / 3600, 1) if i in absent_set else 0.0}
+             for i in due[:MAX_CHECK]]
+
+    for iid, v in seen_now.items():
+        if iid in st["tracked"]:
+            st["tracked"][iid]["last_seen"] = now
+        elif iid not in st["sold"]:
+            v["first_seen"] = now
+            v["last_seen"] = now
+            v["last_check"] = 0
+            st["tracked"][iid] = v
+
+    st["pending"] = {"at": now, "seen": len(seen_now),
+                     "absent": len(absent_set), "due": len(due)}
+    save_state(st)
+    json.dump(queue, open(out, "w"), separators=(",", ":"))
+    print(f"tracking {len(st['tracked']):,}, absent {len(absent_set):,}, "
+          f"due {len(due):,}, queued {len(queue):,}", flush=True)
+    return 0
+
+
+def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
+    """Check this shard's slice. Writes verdicts only - never state."""
+    q = json.load(open(queue_file))
+    mine = [x for i, x in enumerate(q) if i % shards == shard]
+    print(f"check shard {shard}/{shards}: {len(mine)} listings", flush=True)
+    s = session()
+    started, deadline = time.time(), time.time() + BUDGET_MIN * 60
+    res = {}
+    for n, item in enumerate(mine):
+        if time.time() > deadline:
+            print(f"  budget reached - {len(mine) - n} deferred", flush=True)
+            break
+        if PACE.blocked:
+            print(f"  blocked after {PACE.throttled} refusals - "
+                  f"{len(mine) - n} deferred", flush=True)
+            break
+        v, det = check_state(s, item["id"], item["slug"])
+        res[item["id"]] = {"v": v, "absent": item["absent"],
+                           "gone_h": item.get("gone_h", 0.0),
+                           "availability": det.get("availability")}
+    json.dump(res, open(out, "w"), separators=(",", ":"))
+    print(f"shard {shard}: {len(res)} checked in "
+          f"{(time.time()-started)/60:.0f} min, final gap {PACE.gap:.1f}s, "
+          f"{PACE.throttled} throttled", flush=True)
+    return 0
+
+
+def mode_apply(indir: str) -> int:
+    """Fold every shard's verdicts into state. Single writer again."""
+    st, now = load_state(), int(time.time())
+    verdicts, split = {}, {"absent": {}, "rotation": {}}
+    age_buckets: dict[str, dict] = {}
+    for fn in sorted(os.listdir(indir)):
+        if not fn.endswith(".json"):
+            continue
+        for iid, r in json.load(open(os.path.join(indir, fn))).items():
+            v = r["v"]
+            verdicts[v] = verdicts.get(v, 0) + 1
+            o = "absent" if r.get("absent") else "rotation"
+            split[o][v] = split[o].get(v, 0) + 1
+            if r.get("absent"):
+                g = r.get("gone_h", 0.0)
+                for lo, hi, lab in AGE_BINS:
+                    if lo <= g < hi:
+                        age_buckets.setdefault(lab, {})
+                        age_buckets[lab][v] = age_buckets[lab].get(v, 0) + 1
+                        break
+            rec = st["tracked"].get(iid)
+            if rec is None:
+                continue
+            rec["last_check"] = now
+            if v == "sold":
+                st["sold"][iid] = {**rec, "sold_seen": now,
+                                   "availability": r.get("availability"),
+                                   "was_absent": bool(r.get("absent"))}
+                st["archive"][iid] = {**rec, "final": "sold", "at": now}
+                st["tracked"].pop(iid, None)
+            elif v == "deleted":
+                # A 404 is not nothing. Deletions run about 1:1 with confirmed
+                # sales, and a listing that sells and is then removed by the
+                # seller 404s before we reach it - so an unknown share of these
+                # ARE sales. Either way the brand, price and photo were already
+                # captured at discovery, and discarding them threw away usable
+                # dataset rows to save nothing.
+                st["archive"][iid] = {**rec, "final": "deleted", "at": now}
+                st["tracked"].pop(iid, None)
+
+    p = st.pop("pending", {})
+    st["events"].append({"at": now, "cycle": st["cycle"], "sharded": True,
+                         "seen": p.get("seen"), "absent": p.get("absent"),
+                         "checked": sum(verdicts.values()),
+                         "verdicts": verdicts, "split": split})
+    save_state(st)
+    print("verdicts:", verdicts, flush=True)
+    for o in ("absent", "rotation"):
+        n = sum(split[o].values())
+        if n:
+            sold = split[o].get("sold", 0)
+            print(f"  {o:<9} {n:>5} checked -> {sold} sold "
+                  f"({100*sold/n:.1f}%)  {split[o]}", flush=True)
+    if age_buckets:
+        print("\nverdict by how long the listing had been gone:", flush=True)
+        for lo, hi, lab in AGE_BINS:
+            b = age_buckets.get(lab)
+            if not b:
+                continue
+            n = sum(b.values())
+            print(f"  gone {lab:<8} n={n:>5}  "
+                  f"sold {100*b.get('sold',0)/n:>5.1f}%  "
+                  f"deleted {100*b.get('deleted',0)/n:>5.1f}%  "
+                  f"live {100*b.get('live',0)/n:>5.1f}%", flush=True)
+    print(f"cycle {st['cycle']}: tracking {len(st['tracked']):,}, "
+          f"confirmed sold so far {len(st['sold']):,}", flush=True)
+    return 0
+
+
+def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", choices=["discover", "plan", "check", "apply"])
+    ap.add_argument("--shard", type=int, default=0)
+    ap.add_argument("--shards", type=int, default=1)
+    ap.add_argument("--queue")
+    ap.add_argument("--in", dest="indir")
+    ap.add_argument("--out")
+    a = ap.parse_args()
+    if a.mode == "discover":
+        return mode_discover(a.shard, a.shards, a.out)
+    if a.mode == "plan":
+        return mode_plan(a.indir, a.out)
+    if a.mode == "check":
+        return mode_check(a.queue, a.shard, a.shards, a.out)
+    if a.mode == "apply":
+        return mode_apply(a.indir)
+    return main_single()
+
+
+def main_single() -> int:
+    """The original one-job cycle, kept working for manual runs."""
+    st = load_state()
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9"})
     s.get("https://www.vinted.it/", timeout=45)
@@ -157,13 +454,21 @@ def main() -> int:
     now = int(time.time())
     st["cycle"] += 1
 
+    bands = {}
+    if os.environ.get("VT_BANDS", "1") != "0":
+        try:
+            bands = json.load(open(os.path.join(REPO, "data", "vinted_bands.json")))
+        except (OSError, ValueError):
+            print("  no band file - falling back to unbanded search", flush=True)
+
     seen_now = {}
     for b in BRANDS:
-        f = sweep(s, b)
+        f = sweep(s, b, bands.get(b), st["cycle"])
         for iid, v in f.items():
             v["brand"] = b
             seen_now[iid] = v
-        print(f"  {b:<20} {len(f):>4} listings", flush=True)
+        print(f"  {b:<20} {len(f):>5} listings"
+              f"{'' if b in bands else '  (unbanded)'}", flush=True)
     print(f"total distinct: {len(seen_now):,}", flush=True)
 
     absent = [i for i in st["tracked"] if i not in seen_now]
@@ -193,6 +498,7 @@ def main() -> int:
     # not a matter of opinion, so record it rather than assume either way.
     verdicts = {}
     split = {"absent": {}, "rotation": {}}
+    age_buckets: dict[str, dict] = {}
     deadline = started + BUDGET_MIN * 60
     stopped_early = 0
     for n_done, iid in enumerate(batch):
@@ -201,19 +507,35 @@ def main() -> int:
             print(f"  budget reached - {stopped_early} checks deferred to "
                   f"next cycle", flush=True)
             break
+        if PACE.blocked:
+            stopped_early = len(batch) - n_done
+            print(f"  blocked after {PACE.throttled} refusals - "
+                  f"{stopped_early} deferred to next cycle", flush=True)
+            break
         rec = st["tracked"][iid]
         v, det = check_state(s, iid, rec.get("slug", ""))
         verdicts[v] = verdicts.get(v, 0) + 1
         origin = "absent" if iid in absent_set else "rotation"
         split[origin][v] = split[origin].get(v, 0) + 1
+        if origin == "absent":
+            gone_h = (now - rec.get("last_seen", now)) / 3600
+            for lo, hi, lab in AGE_BINS:
+                if lo <= gone_h < hi:
+                    age_buckets.setdefault(lab, {})
+                    age_buckets[lab][v] = age_buckets[lab].get(v, 0) + 1
+                    break
         rec["last_check"] = now
         if v == "sold":
             st["sold"][iid] = {**rec, "sold_seen": now,
                                "availability": det.get("availability"),
                                "was_absent": iid in absent_set}
+            st["archive"][iid] = {**rec, "final": "sold", "at": now}
             st["tracked"].pop(iid, None)          # terminal
         elif v == "deleted":
-            st["tracked"].pop(iid, None)          # terminal, not a sale
+            # Keep the row: deletions run ~1:1 with sales and an unknown share
+            # of them ARE sales that 404'd before we got there.
+            st["archive"][iid] = {**rec, "final": "deleted", "at": now}
+            st["tracked"].pop(iid, None)          # terminal
     if verdicts:
         print("  verdicts:", verdicts, flush=True)
         for o in ("absent", "rotation"):
@@ -222,10 +544,26 @@ def main() -> int:
                 sold = split[o].get("sold", 0)
                 print(f"    {o:<9} {n:>4} checked -> {sold} sold "
                       f"({100*sold/n:.1f}%)  {split[o]}", flush=True)
+        if age_buckets:
+            print("  verdict by how long the listing had been gone:", flush=True)
+            for lo, hi, lab in AGE_BINS:
+                b = age_buckets.get(lab)
+                if not b:
+                    continue
+                n = sum(b.values())
+                print(f"    gone {lab:<8} n={n:>5}  "
+                      f"sold {100*b.get('sold',0)/n:>5.1f}%  "
+                      f"deleted {100*b.get('deleted',0)/n:>5.1f}%  "
+                      f"live {100*b.get('live',0)/n:>5.1f}%", flush=True)
 
     for iid, v in seen_now.items():
-        if iid not in st["tracked"] and iid not in st["sold"]:
+        if iid in st["tracked"]:
+            # Refresh last_seen so absence age stays meaningful: without this
+            # every listing looks like it has been gone since first discovery.
+            st["tracked"][iid]["last_seen"] = now
+        elif iid not in st["sold"]:
             v["first_seen"] = now
+            v["last_seen"] = now
             v["last_check"] = 0
             st["tracked"][iid] = v
 
@@ -234,7 +572,7 @@ def main() -> int:
                          "checked": len(batch), "verdicts": verdicts,
                          "split": split, "gap": round(PACE.gap, 2),
                          "throttled": PACE.throttled,
-                         "deferred": stopped_early,
+                         "deferred": stopped_early, "age": age_buckets,
                          "mins": round((time.time() - started) / 60, 1)})
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     json.dump(st, open(STATE, "w"), separators=(",", ":"))

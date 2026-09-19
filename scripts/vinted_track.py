@@ -42,7 +42,11 @@ PAGES = int(os.environ.get("VT_PAGES", "10"))
 # rate proven clean, and the pacer moves it if reality disagrees.
 GAP_FLOOR = float(os.environ.get("VT_GAP", "2.5"))
 GAP_CEIL = 20.0
-MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "2800"))
+# Two ceilings, and the second one only showed up in production. Rate: 2.0s
+# between requests is clean, 1.0s returns 21% HTTP 429. VOLUME: a 2,235-check
+# run went clean for ~1,800 requests and was then 403'd for the remaining 448.
+# So the cap sits well under that, and the clock budget usually binds first.
+MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "1500"))
 # The real limit is the clock, not the count: the Actions job is killed at 180
 # minutes and a killed job never reaches the state save, losing the whole
 # cycle. So checking stops with time to spare and whatever was not reached
@@ -52,6 +56,14 @@ BUDGET_MIN = float(os.environ.get("VT_BUDGET_MIN", "150"))
 # really sales that 404'd first, sold% falls and deleted% rises across these.
 AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
             (12, 24, "12-24h"), (24, 1e9, ">24h")]
+# Consecutive 403/429 before abandoning the cycle. A run that went 448
+# refusals deep learned nothing after the first few.
+BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
+# Price bands swept per cycle per brand. Six bands x ten brands x ten pages
+# would be ~600 discovery requests against a ~1,800 per-IP ceiling shared with
+# the state checks; two bands keeps discovery near 200 and still covers every
+# band every three hours.
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "2"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
@@ -70,19 +82,39 @@ class Pacer:
         self.gap = gap
         self.ok_streak = 0
         self.throttled = 0
+        self.streak = 0          # consecutive blocks
+
+    @property
+    def blocked(self) -> bool:
+        """Give up for this cycle once it is clearly not a transient refusal.
+
+        Once the cumulative ceiling is hit, every further request is refused;
+        continuing would spend the whole budget learning that repeatedly, and
+        would keep hammering a host that has already said no. Whatever is not
+        checked simply leads the queue next cycle.
+        """
+        return self.streak >= BLOCK_GIVEUP
 
     def wait(self) -> None:
         time.sleep(random.uniform(self.gap, self.gap * 1.4))
 
     def saw(self, status: int | None) -> None:
-        if status == 429:
+        # 403 counts as a block, not an error. A 2,235-check run stayed clean
+        # for ~1,800 requests and then returned 448 consecutive 403s - a
+        # CUMULATIVE volume ceiling, which no fixed gap avoids and which a
+        # short rate probe cannot see. Because only 429 was handled, the run
+        # sailed through every one of them without slowing down.
+        if status in (429, 403):
             self.throttled += 1
             self.ok_streak = 0
+            self.streak += 1
             self.gap = min(GAP_CEIL, self.gap * 1.8)
-            print(f"    429 - slowing to {self.gap:.1f}s", flush=True)
+            print(f"    HTTP {status} - slowing to {self.gap:.1f}s "
+                  f"({self.streak} in a row)", flush=True)
             time.sleep(30)
         elif status == 200:
             self.ok_streak += 1
+            self.streak = 0
             # Only creep back down after a long clean run, and never below the
             # rate that was actually proven clean.
             if self.ok_streak >= 50 and self.gap > GAP_FLOOR:
@@ -120,7 +152,7 @@ def _parse(t, found):
     return len(ids), fresh
 
 
-def sweep(s, brand, bands=None):
+def sweep(s, brand, bands=None, cycle=0):
     """One brand's current listings: id -> price, image, title.
 
     Vinted stops paginating at ~960 results, so a single query per brand has a
@@ -136,6 +168,14 @@ def sweep(s, brand, bands=None):
     found = {}
     spans = [(b, bands[i + 1]) for i, b in enumerate(bands[:-1])] if bands \
         else [(None, None)]
+    # Sweeping every band every hour would spend ~600 requests on discovery,
+    # and those come out of the SAME per-IP ceiling that the state checks do -
+    # so full band coverage each cycle would starve the checks that actually
+    # find sales. Bands are rotated instead: a price band does not turn over
+    # much in an hour, and every band is still visited within a few cycles.
+    if bands and BANDS_PER_CYCLE < len(spans):
+        start = (cycle * BANDS_PER_CYCLE) % len(spans)
+        spans = [spans[(start + k) % len(spans)] for k in range(BANDS_PER_CYCLE)]
     for lo, hi in spans:
         for page in range(1, PAGES + 1):
             par = {"search_text": f"{brand} shoes", "page": page}
@@ -227,8 +267,11 @@ def mode_discover(shard: int, shards: int, out: str) -> int:
     mine = [b for i, b in enumerate(BRANDS) if i % shards == shard]
     print(f"discover shard {shard}/{shards}: {mine}", flush=True)
     s, bands, found = session(), load_bands(), {}
+    # Band rotation needs the cycle number; plan/ owns incrementing it, so read
+    # the current value rather than advancing it here.
+    cycle = load_state().get("cycle", 0) + 1
     for b in mine:
-        f = sweep(s, b, bands.get(b))
+        f = sweep(s, b, bands.get(b), cycle)
         for iid, v in f.items():
             v["brand"] = b
             found[iid] = v
@@ -295,6 +338,10 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
     for n, item in enumerate(mine):
         if time.time() > deadline:
             print(f"  budget reached - {len(mine) - n} deferred", flush=True)
+            break
+        if PACE.blocked:
+            print(f"  blocked after {PACE.throttled} refusals - "
+                  f"{len(mine) - n} deferred", flush=True)
             break
         v, det = check_state(s, item["id"], item["slug"])
         res[item["id"]] = {"v": v, "absent": item["absent"],
@@ -416,7 +463,7 @@ def main_single() -> int:
 
     seen_now = {}
     for b in BRANDS:
-        f = sweep(s, b, bands.get(b))
+        f = sweep(s, b, bands.get(b), st["cycle"])
         for iid, v in f.items():
             v["brand"] = b
             seen_now[iid] = v
@@ -451,6 +498,7 @@ def main_single() -> int:
     # not a matter of opinion, so record it rather than assume either way.
     verdicts = {}
     split = {"absent": {}, "rotation": {}}
+    age_buckets: dict[str, dict] = {}
     deadline = started + BUDGET_MIN * 60
     stopped_early = 0
     for n_done, iid in enumerate(batch):
@@ -459,11 +507,23 @@ def main_single() -> int:
             print(f"  budget reached - {stopped_early} checks deferred to "
                   f"next cycle", flush=True)
             break
+        if PACE.blocked:
+            stopped_early = len(batch) - n_done
+            print(f"  blocked after {PACE.throttled} refusals - "
+                  f"{stopped_early} deferred to next cycle", flush=True)
+            break
         rec = st["tracked"][iid]
         v, det = check_state(s, iid, rec.get("slug", ""))
         verdicts[v] = verdicts.get(v, 0) + 1
         origin = "absent" if iid in absent_set else "rotation"
         split[origin][v] = split[origin].get(v, 0) + 1
+        if origin == "absent":
+            gone_h = (now - rec.get("last_seen", now)) / 3600
+            for lo, hi, lab in AGE_BINS:
+                if lo <= gone_h < hi:
+                    age_buckets.setdefault(lab, {})
+                    age_buckets[lab][v] = age_buckets[lab].get(v, 0) + 1
+                    break
         rec["last_check"] = now
         if v == "sold":
             st["sold"][iid] = {**rec, "sold_seen": now,
@@ -484,10 +544,26 @@ def main_single() -> int:
                 sold = split[o].get("sold", 0)
                 print(f"    {o:<9} {n:>4} checked -> {sold} sold "
                       f"({100*sold/n:.1f}%)  {split[o]}", flush=True)
+        if age_buckets:
+            print("  verdict by how long the listing had been gone:", flush=True)
+            for lo, hi, lab in AGE_BINS:
+                b = age_buckets.get(lab)
+                if not b:
+                    continue
+                n = sum(b.values())
+                print(f"    gone {lab:<8} n={n:>5}  "
+                      f"sold {100*b.get('sold',0)/n:>5.1f}%  "
+                      f"deleted {100*b.get('deleted',0)/n:>5.1f}%  "
+                      f"live {100*b.get('live',0)/n:>5.1f}%", flush=True)
 
     for iid, v in seen_now.items():
-        if iid not in st["tracked"] and iid not in st["sold"]:
+        if iid in st["tracked"]:
+            # Refresh last_seen so absence age stays meaningful: without this
+            # every listing looks like it has been gone since first discovery.
+            st["tracked"][iid]["last_seen"] = now
+        elif iid not in st["sold"]:
             v["first_seen"] = now
+            v["last_seen"] = now
             v["last_check"] = 0
             st["tracked"][iid] = v
 
@@ -496,7 +572,7 @@ def main_single() -> int:
                          "checked": len(batch), "verdicts": verdicts,
                          "split": split, "gap": round(PACE.gap, 2),
                          "throttled": PACE.throttled,
-                         "deferred": stopped_early,
+                         "deferred": stopped_early, "age": age_buckets,
                          "mins": round((time.time() - started) / 60, 1)})
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     json.dump(st, open(STATE, "w"), separators=(",", ":"))

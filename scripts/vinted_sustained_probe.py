@@ -1,14 +1,14 @@
-"""Does polling degrade over a LONG run, not just a 20-request block?
+"""What polling rate does Vinted actually sustain from one IP?
 
-The short probe said 0.4s was fine, but 20 requests is far too few to see
-throttling: a token bucket that allows a burst and then tightens would pass
-that test and fail in production. Raising MAX_CHECK on that evidence would
-risk the whole watcher.
+A 20-request block at 0.4s passed 20/20, but 400 requests at a 1.0s gap came
+back 21% HTTP 429 - and FLAT across every bucket, not climbing. That is a
+steady-state rate limit: the short probe only passed because 20 requests fit
+inside the burst allowance.
 
-So: one unbroken run of 400 item fetches at a fixed gap, reported in buckets of
-50. Throttling shows up as a failure rate that CLIMBS across buckets. A flat
-rate near zero means the gap is genuinely sustainable, which is what the
-decision needs.
+So the question is not "does it degrade" but "where is the ceiling". This walks
+gaps from fast to slow and stops at the first one that comes back clean,
+reporting GOOD requests per second - a gap that 429s a fifth of the time buys
+nothing, because those checks have to be retried anyway.
 """
 from __future__ import annotations
 import os, re, sys, time
@@ -16,8 +16,8 @@ import requests
 
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
-GAP = float(os.environ.get("GAP", "1.0"))
-N = int(os.environ.get("N", "400"))
+GAPS = [float(x) for x in os.environ.get("GAPS", "2.0,3.0,4.5").split(",")]
+N = int(os.environ.get("N", "150"))
 BUCKET = 50
 BRANDS = ["gucci", "prada", "chanel", "dior", "hermes", "valentino",
           "golden goose", "saint laurent", "bottega veneta", "louboutin"]
@@ -42,34 +42,42 @@ def main() -> int:
         if len(urls) >= N:
             break
     urls = urls[:N]
-    print(f"{len(urls)} urls, gap {GAP}s\n", flush=True)
+    print(f"{len(urls)} urls, gaps {GAPS}\n", flush=True)
 
-    ok = bad = 0
-    bo = bb = 0
-    t0 = time.time()
-    codes_seen = {}
-    for k, u in enumerate(urls, 1):
-        try:
-            c = s.get(u, timeout=40).status_code
-        except requests.RequestException:
-            c = 0
-        codes_seen[c] = codes_seen.get(c, 0) + 1
-        if c == 200:
-            ok += 1; bo += 1
-        else:
-            bad += 1; bb += 1
-        if k % BUCKET == 0:
-            el = time.time() - t0
-            print(f"  after {k:>4}: bucket {bo}/{BUCKET} ok"
-                  f"{'  <-- FAILURES' if bb else ''}"
-                  f"   cumulative {ok}/{k}   {k/el:.2f} req/s", flush=True)
-            bo = bb = 0
-        time.sleep(GAP)
-
-    el = time.time() - t0
-    print(f"\n{ok}/{len(urls)} ok in {el/60:.1f} min = {len(urls)/el:.2f} req/s")
-    print("status codes:", dict(sorted(codes_seen.items())))
-    print(f"\nprojected reach in a 170-min job: {int(170*60*len(urls)/el)} checks")
+    for GAP in GAPS:
+        print(f"\n--- gap {GAP}s ---", flush=True)
+        ok = 0
+        bo = bb = 0
+        t0 = time.time()
+        codes_seen = {}
+        for k, u in enumerate(urls, 1):
+            try:
+                c = s.get(u, timeout=40).status_code
+            except requests.RequestException:
+                c = 0
+            codes_seen[c] = codes_seen.get(c, 0) + 1
+            if c == 200:
+                ok += 1; bo += 1
+            else:
+                bb += 1
+            if k % BUCKET == 0:
+                el = time.time() - t0
+                print(f"  after {k:>4}: bucket {bo}/{BUCKET} ok"
+                      f"{'  <-- 429s' if bb else ''}"
+                      f"   cumulative {ok}/{k}   {k/el:.2f} req/s", flush=True)
+                bo = bb = 0
+            time.sleep(GAP)
+        el = time.time() - t0
+        good = ok / len(urls)
+        eff = ok / el
+        print(f"  => {ok}/{len(urls)} ok ({100*good:.0f}%), "
+              f"{eff:.3f} GOOD req/s, codes {dict(sorted(codes_seen.items()))}", flush=True)
+        print(f"     usable checks in a 170-min job at this gap: {int(170*60*eff)}", flush=True)
+        if good > 0.98:
+            print("     clean - this gap is sustainable", flush=True)
+            break
+        print("     cooling down 120s", flush=True)
+        time.sleep(120)
     return 0
 
 

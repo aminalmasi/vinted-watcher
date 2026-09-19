@@ -134,20 +134,35 @@ def main() -> int:
     batch = due[:MAX_CHECK]
     print(f"due for a state check: {len(due):,}, checking {len(batch)}", flush=True)
 
+    # Split verdicts by WHY the listing was checked. Rotation is what makes a
+    # full pass take days; if listings still present in the feed essentially
+    # never come back sold, then rotation is buying nothing and the budget
+    # belongs entirely to absent listings. That is a question about the data,
+    # not a matter of opinion, so record it rather than assume either way.
     verdicts = {}
+    split = {"absent": {}, "rotation": {}}
     for iid in batch:
         rec = st["tracked"][iid]
         v, det = check_state(s, iid, rec.get("slug", ""))
         verdicts[v] = verdicts.get(v, 0) + 1
+        origin = "absent" if iid in absent_set else "rotation"
+        split[origin][v] = split[origin].get(v, 0) + 1
         rec["last_check"] = now
         if v == "sold":
             st["sold"][iid] = {**rec, "sold_seen": now,
-                               "availability": det.get("availability")}
+                               "availability": det.get("availability"),
+                               "was_absent": iid in absent_set}
             st["tracked"].pop(iid, None)          # terminal
         elif v == "deleted":
             st["tracked"].pop(iid, None)          # terminal, not a sale
     if verdicts:
         print("  verdicts:", verdicts, flush=True)
+        for o in ("absent", "rotation"):
+            n = sum(split[o].values())
+            if n:
+                sold = split[o].get("sold", 0)
+                print(f"    {o:<9} {n:>4} checked -> {sold} sold "
+                      f"({100*sold/n:.1f}%)  {split[o]}", flush=True)
 
     for iid, v in seen_now.items():
         if iid not in st["tracked"] and iid not in st["sold"]:
@@ -157,7 +172,8 @@ def main() -> int:
 
     st["events"].append({"at": now, "cycle": st["cycle"],
                          "seen": len(seen_now), "absent": len(absent),
-                         "checked": len(batch), "verdicts": verdicts})
+                         "checked": len(batch), "verdicts": verdicts,
+                         "split": split})
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     json.dump(st, open(STATE, "w"), separators=(",", ":"))
     print(f"\ncycle {st['cycle']}: tracking {len(st['tracked']):,}, "

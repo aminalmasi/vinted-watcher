@@ -1,20 +1,32 @@
 name: vinted-track
 on:
+  # Hourly, not 3-hourly. Sale detection is latency-bound: a listing that sells
+  # and is then deleted by the seller 404s before we reach it and is recorded
+  # as "deleted" rather than "sold" - and deletions run about 1:1 with
+  # confirmed sales. Checking sooner should convert some of that back.
+  #
+  # One job at the measured-safe rate covers every absent listing in ~22 min at
+  # the current corpus size, so this needs no parallelism.
   schedule:
-    - cron: '25 */3 * * *'
+    - cron: '25 * * * *'
   workflow_dispatch:
 concurrency: { group: vinted-track, cancel-in-progress: false }
 permissions: { contents: write }
 jobs:
   track:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install --quiet requests
-      - run: python scripts/vinted_track.py
+      - name: Track
+        env:
+          # Must finish inside the hourly cadence with room for the commit;
+          # anything not reached simply leads the queue next cycle.
+          VT_BUDGET_MIN: '45'
+        run: python scripts/vinted_track.py
       - name: Persist
         run: |
           git config user.name  'vinted-tracker[bot]'

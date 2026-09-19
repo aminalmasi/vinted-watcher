@@ -100,26 +100,56 @@ def get(s, url, **kw):
     return r
 
 
-def sweep(s, brand):
-    """One brand's current listings: id -> price, image, title."""
+def _parse(t, found):
+    """Pull ids, prices and one image each out of a catalog page."""
+    ids = re.findall(r"/items/(\d{6,12})-([a-z0-9-]{3,60})", t)
+    pmap = dict(re.findall(
+        r'\\?"id\\?":(\d{6,12}),.{0,400}?\\?"amount\\?":\\?"([\d.]+)', t))
+    imgs = dict(re.findall(
+        r'\\?"id\\?":(\d{6,12}),.{0,3000}?(https://images\d*\.vinted\.net/[^"\\\s]+/f800/[^"\\\s]+)', t))
+    fresh = 0
+    for iid, slug in ids:
+        if iid not in found:
+            found[iid] = {"slug": slug, "price": pmap.get(iid),
+                          "img": imgs.get(iid)}
+            fresh += 1
+    return len(ids), fresh
+
+
+def sweep(s, brand, bands=None):
+    """One brand's current listings: id -> price, image, title.
+
+    Vinted stops paginating at ~960 results, so a single query per brand has a
+    hard ceiling no number of pages can lift. Price bands each get their own
+    depth, which is how the corpus grows past it; a probe confirmed the price
+    filter is honoured exactly, so the bands really do partition.
+
+    Bands overlap slightly at their shared edges (Vinted treats both ends as
+    inclusive, and prices cluster on round numbers like exactly 45 or 60), so
+    ids are deduplicated across bands - measured at 6-14% duplication, which
+    costs a little budget but loses nothing.
+    """
     found = {}
-    for page in range(1, PAGES + 1):
-        r = get(s, "https://www.vinted.it/catalog",
-                params={"search_text": f"{brand} shoes", "page": page})
-        if r is None or r.status_code != 200:
-            break
-        t = r.text
-        ids = re.findall(r"/items/(\d{6,12})-([a-z0-9-]{3,60})", t)
-        prices = re.findall(r'\\?"id\\?":(\d{6,12}),.{0,400}?\\?"amount\\?":\\?"([\d.]+)', t)
-        pmap = dict(prices)
-        imgs = dict(re.findall(
-            r'\\?"id\\?":(\d{6,12}),.{0,3000}?(https://images\d*\.vinted\.net/[^"\\\s]+/f800/[^"\\\s]+)', t))
-        for iid, slug in ids:
-            if iid not in found:
-                found[iid] = {"slug": slug, "price": pmap.get(iid),
-                              "img": imgs.get(iid)}
-        if len(ids) == 0:
-            break
+    spans = [(b, bands[i + 1]) for i, b in enumerate(bands[:-1])] if bands \
+        else [(None, None)]
+    for lo, hi in spans:
+        for page in range(1, PAGES + 1):
+            par = {"search_text": f"{brand} shoes", "page": page}
+            if lo is not None:
+                par["currency"] = "EUR"
+                if lo:
+                    par["price_from"] = lo
+                if hi and hi < 100000:
+                    par["price_to"] = hi
+            r = get(s, "https://www.vinted.it/catalog", params=par)
+            if r is None or r.status_code != 200:
+                break
+            n, fresh = _parse(r.text, found)
+            # Stop as soon as a page adds nothing new: a band shallower than
+            # PAGES otherwise burns a full page request per empty page, and
+            # with ten brands times six bands that waste is the whole budget.
+            if n == 0 or fresh == 0:
+                break
     return found
 
 
@@ -157,13 +187,21 @@ def main() -> int:
     now = int(time.time())
     st["cycle"] += 1
 
+    bands = {}
+    if os.environ.get("VT_BANDS", "1") != "0":
+        try:
+            bands = json.load(open(os.path.join(REPO, "data", "vinted_bands.json")))
+        except (OSError, ValueError):
+            print("  no band file - falling back to unbanded search", flush=True)
+
     seen_now = {}
     for b in BRANDS:
-        f = sweep(s, b)
+        f = sweep(s, b, bands.get(b))
         for iid, v in f.items():
             v["brand"] = b
             seen_now[iid] = v
-        print(f"  {b:<20} {len(f):>4} listings", flush=True)
+        print(f"  {b:<20} {len(f):>5} listings"
+              f"{'' if b in bands else '  (unbanded)'}", flush=True)
     print(f"total distinct: {len(seen_now):,}", flush=True)
 
     absent = [i for i in st["tracked"] if i not in seen_now]

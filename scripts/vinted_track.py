@@ -29,9 +29,15 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 BRANDS = ["Gucci", "Chanel", "Hermes", "Christian Louboutin", "Dior", "Prada",
           "Saint Laurent", "Valentino", "Golden Goose", "Bottega Veneta"]
-PAGES = int(os.environ.get("VT_PAGES", "3"))
+# 10 pages = ~960 listings per brand, which is where Vinted stops paginating
+# (page 20 returns nothing). At 3 pages, 93-98% of listings that left the feed
+# turned out to be alive - they had simply been pushed past the window by newer
+# listings, which is ranking noise, not a sale.
+PAGES = int(os.environ.get("VT_PAGES", "10"))
 GAP = (3.0, 6.0)
-MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "60"))
+MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "400"))
+# Recheck a listing at most this often; absent-from-feed listings jump the queue.
+RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
 
 def get(s, url, **kw):
@@ -98,7 +104,6 @@ def main() -> int:
     s.get("https://www.vinted.it/", timeout=45)
     now = int(time.time())
     st["cycle"] += 1
-    first_cycle = st["cycle"] == 1
 
     seen_now = {}
     for b in BRANDS:
@@ -109,32 +114,50 @@ def main() -> int:
         print(f"  {b:<20} {len(f):>4} listings", flush=True)
     print(f"total distinct: {len(seen_now):,}", flush=True)
 
-    gone = [i for i in st["tracked"] if i not in seen_now]
-    print(f"\ntracked previously {len(st['tracked']):,}, "
-          f"no longer in feed: {len(gone):,}", flush=True)
+    absent = [i for i in st["tracked"] if i not in seen_now]
+    print(f"\ntracked {len(st['tracked']):,}, absent from feed {len(absent):,}",
+          flush=True)
+
+    # State is now READ, not inferred. Disappearance is only a priority hint:
+    # absent listings are likelier to have sold, but presence proves nothing
+    # either - a listing can sell while still sitting in a cached feed page.
+    # So every tracked listing is rechecked on rotation, absent ones first,
+    # then whichever has gone longest without a check.
+    def priority(i):
+        r = st["tracked"][i]
+        return (0 if i in absent_set else 1, r.get("last_check", 0))
+    absent_set = set(absent)
+    due = [i for i in st["tracked"]
+           if i in absent_set
+           or now - st["tracked"][i].get("last_check", 0) > RECHECK_H * 3600]
+    due.sort(key=priority)
+    batch = due[:MAX_CHECK]
+    print(f"due for a state check: {len(due):,}, checking {len(batch)}", flush=True)
 
     verdicts = {}
-    if not first_cycle and gone:
-        random.shuffle(gone)
-        for iid in gone[:MAX_CHECK]:
-            rec = st["tracked"][iid]
-            v, det = check_state(s, iid, rec.get("slug", ""))
-            verdicts[v] = verdicts.get(v, 0) + 1
-            if v == "sold":
-                st["sold"][iid] = {**rec, "sold_seen": now,
-                                   "availability": det.get("availability")}
+    for iid in batch:
+        rec = st["tracked"][iid]
+        v, det = check_state(s, iid, rec.get("slug", ""))
+        verdicts[v] = verdicts.get(v, 0) + 1
+        rec["last_check"] = now
+        if v == "sold":
+            st["sold"][iid] = {**rec, "sold_seen": now,
+                               "availability": det.get("availability")}
+            st["tracked"].pop(iid, None)          # terminal
+        elif v == "deleted":
+            st["tracked"].pop(iid, None)          # terminal, not a sale
+    if verdicts:
         print("  verdicts:", verdicts, flush=True)
 
     for iid, v in seen_now.items():
-        if iid not in st["tracked"]:
+        if iid not in st["tracked"] and iid not in st["sold"]:
             v["first_seen"] = now
+            v["last_check"] = 0
             st["tracked"][iid] = v
-    for iid in gone[:MAX_CHECK]:
-        st["tracked"].pop(iid, None)
 
     st["events"].append({"at": now, "cycle": st["cycle"],
-                         "seen": len(seen_now), "gone": len(gone),
-                         "verdicts": verdicts})
+                         "seen": len(seen_now), "absent": len(absent),
+                         "checked": len(batch), "verdicts": verdicts})
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     json.dump(st, open(STATE, "w"), separators=(",", ":"))
     print(f"\ncycle {st['cycle']}: tracking {len(st['tracked']):,}, "

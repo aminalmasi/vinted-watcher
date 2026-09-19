@@ -68,6 +68,12 @@ BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
 # only thing that triggers a sale check. Sweeping everything every cycle is both
 # cheaper in the way that matters and far faster to detect a sale.
 BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "0"))
+# Stop tracking listings older than this. Vinted publishes no absolute date, so
+# age is only knowable from the item page - which means a listing is aged out
+# when it is next checked, not in a single sweep. Aged-out rows are moved to
+# the archive, never discarded: the photo, price and brand are still dataset,
+# it is only the sale-watching that stops.
+AGE_LIMIT_DAYS = float(os.environ.get("VT_AGE_LIMIT_DAYS", "180"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
@@ -228,6 +234,31 @@ def sweep(s, brand, bands=None, cycle=0):
     return found, spans
 
 
+UNITS_IT = {"minut": 1 / 1440, "ora": 1 / 24, "ore": 1 / 24, "giorn": 1,
+            "settiman": 7, "mes": 30.4, "ann": 365}
+# Anchored on Vinted's own field, NOT on a bare "N giorni fa" match. Every item
+# page also carries "più di 90 giorni fa" in wallet boilerplate and "Ultima
+# visita N ore fa" for the seller's last login; pruning on either would age out
+# the whole corpus at once.
+UPLOAD_RE = re.compile(
+    r'\\?"code\\?":\\?"upload_date\\?".{0,120}?\\?"value\\?":\\?"([^"\\]{2,40})')
+
+
+def parse_age_days(text: str) -> float | None:
+    """Days since upload, from Vinted's Italian relative date."""
+    m = UPLOAD_RE.search(text)
+    if not m:
+        return None
+    v = m.group(1).strip().lower()
+    num = re.search(r"(\d+)", v)
+    # "un mese fa" / "una settimana fa" carry no digit but mean one.
+    n = int(num.group(1)) if num else 1
+    for stem, days in UNITS_IT.items():
+        if stem in v:
+            return round(n * days, 2)
+    return None
+
+
 def check_state(s, iid, slug):
     """Direct read of the listing's state - no inference."""
     r = get(s, f"https://www.vinted.it/items/{iid}-{slug}")
@@ -242,7 +273,11 @@ def check_state(s, iid, slug):
     res = re.search(r'\\?"is_reserved\\?":\s*(true|false)', t)
     av = re.search(r'"availability":"([^"]+)"', t)
     det = {"reserved": (res.group(1) == "true") if res else None,
-           "availability": av.group(1) if av else None}
+           "availability": av.group(1) if av else None,
+           # Free: we already have the page. Vinted publishes no absolute date
+           # anywhere, so this relative string is the only way to know a
+           # listing's age at all.
+           "age_days": parse_age_days(t)}
     if can is None:
         return "unknown", det
     if can.group(1) == "true":
@@ -385,6 +420,7 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
         v, det = check_state(s, item["id"], item["slug"])
         res[item["id"]] = {"v": v, "absent": item["absent"],
                            "gone_h": item.get("gone_h", 0.0),
+                           "age_days": det.get("age_days"),
                            "availability": det.get("availability")}
     json.dump(res, open(out, "w"), separators=(",", ":"))
     print(f"shard {shard}: {len(res)} checked in "
@@ -432,6 +468,12 @@ def mode_apply(indir: str) -> int:
                 # dataset rows to save nothing.
                 st["archive"][iid] = {**rec, "final": "deleted", "at": now}
                 st["tracked"].pop(iid, None)
+            elif (r.get("age_days") or 0) > AGE_LIMIT_DAYS:
+                st["archive"][iid] = {**rec, "final": "aged_out", "at": now,
+                                      "age_days": r["age_days"]}
+                st["tracked"].pop(iid, None)
+            elif r.get("age_days") is not None:
+                rec["age_days"] = r["age_days"]
 
     p = st.pop("pending", {})
     st["events"].append({"at": now, "cycle": st["cycle"], "sharded": True,
@@ -544,6 +586,7 @@ def main_single() -> int:
     verdicts = {}
     split = {"absent": {}, "rotation": {}}
     age_buckets: dict[str, dict] = {}
+    aged = 0
     deadline = started + BUDGET_MIN * 60
     stopped_early = 0
     for n_done, iid in enumerate(batch):
@@ -581,6 +624,16 @@ def main_single() -> int:
             # of them ARE sales that 404'd before we got there.
             st["archive"][iid] = {**rec, "final": "deleted", "at": now}
             st["tracked"].pop(iid, None)          # terminal
+        elif (det.get("age_days") or 0) > AGE_LIMIT_DAYS:
+            aged += 1
+            st["archive"][iid] = {**rec, "final": "aged_out", "at": now,
+                                  "age_days": det["age_days"]}
+            st["tracked"].pop(iid, None)
+        elif det.get("age_days") is not None:
+            rec["age_days"] = det["age_days"]
+    if aged:
+        print(f"  aged out (>{AGE_LIMIT_DAYS:.0f}d since upload): {aged}",
+              flush=True)
     if verdicts:
         print("  verdicts:", verdicts, flush=True)
         for o in ("absent", "rotation"):

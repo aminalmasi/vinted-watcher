@@ -34,19 +34,70 @@ BRANDS = ["Gucci", "Chanel", "Hermes", "Christian Louboutin", "Dior", "Prada",
 # turned out to be alive - they had simply been pushed past the window by newer
 # listings, which is ranking noise, not a sale.
 PAGES = int(os.environ.get("VT_PAGES", "10"))
-GAP = (3.0, 6.0)
-MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "400"))
+# Measured, not guessed. 400 item fetches at a 1.0s gap came back 21% HTTP 429,
+# flat across every bucket - a steady-state rate limit, not a burst that
+# tightens. (A 20-request block at 0.4s passed 20/20, which is exactly why that
+# test was not trusted: 20 requests fit inside the burst allowance.) At 2.0s,
+# 150 consecutive fetches were clean. So the floor is set just above the last
+# rate proven clean, and the pacer moves it if reality disagrees.
+GAP_FLOOR = float(os.environ.get("VT_GAP", "2.5"))
+GAP_CEIL = 20.0
+MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "2800"))
+# The real limit is the clock, not the count: the Actions job is killed at 180
+# minutes and a killed job never reaches the state save, losing the whole
+# cycle. So checking stops with time to spare and whatever was not reached
+# simply leads the queue next cycle - nothing is lost by stopping early.
+BUDGET_MIN = float(os.environ.get("VT_BUDGET_MIN", "150"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 
 
+class Pacer:
+    """Self-correcting request spacing.
+
+    The clean gap was measured over 150 requests; a full cycle is ~20x longer,
+    so the limit could refill more slowly than that sample could show. Rather
+    than bet the cycle on one number, back off hard on a 429 and drift back
+    down only after sustained success. If 2.5s turns out to be too fast the
+    watcher slows itself down instead of burning its budget on rejections.
+    """
+
+    def __init__(self, gap: float = GAP_FLOOR) -> None:
+        self.gap = gap
+        self.ok_streak = 0
+        self.throttled = 0
+
+    def wait(self) -> None:
+        time.sleep(random.uniform(self.gap, self.gap * 1.4))
+
+    def saw(self, status: int | None) -> None:
+        if status == 429:
+            self.throttled += 1
+            self.ok_streak = 0
+            self.gap = min(GAP_CEIL, self.gap * 1.8)
+            print(f"    429 - slowing to {self.gap:.1f}s", flush=True)
+            time.sleep(30)
+        elif status == 200:
+            self.ok_streak += 1
+            # Only creep back down after a long clean run, and never below the
+            # rate that was actually proven clean.
+            if self.ok_streak >= 50 and self.gap > GAP_FLOOR:
+                self.gap = max(GAP_FLOOR, self.gap * 0.9)
+                self.ok_streak = 0
+
+
+PACE = Pacer()
+
+
 def get(s, url, **kw):
-    time.sleep(random.uniform(*GAP))
+    PACE.wait()
     try:
-        return s.get(url, timeout=60, **kw)
+        r = s.get(url, timeout=60, **kw)
     except requests.RequestException as e:
         print(f"    {type(e).__name__}", flush=True)
         return None
+    PACE.saw(r.status_code)
+    return r
 
 
 def sweep(s, brand):
@@ -102,6 +153,7 @@ def main() -> int:
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9"})
     s.get("https://www.vinted.it/", timeout=45)
+    started = time.time()
     now = int(time.time())
     st["cycle"] += 1
 
@@ -141,7 +193,14 @@ def main() -> int:
     # not a matter of opinion, so record it rather than assume either way.
     verdicts = {}
     split = {"absent": {}, "rotation": {}}
-    for iid in batch:
+    deadline = started + BUDGET_MIN * 60
+    stopped_early = 0
+    for n_done, iid in enumerate(batch):
+        if time.time() > deadline:
+            stopped_early = len(batch) - n_done
+            print(f"  budget reached - {stopped_early} checks deferred to "
+                  f"next cycle", flush=True)
+            break
         rec = st["tracked"][iid]
         v, det = check_state(s, iid, rec.get("slug", ""))
         verdicts[v] = verdicts.get(v, 0) + 1
@@ -173,11 +232,16 @@ def main() -> int:
     st["events"].append({"at": now, "cycle": st["cycle"],
                          "seen": len(seen_now), "absent": len(absent),
                          "checked": len(batch), "verdicts": verdicts,
-                         "split": split})
+                         "split": split, "gap": round(PACE.gap, 2),
+                         "throttled": PACE.throttled,
+                         "deferred": stopped_early,
+                         "mins": round((time.time() - started) / 60, 1)})
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     json.dump(st, open(STATE, "w"), separators=(",", ":"))
     print(f"\ncycle {st['cycle']}: tracking {len(st['tracked']):,}, "
           f"confirmed sold so far {len(st['sold']):,}", flush=True)
+    print(f"pacing: final gap {PACE.gap:.1f}s, {PACE.throttled} throttled, "
+          f"{(time.time() - started)/60:.0f} min used", flush=True)
     return 0
 
 

@@ -33,6 +33,10 @@ jobs:
           # leaving headroom for rotation.
           VT_BUDGET_MIN: '80'
         run: python scripts/vinted_track.py
+      # Merge before committing. Two overlapping cycles each wrote the whole
+      # state file and the later one silently dropped nine confirmed sales.
+      - name: Merge with remote state
+        run: python scripts/vinted_merge_state.py
       - name: Persist
         run: |
           git config user.name  'vinted-tracker[bot]'

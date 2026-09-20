@@ -61,13 +61,17 @@ AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
 BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
 # Price bands swept per cycle per brand; 0 means all of them.
 #
-# Rotation was a false economy. A catalog page carries ~96 listings, so
-# sweeping EVERY band costs only ~250 requests and establishes the presence of
-# all 17k listings in about 17 minutes. Rotating bands saved a trivial number
-# of requests while making absence invisible for hours - and absence is the
-# only thing that triggers a sale check. Sweeping everything every cycle is both
-# cheaper in the way that matters and far faster to detect a sale.
-BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "0"))
+# Sweeping ALL bands was tried and blocked. The cost was mis-estimated: a
+# catalog page holds ~96 listings but yields far fewer NEW ones - bands overlap
+# at their edges and trailing pages mostly repeat - so a full sweep is ~600
+# requests, not the ~250 predicted. It tripped a 403 during discovery and two
+# brands were never swept at all.
+#
+# Four bands is the configuration actually proven clean: cycle 9 swept four,
+# ran 1,072 checks and reported 0 throttled. Full band coverage then takes two
+# cycles rather than one, which is the honest price of staying inside the
+# limit.
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "4"))
 # Stop tracking listings older than this. Vinted publishes no absolute date, so
 # age is only knowable from the item page - which means a listing is aged out
 # when it is next checked, not in a single sweep. Aged-out rows are moved to

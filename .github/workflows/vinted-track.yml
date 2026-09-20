@@ -8,18 +8,18 @@ on:
   # One job at the measured-safe rate covers every absent listing in ~22 min at
   # the current corpus size, so this needs no parallelism.
   schedule:
-    # Hourly. A full sweep of every band costs ~250 requests and verifies the
-    # presence of all ~17k listings in ~17 min; only the ~140 that went missing
-    # need a deep check. That is ~390 requests a cycle against a ~1,800 per-IP
-    # ceiling, so the hour is comfortable rather than tight.
-    - cron: '25 * * * *'
+    # Two-hourly. Hourly with a full sweep was tried and hit a 403 during
+    # discovery - a full sweep costs ~600 requests, not the ~250 estimated.
+    # This cadence with four bands and an 80-minute budget is the combination
+    # measured clean (cycle 9: 1,072 checks, 0 throttled).
+    - cron: '25 */2 * * *'
   workflow_dispatch:
 concurrency: { group: vinted-track, cancel-in-progress: false }
 permissions: { contents: write }
 jobs:
   track:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,9 +29,9 @@ jobs:
         env:
           # Must finish inside the hourly cadence with room for the commit;
           # anything not reached simply leads the queue next cycle.
-          # Leaves ~28 min for deep checks after the ~17 min full sweep,
-          # which is ~420 checks against ~140 expected absences.
-          VT_BUDGET_MIN: '45'
+          # Cycle 9 ran this clean: ~1,070 checks against ~490 absences,
+          # leaving headroom for rotation.
+          VT_BUDGET_MIN: '80'
         run: python scripts/vinted_track.py
       - name: Persist
         run: |

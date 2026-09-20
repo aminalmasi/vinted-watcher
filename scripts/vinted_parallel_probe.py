@@ -72,12 +72,20 @@ def main() -> int:
 
     # Interleave work so the shards cover different brands rather than racing
     # on the same query - that is how the real job would be split.
+    # Must be able to REACH the budget: with 10 brands split two ways and a
+    # 24-page ceiling, each shard could only ever build 120 entries, so a 240
+    # budget was silently truncated and the "test" moved no more than the
+    # control. Pages now extend until the plan is long enough.
+    my_brands = [b for bi, b in enumerate(BRANDS) if bi % SHARDS == SHARD]
     plan = []
-    for page in range(1, 25):
-        for bi, b in enumerate(BRANDS):
-            if bi % SHARDS == SHARD:
-                plan.append((b, page))
+    page = 1
+    while len(plan) < mine:
+        for b in my_brands:
+            plan.append((b, page))
+        page += 1
     plan = plan[:mine]
+    print(f"  plan: {len(plan)} requests over {len(my_brands)} brands, "
+          f"pages 1-{page-1}", flush=True)
 
     ok = blocked = 0
     streak = 0

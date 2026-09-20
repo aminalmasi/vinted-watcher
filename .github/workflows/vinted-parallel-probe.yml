@@ -1,0 +1,50 @@
+name: vinted-parallel-probe
+
+# Measures whether a second job doubles catalog throughput or shares a wall.
+# Run it twice: shards=1 for the control, then shards=2 for the test, with the
+# SAME total N, so the only variable is how the work is split.
+
+on:
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: '1 = control (one job), 2 = test (two jobs in parallel)'
+        default: '1'
+      n:
+        description: 'TOTAL catalog requests across all shards'
+        default: '240'
+      gap:
+        description: 'seconds between requests'
+        default: '2.5'
+
+jobs:
+  one:
+    if: ${{ inputs.shards == '1' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - env: { SHARD: '0', SHARDS: '1', N: '${{ inputs.n }}', GAP: '${{ inputs.gap }}' }
+        run: python scripts/vinted_parallel_probe.py
+
+  two:
+    if: ${{ inputs.shards == '2' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - env:
+          SHARD: '${{ matrix.shard }}'
+          SHARDS: '2'
+          N: '${{ inputs.n }}'
+          GAP: '${{ inputs.gap }}'
+        run: python scripts/vinted_parallel_probe.py

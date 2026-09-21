@@ -1,0 +1,122 @@
+name: vinted-track-split
+
+# One job could do a full sweep OR a full check pass, not both.
+#
+# Cycle 14 proved it: sweeping every band saw all 21,716 listings (0 unswept)
+# but then hit 403s and completed only 436 of 1,963 absent checks. Discovery
+# and checking were competing for one job's allowance, and discovery won
+# because it runs first.
+#
+# So the work is split by KIND, not duplicated:
+#
+#   discover  full sweep, every band          ~800 requests
+#   plan      build the check queue           no requests
+#   check     two shards over the queue       ~1,000 requests each
+#   apply     fold verdicts into state        no requests
+#
+# Each request-making job is sized to fill its own allowance without crossing
+# it (VT_MAX_REQ), rather than leaving capacity unused. plan and apply are the
+# only writers of state and never run concurrently, so shards cannot conflict.
+
+on:
+  schedule:
+    - cron: '25 */3 * * *'
+  workflow_dispatch:
+
+concurrency: { group: vinted-track, cancel-in-progress: false }
+permissions: { contents: write }
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      VT_BANDS_PER_CYCLE: '0'      # every band
+      VT_MAX_REQ: '1000'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - run: python scripts/vinted_track.py --mode discover --shard 0 --shards 1 --out found-0.json
+      - uses: actions/upload-artifact@v4
+        with: { name: found-0, path: found-0.json }
+
+  plan:
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/download-artifact@v4
+        with: { path: found, pattern: 'found-*', merge-multiple: true }
+        # The queue must be able to hold what the shards can actually consume:
+        # two shards x 1,000 requests. The single-job cap of 1,100 would throw
+        # away most of an ~1,963 absent queue before the shards ever saw it.
+      - env: { VT_MAX_CHECK: '2000' }
+        run: python scripts/vinted_track.py --mode plan --in found --out queue.json
+      - uses: actions/upload-artifact@v4
+        with: { name: queue, path: queue.json }
+      # Newly discovered listings are state too; losing them would mean
+      # rediscovering the whole corpus next cycle.
+      - run: python scripts/vinted_merge_state.py
+      - name: Persist discoveries
+        run: |
+          git config user.name  'vinted-tracker[bot]'
+          git config user.email 'vinted-tracker@users.noreply.github.com'
+          git add data/vinted_track.json
+          git diff --cached --quiet || {
+            git commit -m "vinted plan: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort || true
+            git push origin main; }
+
+  check:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1] }
+    env:
+      VT_MAX_REQ: '1000'
+      VT_BUDGET_MIN: '85'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - uses: actions/download-artifact@v4
+        with: { name: queue }
+      - run: >
+          python scripts/vinted_track.py --mode check --queue queue.json
+          --shard ${{ matrix.shard }} --shards 2
+          --out verdicts-${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verdicts-${{ matrix.shard }}
+          path: verdicts-${{ matrix.shard }}.json
+
+  apply:
+    needs: check
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/download-artifact@v4
+        with: { path: verdicts, pattern: 'verdicts-*', merge-multiple: true }
+      - run: python scripts/vinted_track.py --mode apply --in verdicts
+      - run: python scripts/vinted_merge_state.py
+      - name: Persist verdicts
+        run: |
+          git config user.name  'vinted-tracker[bot]'
+          git config user.email 'vinted-tracker@users.noreply.github.com'
+          git add data/vinted_track.json
+          git diff --cached --quiet || {
+            git commit -m "vinted track: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort || true
+            git push origin main; }

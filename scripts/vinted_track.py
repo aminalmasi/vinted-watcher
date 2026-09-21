@@ -59,6 +59,14 @@ AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
 # Consecutive 403/429 before abandoning the cycle. A run that went 448
 # refusals deep learned nothing after the first few.
 BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
+# Requests one job may make before stopping voluntarily.
+#
+# The wall is not sharp. Cycle 13 ran ~1,170 requests clean; cycle 14 was
+# refused at roughly the same count; cycle 6 reached ~1,800 before refusal. So
+# this sits under the lowest figure that has actually blocked, and jobs are
+# sized to fill it rather than to leave it unused - a job that stops early
+# wastes coverage, and one that overruns loses a cycle.
+MAX_REQ = int(os.environ.get("VT_MAX_REQ", "1000"))
 # Price bands swept per cycle per brand; 0 means all of them.
 #
 # Rotation put a hard ceiling on the whole dataset: sweeping 4 of ~6.2 bands
@@ -97,6 +105,7 @@ class Pacer:
         self.ok_streak = 0
         self.throttled = 0
         self.streak = 0          # consecutive blocks
+        self.count = 0           # requests made by this job
 
     @property
     def blocked(self) -> bool:
@@ -109,7 +118,13 @@ class Pacer:
         """
         return self.streak >= BLOCK_GIVEUP
 
+    @property
+    def spent(self) -> bool:
+        """This job has used its share of the per-IP allowance."""
+        return self.count >= MAX_REQ
+
     def wait(self) -> None:
+        self.count += 1
         time.sleep(random.uniform(self.gap, self.gap * 1.4))
 
     def saw(self, status: int | None) -> None:
@@ -241,8 +256,9 @@ def sweep(s, brand, bands=None, cycle=0):
                 break
         if got_any:
             done.append((lo, hi))
-        if PACE.blocked:
-            print(f"    {brand}: blocked, {len(spans)-len(done)} bands unswept",
+        if PACE.blocked or PACE.spent:
+            why = "blocked" if PACE.blocked else "request budget"
+            print(f"    {brand}: {why}, {len(spans)-len(done)} bands unswept",
                   flush=True)
             break
     return found, done
@@ -363,7 +379,8 @@ def mode_discover(shard: int, shards: int, out: str) -> int:
     # disappearance from a band that was simply not searched this cycle.
     json.dump({"found": found, "swept": swept}, open(out, "w"),
               separators=(",", ":"))
-    print(f"shard {shard}: {len(found):,} listings -> {out}", flush=True)
+    print(f"shard {shard}: {len(found):,} listings in {PACE.count} requests "
+          f"-> {out}", flush=True)
     return 0
 
 
@@ -427,9 +444,10 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
         if time.time() > deadline:
             print(f"  budget reached - {len(mine) - n} deferred", flush=True)
             break
-        if PACE.blocked:
-            print(f"  blocked after {PACE.throttled} refusals - "
-                  f"{len(mine) - n} deferred", flush=True)
+        if PACE.blocked or PACE.spent:
+            why = f"blocked after {PACE.throttled} refusals" \
+                if PACE.blocked else f"request budget ({PACE.count})"
+            print(f"  {why} - {len(mine) - n} deferred", flush=True)
             break
         v, det = check_state(s, item["id"], item["slug"])
         res[item["id"]] = {"v": v, "absent": item["absent"],
@@ -438,8 +456,8 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
                            "availability": det.get("availability")}
     json.dump(res, open(out, "w"), separators=(",", ":"))
     print(f"shard {shard}: {len(res)} checked in "
-          f"{(time.time()-started)/60:.0f} min, final gap {PACE.gap:.1f}s, "
-          f"{PACE.throttled} throttled", flush=True)
+          f"{(time.time()-started)/60:.0f} min, {PACE.count} requests, "
+          f"final gap {PACE.gap:.1f}s, {PACE.throttled} throttled", flush=True)
     return 0
 
 

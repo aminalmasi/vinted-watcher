@@ -1,16 +1,9 @@
 name: vinted-track
+# Superseded by vinted-track-split.yml, which separates discovery from
+# checking so each gets its own request allowance. Kept dispatchable as a
+# single-job fallback, but unscheduled: both share the vinted-track
+# concurrency group.
 on:
-  # Every three hours, sweeping EVERY price band.
-  #
-  # Rotation capped the whole dataset: sweeping 4 of ~6.2 bands meant a given
-  # listing was only visible in ~65% of cycles, so ~35% were never discovered
-  # however long they stayed up. That ceiling dominated every other loss.
-  #
-  # A full sweep measures ~327 requests and checks are capped at ~1,100, so a
-  # cycle is ~1,400 requests - the load cycles 11 and 13 both sustained with
-  # zero 403s. GitHub delivers this cron 3-7h apart in practice anyway.
-  schedule:
-    - cron: '25 */3 * * *'
   workflow_dispatch:
 concurrency: { group: vinted-track, cancel-in-progress: false }
 permissions: { contents: write }

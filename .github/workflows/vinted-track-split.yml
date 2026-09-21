@@ -9,7 +9,7 @@ name: vinted-track-split
 #
 # So the work is split by KIND, not duplicated:
 #
-#   discover  full sweep, every band          ~800 requests
+#   discover  full sweep, every band          ~353 requests (measured)
 #   plan      build the check queue           no requests
 #   check     two shards over the queue       ~1,000 requests each
 #   apply     fold verdicts into state        no requests
@@ -17,6 +17,10 @@ name: vinted-track-split
 # Each request-making job is sized to fill its own allowance without crossing
 # it (VT_MAX_REQ), rather than leaving capacity unused. plan and apply are the
 # only writers of state and never run concurrently, so shards cannot conflict.
+#
+# Note the ceiling is NOT a fixed count: cycle 13 ran ~1,170 requests clean
+# while cycle 14 was refused at ~790. VT_MAX_REQ is a guard rail, not a
+# guarantee - the 403 backoff and give-up are what actually protect a cycle.
 
 on:
   schedule:
@@ -50,6 +54,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
+      - run: pip install --quiet requests
       - uses: actions/download-artifact@v4
         with: { path: found, pattern: 'found-*', merge-multiple: true }
         # The queue must be able to hold what the shards can actually consume:
@@ -107,6 +112,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
+      - run: pip install --quiet requests
       - uses: actions/download-artifact@v4
         with: { path: verdicts, pattern: 'verdicts-*', merge-multiple: true }
       - run: python scripts/vinted_track.py --mode apply --in verdicts

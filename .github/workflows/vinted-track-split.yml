@@ -11,16 +11,22 @@ name: vinted-track-split
 #
 #   discover  full sweep, every band          ~353 requests (measured)
 #   plan      build the check queue           no requests
-#   check     two shards over the queue       ~1,000 requests each
+#   check     three shards over the queue     ~1,000 requests each
 #   apply     fold verdicts into state        no requests
 #
 # Each request-making job is sized to fill its own allowance without crossing
 # it (VT_MAX_REQ), rather than leaving capacity unused. plan and apply are the
 # only writers of state and never run concurrently, so shards cannot conflict.
 #
-# Note the ceiling is NOT a fixed count: cycle 13 ran ~1,170 requests clean
-# while cycle 14 was refused at ~790. VT_MAX_REQ is a guard rail, not a
-# guarantee - the 403 backoff and give-up are what actually protect a cycle.
+# The ceiling is not a fixed count, and may not be about our load at all. In
+# one cycle a check shard ran 1,000 requests clean while its SIBLING was
+# refused after 101 - same code, same minutes, different runner. GitHub's
+# runner pool is shared, so some addresses arrive already in poor standing
+# with Vinted through nothing we did.
+#
+# Hence three check shards rather than two: a blocked shard gives up cheaply
+# after 8 refusals, and the ones that drew a good address carry the cycle.
+# VT_MAX_REQ is a guard rail; the backoff and give-up are the real protection.
 
 on:
   schedule:
@@ -83,7 +89,7 @@ jobs:
     timeout-minutes: 100
     strategy:
       fail-fast: false
-      matrix: { shard: [0, 1] }
+      matrix: { shard: [0, 1, 2] }
     env:
       VT_MAX_REQ: '1000'
       VT_BUDGET_MIN: '85'
@@ -96,7 +102,7 @@ jobs:
         with: { name: queue }
       - run: >
           python scripts/vinted_track.py --mode check --queue queue.json
-          --shard ${{ matrix.shard }} --shards 2
+          --shard ${{ matrix.shard }} --shards 3
           --out verdicts-${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
         with:

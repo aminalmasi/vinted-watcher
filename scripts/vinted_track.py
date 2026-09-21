@@ -333,9 +333,31 @@ def save_state(st: dict) -> None:
     os.replace(tmp, STATE)
 
 
+def public_ip(s) -> str:
+    """Which runner IP this job drew.
+
+    Blocks look like a property of the IP, not of our load: in one cycle a
+    check shard ran 1,000 requests clean while its sibling was refused after
+    101, at the same time with the same code. GitHub's runner pool is shared,
+    so some addresses arrive already in bad standing with Vinted through no
+    action of ours. Logging the IP is what turns that from a guess into
+    something checkable.
+    """
+    for url in ("https://api.ipify.org", "https://ifconfig.me/ip"):
+        try:
+            r = s.get(url, timeout=15)
+            if r.status_code == 200:
+                return r.text.strip()
+        except requests.RequestException:
+            pass
+    return "?"
+
+
 def session():
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9"})
+    ip = public_ip(s)
+    print(f"runner ip: {ip}", flush=True)
     s.get("https://www.vinted.it/", timeout=45)
     return s
 
@@ -361,11 +383,19 @@ def load_bands() -> dict:
 def mode_discover(shard: int, shards: int, out: str) -> int:
     """Sweep this shard's brands. Touches no state, so shards cannot collide."""
     mine = [b for i, b in enumerate(BRANDS) if i % shards == shard]
+    # Rotate the order each cycle. When a sweep is blocked partway it always
+    # loses whatever comes LAST, so a fixed order means the same brands are
+    # sacrificed every time - one blocked cycle took out Louboutin, Dior,
+    # Prada, Saint Laurent, Valentino, Golden Goose and Bottega while Gucci
+    # and Chanel were fine. Rotating spreads that loss instead of compounding
+    # it into a permanent blind spot for the tail of the list.
+    cyc = load_state().get("cycle", 0) + 1
+    if mine:
+        off = cyc % len(mine)
+        mine = mine[off:] + mine[:off]
     print(f"discover shard {shard}/{shards}: {mine}", flush=True)
     s, bands, found = session(), load_bands(), {}
-    # Band rotation needs the cycle number; plan/ owns incrementing it, so read
-    # the current value rather than advancing it here.
-    cycle = load_state().get("cycle", 0) + 1
+    cycle = cyc
     swept = {}
     for b in mine:
         f, spans = sweep(s, b, bands.get(b), cycle)
@@ -440,6 +470,7 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
     s = session()
     started, deadline = time.time(), time.time() + BUDGET_MIN * 60
     res = {}
+    ip = public_ip(s)
     for n, item in enumerate(mine):
         if time.time() > deadline:
             print(f"  budget reached - {len(mine) - n} deferred", flush=True)
@@ -454,7 +485,9 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
                            "gone_h": item.get("gone_h", 0.0),
                            "age_days": det.get("age_days"),
                            "availability": det.get("availability")}
-    json.dump(res, open(out, "w"), separators=(",", ":"))
+    json.dump({"_meta": {"ip": ip, "requests": PACE.count,
+                         "throttled": PACE.throttled}, **res},
+              open(out, "w"), separators=(",", ":"))
     print(f"shard {shard}: {len(res)} checked in "
           f"{(time.time()-started)/60:.0f} min, {PACE.count} requests, "
           f"final gap {PACE.gap:.1f}s, {PACE.throttled} throttled", flush=True)
@@ -470,6 +503,10 @@ def mode_apply(indir: str) -> int:
         if not fn.endswith(".json"):
             continue
         for iid, r in json.load(open(os.path.join(indir, fn))).items():
+            if iid == "_meta":
+                print(f"  shard ip={r.get('ip')} requests={r.get('requests')} "
+                      f"throttled={r.get('throttled')}", flush=True)
+                continue
             v = r["v"]
             verdicts[v] = verdicts.get(v, 0) + 1
             o = "absent" if r.get("absent") else "rotation"
@@ -562,6 +599,7 @@ def main_single() -> int:
     st = load_state()
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9"})
+    print(f"runner ip: {public_ip(s)}", flush=True)
     s.get("https://www.vinted.it/", timeout=45)
     started = time.time()
     now = int(time.time())

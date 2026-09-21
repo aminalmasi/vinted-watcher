@@ -1,25 +1,23 @@
 name: vinted-track
 on:
-  # Hourly, not 3-hourly. Sale detection is latency-bound: a listing that sells
-  # and is then deleted by the seller 404s before we reach it and is recorded
-  # as "deleted" rather than "sold" - and deletions run about 1:1 with
-  # confirmed sales. Checking sooner should convert some of that back.
+  # Every three hours, sweeping EVERY price band.
   #
-  # One job at the measured-safe rate covers every absent listing in ~22 min at
-  # the current corpus size, so this needs no parallelism.
+  # Rotation capped the whole dataset: sweeping 4 of ~6.2 bands meant a given
+  # listing was only visible in ~65% of cycles, so ~35% were never discovered
+  # however long they stayed up. That ceiling dominated every other loss.
+  #
+  # A full sweep measures ~327 requests and checks are capped at ~1,100, so a
+  # cycle is ~1,400 requests - the load cycles 11 and 13 both sustained with
+  # zero 403s. GitHub delivers this cron 3-7h apart in practice anyway.
   schedule:
-    # Two-hourly. Hourly with a full sweep was tried and hit a 403 during
-    # discovery - a full sweep costs ~600 requests, not the ~250 estimated.
-    # This cadence with four bands and an 80-minute budget is the combination
-    # measured clean (cycle 9: 1,072 checks, 0 throttled).
-    - cron: '25 */2 * * *'
+    - cron: '25 */3 * * *'
   workflow_dispatch:
 concurrency: { group: vinted-track, cancel-in-progress: false }
 permissions: { contents: write }
 jobs:
   track:
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,11 +25,9 @@ jobs:
       - run: pip install --quiet requests
       - name: Track
         env:
-          # Must finish inside the hourly cadence with room for the commit;
-          # anything not reached simply leads the queue next cycle.
-          # Cycle 9 ran this clean: ~1,070 checks against ~490 absences,
-          # leaving headroom for rotation.
-          VT_BUDGET_MIN: '80'
+          # ~22 min of full sweep plus ~1,100 checks, inside the 120-min
+          # timeout with room for the merge and commit.
+          VT_BUDGET_MIN: '95'
         run: python scripts/vinted_track.py
       # Merge before committing. Two overlapping cycles each wrote the whole
       # state file and the later one silently dropped nine confirmed sales.

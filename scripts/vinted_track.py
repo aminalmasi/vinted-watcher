@@ -46,7 +46,7 @@ GAP_CEIL = 20.0
 # between requests is clean, 1.0s returns 21% HTTP 429. VOLUME: a 2,235-check
 # run went clean for ~1,800 requests and was then 403'd for the remaining 448.
 # So the cap sits well under that, and the clock budget usually binds first.
-MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "1500"))
+MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "1100"))
 # The real limit is the clock, not the count: the Actions job is killed at 180
 # minutes and a killed job never reaches the state save, losing the whole
 # cycle. So checking stops with time to spare and whatever was not reached
@@ -61,17 +61,17 @@ AGE_BINS = [(0, 2, "<2h"), (2, 6, "2-6h"), (6, 12, "6-12h"),
 BLOCK_GIVEUP = int(os.environ.get("VT_BLOCK_GIVEUP", "8"))
 # Price bands swept per cycle per brand; 0 means all of them.
 #
-# Sweeping ALL bands was tried and blocked. The cost was mis-estimated: a
-# catalog page holds ~96 listings but yields far fewer NEW ones - bands overlap
-# at their edges and trailing pages mostly repeat - so a full sweep is ~600
-# requests, not the ~250 predicted. It tripped a 403 during discovery and two
-# brands were never swept at all.
+# Rotation put a hard ceiling on the whole dataset: sweeping 4 of ~6.2 bands
+# means any given listing is only visible in ~65% of cycles, so 35% of items
+# were never discovered no matter how long they stayed up. That ceiling
+# dominated every other loss, including the sold/deleted ambiguity.
 #
-# Four bands is the configuration actually proven clean: cycle 9 swept four,
-# ran 1,072 checks and reported 0 throttled. Full band coverage then takes two
-# cycles rather than one, which is the honest price of staying inside the
-# limit.
-BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "4"))
+# A full sweep measured ~327 requests (4 bands took ~14 min / ~211 requests),
+# not the ~600 feared - the earlier attempt blocked because it ran with the
+# OLD oversized bands and a 10-page depth. With bands resized to <=593 and
+# checks capped at the level proven clean, the whole cycle is ~1,400 requests,
+# which cycles 11 and 13 both sustained without a single 403.
+BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "0"))
 # Stop tracking listings older than this. Vinted publishes no absolute date, so
 # age is only knowable from the item page - which means a listing is aged out
 # when it is next checked, not in a single sweep. Aged-out rows are moved to
@@ -213,7 +213,14 @@ def sweep(s, brand, bands=None, cycle=0):
     if bands and 0 < BANDS_PER_CYCLE < len(spans):
         start = (cycle * BANDS_PER_CYCLE) % len(spans)
         spans = [spans[(start + k) % len(spans)] for k in range(BANDS_PER_CYCLE)]
+    # Only spans that actually came back count as swept. Cycle 9 recorded
+    # every planned span, was then blocked partway, and two brands returned
+    # nothing at all - so 10,506 listings were marked "absent from the feed"
+    # when the feed had simply never been read. A failed sweep must look like
+    # no sweep, not like an empty one.
+    done = []
     for lo, hi in spans:
+        got_any = False
         for page in range(1, PAGES + 1):
             par = {"search_text": f"{brand} shoes", "page": page}
             if lo is not None:
@@ -225,17 +232,20 @@ def sweep(s, brand, bands=None, cycle=0):
             r = get(s, "https://www.vinted.it/catalog", params=par)
             if r is None or r.status_code != 200:
                 break
+            got_any = True
             n, fresh = _parse(r.text, found)
             # Stop as soon as a page adds nothing new: a band shallower than
             # PAGES otherwise burns a full page request per empty page, and
             # with ten brands times six bands that waste is the whole budget.
             if n == 0 or fresh == 0:
                 break
-    # The swept spans come back with the listings, because absence is only
-    # meaningful WITHIN a span that was actually searched. Without this, band
-    # rotation marks every listing in an unswept band as "missing from the
-    # feed" when it was simply never looked for.
-    return found, spans
+        if got_any:
+            done.append((lo, hi))
+        if PACE.blocked:
+            print(f"    {brand}: blocked, {len(spans)-len(done)} bands unswept",
+                  flush=True)
+            break
+    return found, done
 
 
 UNITS_IT = {"minut": 1 / 1440, "ora": 1 / 24, "ore": 1 / 24, "giorn": 1,

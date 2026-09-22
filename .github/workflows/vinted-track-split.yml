@@ -12,6 +12,7 @@ name: vinted-track-split
 #   discover  two shards, every band          ~180 requests each
 #   plan      build the check queue           no requests
 #   check     four shards over the queue      ~500 requests each
+#   rescue    retries what they missed        up to 1,000 requests
 #   apply     fold verdicts into state        no requests
 #
 # Each request-making job is sized to fill its own allowance without crossing
@@ -132,8 +133,37 @@ jobs:
           name: verdicts-${{ matrix.shard }}
           path: verdicts-${{ matrix.shard }}.json
 
-  apply:
+  # A shard that drew a bad address is refused after ~100 requests and defers
+  # the rest of its slice. This job runs afterwards on its OWN runner, so it
+  # draws its own address, and retries exactly the entries no shard returned a
+  # verdict for - absent listings first, since that is where the sales are.
+  # If it also draws badly it gives up cheaply and nothing is worse than
+  # before.
+  rescue:
     needs: check
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      VT_MAX_REQ: '1000'
+      VT_BUDGET_MIN: '55'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - uses: actions/download-artifact@v4
+        with: { name: queue }
+      - uses: actions/download-artifact@v4
+        with: { path: verdicts, pattern: 'verdicts-*', merge-multiple: true }
+      - run: >
+          python scripts/vinted_track.py --mode rescue --queue queue.json
+          --in verdicts --out verdicts-rescue.json
+      - uses: actions/upload-artifact@v4
+        with: { name: verdicts-rescue, path: verdicts-rescue.json }
+
+  apply:
+    needs: [check, rescue]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 15

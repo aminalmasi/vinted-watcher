@@ -462,23 +462,20 @@ def mode_plan(indir: str, out: str) -> int:
     return 0
 
 
-def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
-    """Check this shard's slice. Writes verdicts only - never state."""
-    q = json.load(open(queue_file))
-    mine = [x for i, x in enumerate(q) if i % shards == shard]
-    print(f"check shard {shard}/{shards}: {len(mine)} listings", flush=True)
+def _run_checks(items: list, label: str, out: str) -> int:
+    """Check a list of queue entries. Writes verdicts only - never state."""
     s = session()
+    ip = public_ip(s)
     started, deadline = time.time(), time.time() + BUDGET_MIN * 60
     res = {}
-    ip = public_ip(s)
-    for n, item in enumerate(mine):
+    for n, item in enumerate(items):
         if time.time() > deadline:
-            print(f"  budget reached - {len(mine) - n} deferred", flush=True)
+            print(f"  budget reached - {len(items) - n} deferred", flush=True)
             break
         if PACE.blocked or PACE.spent:
             why = f"blocked after {PACE.throttled} refusals" \
                 if PACE.blocked else f"request budget ({PACE.count})"
-            print(f"  {why} - {len(mine) - n} deferred", flush=True)
+            print(f"  {why} - {len(items) - n} deferred", flush=True)
             break
         v, det = check_state(s, item["id"], item["slug"])
         res[item["id"]] = {"v": v, "absent": item["absent"],
@@ -488,10 +485,53 @@ def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
     json.dump({"_meta": {"ip": ip, "requests": PACE.count,
                          "throttled": PACE.throttled}, **res},
               open(out, "w"), separators=(",", ":"))
-    print(f"shard {shard}: {len(res)} checked in "
-          f"{(time.time()-started)/60:.0f} min, {PACE.count} requests, "
-          f"final gap {PACE.gap:.1f}s, {PACE.throttled} throttled", flush=True)
+    print(f"{label}: {len(res)} checked in {(time.time()-started)/60:.0f} min, "
+          f"{PACE.count} requests, final gap {PACE.gap:.1f}s, "
+          f"{PACE.throttled} throttled, ip={ip}", flush=True)
     return 0
+
+
+def checked_ids(indir: str) -> set:
+    """Every listing id some shard already returned a verdict for."""
+    done = set()
+    for fn in sorted(os.listdir(indir)):
+        if not fn.endswith(".json"):
+            continue
+        for iid in json.load(open(os.path.join(indir, fn))):
+            if iid != "_meta":
+                done.add(iid)
+    return done
+
+
+def mode_check(queue_file: str, shard: int, shards: int, out: str) -> int:
+    q = json.load(open(queue_file))
+    mine = [x for i, x in enumerate(q) if i % shards == shard]
+    print(f"check shard {shard}/{shards}: {len(mine)} listings", flush=True)
+    return _run_checks(mine, f"shard {shard}", out)
+
+
+def mode_rescue(queue_file: str, indir: str, out: str) -> int:
+    """Pick up whatever the check shards did not reach.
+
+    A shard that draws a bad address is refused after ~100 requests and defers
+    the rest of its slice to the next cycle - which, at a ~25% block rate,
+    quietly costs a quarter of the queue every time. This job runs afterwards
+    on its OWN runner, so it draws its own address, and retries exactly the
+    entries no shard returned a verdict for. If it also draws badly it gives
+    up cheaply and nothing is worse than before.
+    """
+    q = json.load(open(queue_file))
+    done = checked_ids(indir)
+    missing = [x for x in q if x["id"] not in done]
+    print(f"rescue: {len(done)} of {len(q)} already checked, "
+          f"{len(missing)} left behind", flush=True)
+    if not missing:
+        json.dump({}, open(out, "w"))
+        print("rescue: nothing to do", flush=True)
+        return 0
+    # absent listings are where the sales are, so they go first
+    missing.sort(key=lambda x: (not x.get("absent"), -x.get("gone_h", 0.0)))
+    return _run_checks(missing, "rescue", out)
 
 
 def mode_apply(indir: str) -> int:
@@ -576,7 +616,8 @@ def mode_apply(indir: str) -> int:
 def main() -> int:
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["discover", "plan", "check", "apply"])
+    ap.add_argument("--mode", choices=["discover", "plan", "check", "rescue",
+                                       "apply"])
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--shards", type=int, default=1)
     ap.add_argument("--queue")
@@ -589,6 +630,8 @@ def main() -> int:
         return mode_plan(a.indir, a.out)
     if a.mode == "check":
         return mode_check(a.queue, a.shard, a.shards, a.out)
+    if a.mode == "rescue":
+        return mode_rescue(a.queue, a.indir, a.out)
     if a.mode == "apply":
         return mode_apply(a.indir)
     return main_single()

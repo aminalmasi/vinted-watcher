@@ -9,9 +9,9 @@ name: vinted-track-split
 #
 # So the work is split by KIND, not duplicated:
 #
-#   discover  full sweep, every band          ~353 requests (measured)
+#   discover  two shards, every band          ~180 requests each
 #   plan      build the check queue           no requests
-#   check     three shards over the queue     ~1,000 requests each
+#   check     four shards over the queue      ~500 requests each
 #   apply     fold verdicts into state        no requests
 #
 # Each request-making job is sized to fill its own allowance without crossing
@@ -24,9 +24,15 @@ name: vinted-track-split
 # runner pool is shared, so some addresses arrive already in poor standing
 # with Vinted through nothing we did.
 #
-# Hence three check shards rather than two: a blocked shard gives up cheaply
-# after 8 refusals, and the ones that drew a good address carry the cycle.
-# VT_MAX_REQ is a guard rail; the backoff and give-up are the real protection.
+# Measured block rate is ~25% of request-making jobs, so the answer is
+# redundancy, not a bigger per-job budget: six small jobs lose less to one bad
+# draw than two large ones. A blocked shard gives up cheaply after 8 refusals
+# and its slice simply leads the queue next cycle.
+#
+# This mitigates the problem; it cannot remove it. Which address a runner gets
+# is not ours to choose, so some coverage is lost on any cycle where several
+# shards draw badly. VT_MAX_REQ is a guard rail; the backoff and give-up are
+# the real protection.
 
 on:
   schedule:
@@ -37,9 +43,16 @@ concurrency: { group: vinted-track, cancel-in-progress: false }
 permissions: { contents: write }
 
 jobs:
+  # Discovery is sharded too, because a block costs COVERAGE here, not just
+  # time: one blocked run returned 7,057 of 21,719 listings and seven brands
+  # went unswept. Two shards halve the worst case, and each draws its own IP,
+  # so a bad address takes out five brands instead of ten.
   discover:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1] }
     env:
       VT_BANDS_PER_CYCLE: '0'      # every band
       VT_MAX_REQ: '1000'
@@ -48,16 +61,26 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install --quiet requests
-      - run: python scripts/vinted_track.py --mode discover --shard 0 --shards 1 --out found-0.json
+      - run: >
+          python scripts/vinted_track.py --mode discover
+          --shard ${{ matrix.shard }} --shards 2
+          --out found-${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
-        with: { name: found-0, path: found-0.json }
+        with:
+          name: found-${{ matrix.shard }}
+          path: found-${{ matrix.shard }}.json
 
   plan:
     needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      # ref: main matters. Checkout defaults to the SHA that TRIGGERED the run,
+      # so by the time these later jobs start they would be reading a state
+      # file from before the earlier jobs committed - which is how the
+      # per-cycle seen/absent counts came out None.
       - uses: actions/checkout@v4
+        with: { ref: main }
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install --quiet requests
@@ -89,7 +112,7 @@ jobs:
     timeout-minutes: 100
     strategy:
       fail-fast: false
-      matrix: { shard: [0, 1, 2] }
+      matrix: { shard: [0, 1, 2, 3] }
     env:
       VT_MAX_REQ: '1000'
       VT_BUDGET_MIN: '85'
@@ -102,7 +125,7 @@ jobs:
         with: { name: queue }
       - run: >
           python scripts/vinted_track.py --mode check --queue queue.json
-          --shard ${{ matrix.shard }} --shards 3
+          --shard ${{ matrix.shard }} --shards 4
           --out verdicts-${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
         with:
@@ -116,6 +139,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with: { ref: main }
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install --quiet requests

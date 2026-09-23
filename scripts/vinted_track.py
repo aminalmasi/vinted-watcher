@@ -563,7 +563,13 @@ def mode_apply(indir: str) -> int:
                 continue
             rec["last_check"] = now
             if v == "sold":
+                # age_days is read off the very page that confirmed the sale,
+                # so it is days-from-upload-to-sold: the actual time to sell,
+                # accurate to one cycle. first_seen only says when WE noticed
+                # the listing, which is bounded by our own cadence and says
+                # nothing about how long it really took.
                 st["sold"][iid] = {**rec, "sold_seen": now,
+                                   "age_at_sale": r.get("age_days"),
                                    "availability": r.get("availability"),
                                    "was_absent": bool(r.get("absent"))}
                 st["archive"][iid] = {**rec, "final": "sold", "at": now}
@@ -575,7 +581,8 @@ def mode_apply(indir: str) -> int:
                 # ARE sales. Either way the brand, price and photo were already
                 # captured at discovery, and discarding them threw away usable
                 # dataset rows to save nothing.
-                st["archive"][iid] = {**rec, "final": "deleted", "at": now}
+                st["archive"][iid] = {**rec, "final": "deleted", "at": now,
+                                      "age_at_end": r.get("age_days")}
                 st["tracked"].pop(iid, None)
             elif (r.get("age_days") or 0) > AGE_LIMIT_DAYS:
                 st["archive"][iid] = {**rec, "final": "aged_out", "at": now,
@@ -728,6 +735,7 @@ def main_single() -> int:
         rec["last_check"] = now
         if v == "sold":
             st["sold"][iid] = {**rec, "sold_seen": now,
+                               "age_at_sale": det.get("age_days"),
                                "availability": det.get("availability"),
                                "was_absent": iid in absent_set}
             st["archive"][iid] = {**rec, "final": "sold", "at": now}

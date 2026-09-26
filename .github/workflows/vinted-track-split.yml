@@ -11,7 +11,7 @@ name: vinted-track-split
 #
 #   discover  two shards, every band          ~180 requests each
 #   plan      build the check queue           no requests
-#   check     four shards over the queue      ~500 requests each
+#   check     two shards over the queue       ~200 requests each
 #   rescue    retries what they missed        up to 1,000 requests
 #   apply     fold verdicts into state        no requests
 #
@@ -36,8 +36,22 @@ name: vinted-track-split
 # the real protection.
 
 on:
+  # Target: a sweep interval T of about one hour, because T is what sets the
+  # fastest sale we can see at all. P(catch) = min(1, L/T) for a listing that
+  # lives L hours, so at T=5.9h anything under ~6h was luck - and the fastest
+  # sale in 204 dated records is 4.1h, which is the instrument's blind spot
+  # rather than a fact about the market.
+  #
+  # Asking for 30 minutes to land near 60. GitHub's scheduler runs roughly 2x
+  # late under load - a 3-hour cron was delivering 5.9h - and the concurrency
+  # group serialises anything that arrives while a cycle is still running, so
+  # over-requesting costs nothing and absorbs skipped firings.
+  #
+  # This is affordable because a SHORTER cycle has LESS work, not more: the
+  # absent queue scales with T, so ~387 listings per hour instead of ~2,281
+  # per 6 hours. Whole cycle is ~24 min and per-job volume ~200 requests.
   schedule:
-    - cron: '25 */3 * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 concurrency: { group: vinted-track, cancel-in-progress: false }
@@ -50,7 +64,7 @@ jobs:
   # so a bad address takes out five brands instead of ten.
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix: { shard: [0, 1] }
@@ -90,7 +104,9 @@ jobs:
         # The queue must be able to hold what the shards can actually consume:
         # two shards x 1,000 requests. The single-job cap of 1,100 would throw
         # away most of an ~1,963 absent queue before the shards ever saw it.
-      - env: { VT_MAX_CHECK: '2000' }
+        # ~387 absent per hour; this leaves room for a late cycle without
+        # pushing either shard past the ~500 requests that has run clean.
+      - env: { VT_MAX_CHECK: '900' }
         run: python scripts/vinted_track.py --mode plan --in found --out queue.json
       - uses: actions/upload-artifact@v4
         with: { name: queue, path: queue.json }
@@ -110,13 +126,13 @@ jobs:
   check:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 40
     strategy:
       fail-fast: false
-      matrix: { shard: [0, 1, 2, 3] }
+      matrix: { shard: [0, 1] }
     env:
-      VT_MAX_REQ: '1000'
-      VT_BUDGET_MIN: '85'
+      VT_MAX_REQ: '600'
+      VT_BUDGET_MIN: '32'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -126,7 +142,7 @@ jobs:
         with: { name: queue }
       - run: >
           python scripts/vinted_track.py --mode check --queue queue.json
-          --shard ${{ matrix.shard }} --shards 4
+          --shard ${{ matrix.shard }} --shards 2
           --out verdicts-${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
         with:
@@ -143,10 +159,10 @@ jobs:
     needs: check
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    timeout-minutes: 28
     env:
-      VT_MAX_REQ: '1000'
-      VT_BUDGET_MIN: '55'
+      VT_MAX_REQ: '600'
+      VT_BUDGET_MIN: '20'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

@@ -11,7 +11,7 @@ name: vinted-track-split
 #
 #   discover  two shards, every band          ~180 requests each
 #   plan      build the check queue           no requests
-#   check     two shards over the queue       ~200 requests each
+#   check     five shards over the queue      ~520 requests each
 #   rescue    retries what they missed        up to 1,000 requests
 #   apply     fold verdicts into state        no requests
 #
@@ -104,9 +104,11 @@ jobs:
         # The queue must be able to hold what the shards can actually consume:
         # two shards x 1,000 requests. The single-job cap of 1,100 would throw
         # away most of an ~1,963 absent queue before the shards ever saw it.
-        # ~387 absent per hour; this leaves room for a late cycle without
-        # pushing either shard past the ~500 requests that has run clean.
-      - env: { VT_MAX_CHECK: '900' }
+        # Sized to the absent count WE ACTUALLY SEE, not the one a hoped-for
+        # cadence would produce. Cutting this to 900 on the assumption T would
+        # fall to 1h left ~1,500 absent listings unchecked every cycle once T
+        # stayed at 4.1h, and per-cycle sales fell from ~22 to ~4.
+      - env: { VT_MAX_CHECK: '2600' }
         run: python scripts/vinted_track.py --mode plan --in found --out queue.json
       - uses: actions/upload-artifact@v4
         with: { name: queue, path: queue.json }
@@ -126,13 +128,13 @@ jobs:
   check:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
     strategy:
       fail-fast: false
-      matrix: { shard: [0, 1] }
+      matrix: { shard: [0, 1, 2, 3, 4] }
     env:
       VT_MAX_REQ: '600'
-      VT_BUDGET_MIN: '32'
+      VT_BUDGET_MIN: '40'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -142,7 +144,7 @@ jobs:
         with: { name: queue }
       - run: >
           python scripts/vinted_track.py --mode check --queue queue.json
-          --shard ${{ matrix.shard }} --shards 2
+          --shard ${{ matrix.shard }} --shards 5
           --out verdicts-${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
         with:

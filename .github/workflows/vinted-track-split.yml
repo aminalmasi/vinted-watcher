@@ -101,15 +101,11 @@ jobs:
       - run: pip install --quiet requests
       - uses: actions/download-artifact@v4
         with: { path: found, pattern: 'found-*', merge-multiple: true }
-        # The queue must be able to hold what the shards can actually consume:
-        # two shards x 1,000 requests. The single-job cap of 1,100 would throw
-        # away most of an ~1,963 absent queue before the shards ever saw it.
-        # Sized to the absent count WE ACTUALLY SEE, not the one a hoped-for
-        # cadence would produce. Cutting this to 900 on the assumption T would
-        # fall to 1h left ~1,500 absent listings unchecked every cycle once T
-        # stayed at 4.1h, and per-cycle sales fell from ~22 to ~4.
-      - env: { VT_MAX_CHECK: '2600' }
-        run: python scripts/vinted_track.py --mode plan --in found --out queue.json
+        # The queue is absence-driven now - every absent listing, plus a
+        # 300-entry rotation tail - so there is no cap to tune here. It sizes
+        # itself to what discovery found, which is what lets the cycle get
+        # shorter as absence falls.
+      - run: python scripts/vinted_track.py --mode plan --in found --out queue.json
       - uses: actions/upload-artifact@v4
         with: { name: queue, path: queue.json }
       # Newly discovered listings are state too; losing them would mean

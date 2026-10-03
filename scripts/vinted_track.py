@@ -47,6 +47,12 @@ GAP_CEIL = 20.0
 # run went clean for ~1,800 requests and was then 403'd for the remaining 448.
 # So the cap sits well under that, and the clock budget usually binds first.
 MAX_CHECK = int(os.environ.get("VT_MAX_CHECK", "1100"))
+# Absence is always checked in full; this is only a runaway guard, set well
+# above anything observed (peak 3,080). Rotation is capped separately and
+# small, because it converts at ~0% sold and only exists to feed upload dates
+# to the 6-month prune.
+ABSENT_MAX = int(os.environ.get("VT_ABSENT_MAX", "6000"))
+ROTATE_MAX = int(os.environ.get("VT_ROTATE_MAX", "300"))
 # The real limit is the clock, not the count: the Actions job is killed at 180
 # minutes and a killed job never reaches the state save, losing the whole
 # cycle. So checking stops with time to spare and whatever was not reached
@@ -428,21 +434,36 @@ def mode_plan(indir: str, out: str) -> int:
 
     absent_set = {i for i in st["tracked"]
                   if i not in seen_now and covered(st["tracked"][i], swept)}
-    due = [i for i in st["tracked"]
-           if i in absent_set
-           or now - st["tracked"][i].get("last_check", 0) > RECHECK_H * 3600]
-    due.sort(key=lambda i: (0 if i in absent_set else 1,
-                            st["tracked"][i].get("last_check", 0)))
-    # How long a listing has been missing from the feed, carried into the
-    # queue. Deletions run ~1:1 with sales, and the suspicion is that many are
-    # sales that 404'd before we arrived - if so, sold-rate should FALL and
-    # deleted-rate RISE with absence age, which is what makes faster checking
-    # worth paying for. That is measurable, so measure it.
+
+    # The queue is absence-driven, with rotation only as a bounded tail.
+    #
+    # It used to be due[:MAX_CHECK] - absent first, then rotation padding up to
+    # the cap - which had two bad consequences. Absence above the cap was
+    # silently dropped (3,080 absent against a 2,600 cap), AND every cycle did
+    # a full 2,600 checks even when absence was small, because rotation filled
+    # the rest. Rotation converts at roughly 0% sold, so that padding cost 33
+    # minutes a cycle and bought almost nothing - and it meant the pipeline
+    # could never get shorter, which is what keeps the sweep interval high.
+    #
+    # Rotation is still worth a little: it is how listings get their upload
+    # date read and so how the 6-month prune finds them. Hence a small fixed
+    # tail rather than zero.
+    absent_q = sorted(absent_set,
+                      key=lambda i: -(now - st["tracked"][i].get("last_seen", now)))
+    rot = [i for i in st["tracked"]
+           if i not in absent_set
+           and now - st["tracked"][i].get("last_check", 0) > RECHECK_H * 3600]
+    rot.sort(key=lambda i: st["tracked"][i].get("last_check", 0))
+    picked = absent_q[:ABSENT_MAX] + rot[:ROTATE_MAX]
+    if len(absent_set) > ABSENT_MAX:
+        print(f"  WARNING {len(absent_set) - ABSENT_MAX} absent listings over "
+              f"the safety cap - raise VT_ABSENT_MAX", flush=True)
+
     queue = [{"id": i, "slug": st["tracked"][i].get("slug", ""),
               "absent": i in absent_set,
               "gone_h": round((now - st["tracked"][i].get("last_seen", now))
                               / 3600, 1) if i in absent_set else 0.0}
-             for i in due[:MAX_CHECK]]
+             for i in picked]
 
     for iid, v in seen_now.items():
         if iid in st["tracked"]:
@@ -454,11 +475,12 @@ def mode_plan(indir: str, out: str) -> int:
             st["tracked"][iid] = v
 
     st["pending"] = {"at": now, "seen": len(seen_now),
-                     "absent": len(absent_set), "due": len(due)}
+                     "absent": len(absent_set), "due": len(picked)}
     save_state(st)
     json.dump(queue, open(out, "w"), separators=(",", ":"))
-    print(f"tracking {len(st['tracked']):,}, absent {len(absent_set):,}, "
-          f"due {len(due):,}, queued {len(queue):,}", flush=True)
+    print(f"tracking {len(st['tracked']):,}, absent {len(absent_set):,} "
+          f"(all queued), rotation {min(len(rot), ROTATE_MAX):,}, "
+          f"queued {len(queue):,}", flush=True)
     return 0
 
 

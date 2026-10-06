@@ -61,11 +61,20 @@ def main() -> int:
     st = json.load(open(STATE))
     t = st["tracked"]
     now = time.time()
-    # longest-absent first: those are the ones that keep coming back unknown
-    cand = sorted(t.items(), key=lambda kv: kv[1].get("last_seen", now))
-    cand = cand[:N * 3]
-    random.shuffle(cand)
-    cand = cand[:N]
+    # Control group matters: "deleted" is terminal, so classifying the shell
+    # page as deleted would stop us tracking any LIVE listing that happened to
+    # serve it. Compare the longest-absent against ones seen in the feed within
+    # the hour - if the shell appears only among the absent, the inference is
+    # safe; if it appears for fresh ones too, it is transient and must not be
+    # treated as terminal.
+    absent = sorted(t.items(), key=lambda kv: kv[1].get("last_seen", now))[:N * 3]
+    fresh = [kv for kv in t.items()
+             if now - kv[1].get("last_seen", 0) < 3600]
+    random.shuffle(absent); random.shuffle(fresh)
+    cand = [("ABSENT", k, v) for k, v in absent[:N // 2]] + \
+           [("FRESH ", k, v) for k, v in fresh[:N // 2]]
+    print(f"{len(cand)} pages: {N//2} long-absent, {min(N//2, len(fresh))} "
+          f"seen within the hour\n", flush=True)
 
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9",
@@ -73,7 +82,7 @@ def main() -> int:
     s.get("https://www.vinted.it/", timeout=45)
 
     summary = {"total": 0, "has_can_buy": 0, "blocked": 0, "tiny": 0}
-    for iid, rec in cand:
+    for group, iid, rec in cand:
         time.sleep(random.uniform(2.5, 3.5))
         url = f"https://www.vinted.it/items/{iid}-{rec.get('slug','')}"
         try:
@@ -96,11 +105,15 @@ def main() -> int:
             summary["tiny"] += 1
 
         title = re.search(r"<title>(.{0,90})", t_)
-        print(f"\n{iid}  HTTP {r.status_code}  {kb} KB  gone {gone_d:.1f}d", flush=True)
+        print(f"\n[{group}] {iid}  HTTP {r.status_code}  {kb} KB  "
+              f"gone {gone_d:.1f}d", flush=True)
         print(f"  title   : {title.group(1).strip() if title else '?'}", flush=True)
         print(f"  markers : {found or 'NONE'}", flush=True)
-        if blocks:
-            print(f"  BLOCK   : {blocks}", flush=True)
+        # the BLOCK markers fired on every page including good item pages -
+        # those strings are in Vinted's standard bundle, so they are noise
+        has_item = bool(re.search(r'\\?"item_id\\?"', t_))
+        print(f"  shell?  : {'SHELL (no item data)' if not has_item else 'real item page'}",
+              flush=True)
         # if can_buy is missing, show what the item blob does contain
         if "can_buy" not in found:
             m = re.search(r'\\?"item_id\\?"', t_)

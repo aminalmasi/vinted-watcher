@@ -1,0 +1,17 @@
+name: vinted-unknown-probe
+on:
+  workflow_dispatch:
+    inputs:
+      n: { description: 'pages to inspect', default: '12' }
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - env: { N: '${{ inputs.n }}' }
+        run: python scripts/vinted_unknown_probe.py

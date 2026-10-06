@@ -315,6 +315,23 @@ def check_state(s, iid, slug):
            # listing's age at all.
            "age_days": parse_age_days(t)}
     if can is None:
+        # Vinted answers a removed listing with HTTP 200 and its generic app
+        # shell, not a 404 - so these were falling through to "unknown",
+        # staying tracked, staying absent, and piling up at the head of the
+        # queue until 858 listings had been missing over a week and fresh
+        # absences were being starved of check budget.
+        #
+        # A shell carries no item data at all. Verified against a live control
+        # group: 8 of 8 listings seen in the feed within the hour returned real
+        # item pages, and the shell appeared only among the long-absent - so
+        # this cannot retire a live listing. Shells run ~1,700 KB against
+        # ~1,950 KB for a real page.
+        #
+        # Labelled "gone" rather than folded into "deleted" so the two remain
+        # distinguishable: a hard 404 and a soft one may not mean the same
+        # thing, and merging them would hide that.
+        if not re.search(r'\\?"item_id\\?"', t):
+            return "gone", det
         return "unknown", det
     if can.group(1) == "true":
         return "live", det
@@ -606,6 +623,10 @@ def mode_apply(indir: str) -> int:
                 st["archive"][iid] = {**rec, "final": "deleted", "at": now,
                                       "age_at_end": r.get("age_days")}
                 st["tracked"].pop(iid, None)
+            elif v == "gone":
+                st["archive"][iid] = {**rec, "final": "gone", "at": now,
+                                      "age_at_end": r.get("age_days")}
+                st["tracked"].pop(iid, None)
             elif (r.get("age_days") or 0) > AGE_LIMIT_DAYS:
                 st["archive"][iid] = {**rec, "final": "aged_out", "at": now,
                                       "age_days": r["age_days"]}
@@ -767,6 +788,10 @@ def main_single() -> int:
             # of them ARE sales that 404'd before we got there.
             st["archive"][iid] = {**rec, "final": "deleted", "at": now}
             st["tracked"].pop(iid, None)          # terminal
+        elif v == "gone":
+            st["archive"][iid] = {**rec, "final": "gone", "at": now,
+                                  "age_at_end": det.get("age_days")}
+            st["tracked"].pop(iid, None)
         elif (det.get("age_days") or 0) > AGE_LIMIT_DAYS:
             aged += 1
             st["archive"][iid] = {**rec, "final": "aged_out", "at": now,

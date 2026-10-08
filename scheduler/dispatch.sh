@@ -23,6 +23,21 @@ WORKFLOW=vinted-track-split.yml
 # into a commit, which is how a stale state file once reverted 37 sales.
 LOG=/extra/malmasik/vinted_sched/dispatch.log
 STOP=/extra/malmasik/vinted_sched/STOP_DISPATCH
+LAST=/extra/malmasik/vinted_sched/last_dispatch
+
+# Minimum minutes between cycles.
+#
+# Vinted's budget is SHARED, not per-IP: in every blocked cycle all five or six
+# shards are refused in the same minutes on unrelated addresses across
+# different /8s, while in a clean cycle all of them succeed. What those jobs
+# share is the time window and the Azure ASN every GitHub runner sits in - so
+# sharding never bought independent allowances, it just divided one.
+#
+# Measured: ~27k requests/day (T=1.5h) ran clean, ~43k/day (T=0.94h) blocks
+# roughly half of all cycles - and a blocked cycle finds ~0 sales while a clean
+# one finds 8-11. Running faster than the budget refills costs more than it
+# buys, so the cycle is paced to stay under it rather than racing it.
+MIN_GAP_MIN=${VT_MIN_GAP_MIN:-85}
 
 log() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $*" >> "$LOG"; }
 
@@ -44,7 +59,16 @@ if [[ "$state" == "in_progress" || "$state" == "queued" || "$state" == "pending"
   exit 0
 fi
 
+if [[ -f "$LAST" ]]; then
+  since=$(( ( $(date +%s) - $(stat -c %Y "$LAST") ) / 60 ))
+  if (( since < MIN_GAP_MIN )); then
+    log "skip - only ${since}m since last dispatch (min ${MIN_GAP_MIN}m)"
+    exit 0
+  fi
+fi
+
 if "$GH" workflow run "$WORKFLOW" >/dev/null 2>&1; then
+  touch "$LAST"
   log "dispatched"
 else
   log "dispatch FAILED"

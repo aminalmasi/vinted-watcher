@@ -33,11 +33,23 @@ LAST=/extra/malmasik/vinted_sched/last_dispatch
 # share is the time window and the Azure ASN every GitHub runner sits in - so
 # sharding never bought independent allowances, it just divided one.
 #
-# Measured: ~27k requests/day (T=1.5h) ran clean, ~43k/day (T=0.94h) blocks
-# roughly half of all cycles - and a blocked cycle finds ~0 sales while a clean
-# one finds 8-11. Running faster than the budget refills costs more than it
-# buys, so the cycle is paced to stay under it rather than racing it.
-MIN_GAP_MIN=${VT_MIN_GAP_MIN:-85}
+# Measured share of cycles hitting a 403, by the interval they ran at:
+#
+#   T=1.53h   7%   <- cleanest observed, this setting
+#   T=1.33h  17%
+#   T=1.26h  55%
+#   T=1.06h  91%
+#   T=0.98h  83%
+#
+# It degrades sharply below ~1.3h, consistent with a shared bucket that needs
+# time to refill. 7% is the best measured, not zero - roughly one cycle in
+# fourteen still gets refused, and the backoff handles that cheaply.
+#
+# Note the volume figures quoted earlier were unreliable: they assumed a
+# constant ~1,700 requests per cycle, which was not true across days when
+# per-cycle bursts differed. The interval and the observed 403 rate are the
+# measurements worth pacing on.
+MIN_GAP_MIN=${VT_MIN_GAP_MIN:-92}
 
 log() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $*" >> "$LOG"; }
 

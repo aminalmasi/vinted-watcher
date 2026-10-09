@@ -91,7 +91,24 @@ BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "0"))
 # when it is next checked, not in a single sweep. Aged-out rows are moved to
 # the archive, never discarded: the photo, price and brand are still dataset,
 # it is only the sale-watching that stops.
-AGE_LIMIT_DAYS = float(os.environ.get("VT_AGE_LIMIT_DAYS", "180"))
+# 30 days, not 180.
+#
+# 65% of the tracked corpus is older than 30 days (median age 56d) and only
+# 23% of sales ever come from that tail, yet every one of those listings costs
+# a check each time it goes absent. Meanwhile ~55% of recent cycles were
+# refused outright, and a refused cycle finds zero sales - so trading a known
+# 23% of sales for a 65% cut in requests comes out ahead if the lighter load
+# is what unblocks us.
+#
+# That is the open question this setting tests. If the 403 rate falls within a
+# cycle or two the cause was volume and this stays; if it stays high the cause
+# is accumulated standing and the window should go back up, having learned
+# which it is.
+#
+# Aged-out listings keep their photo, price and brand in the archive - only
+# the sale-watching stops - so the dataset does not lose those rows and
+# reverting costs only re-discovery.
+AGE_LIMIT_DAYS = float(os.environ.get("VT_AGE_LIMIT_DAYS", "30"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 

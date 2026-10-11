@@ -91,24 +91,24 @@ BANDS_PER_CYCLE = int(os.environ.get("VT_BANDS_PER_CYCLE", "0"))
 # when it is next checked, not in a single sweep. Aged-out rows are moved to
 # the archive, never discarded: the photo, price and brand are still dataset,
 # it is only the sale-watching that stops.
-# 30 days, not 180.
+# 60 days.
 #
-# 65% of the tracked corpus is older than 30 days (median age 56d) and only
-# 23% of sales ever come from that tail, yet every one of those listings costs
-# a check each time it goes absent. Meanwhile ~55% of recent cycles were
-# refused outright, and a refused cycle finds zero sales - so trading a known
-# 23% of sales for a 65% cut in requests comes out ahead if the lighter load
-# is what unblocks us.
+# A cut is still wanted - listings that never sell accumulate and cost a check
+# every time they go absent - but 30 days was too aggressive. The corpus fell
+# to 4,236 while the feed still carried 11,353 live listings, so 63% of live
+# inventory went unwatched, and the clean-cycle sale rate dropped from 2.7 to
+# 1.6 sold/h.
 #
-# That is the open question this setting tests. If the 403 rate falls within a
-# cycle or two the cause was volume and this stays; if it stays high the cause
-# is accumulated standing and the window should go back up, having learned
-# which it is.
+# That was worse than predicted, and the prediction was wrong for an
+# instructive reason. "Only 23% of sales come from listings over 30 days old"
+# was measured over sales ALREADY CAPTURED, which counts only old listings
+# that sold while we happened to be watching them. It says nothing about the
+# ones we stopped watching. The 65%-of-corpus figure was the relevant one.
 #
-# Aged-out listings keep their photo, price and brand in the archive - only
-# the sale-watching stops - so the dataset does not lose those rows and
-# reverting costs only re-discovery.
-AGE_LIMIT_DAYS = float(os.environ.get("VT_AGE_LIMIT_DAYS", "30"))
+# 60 days tracks ~6,200 (46% more than 30d, ~46% of the feed unwatched) and
+# still retires the stale half. Aged-out rows keep photo, price and brand in
+# the archive; only the sale-watching stops.
+AGE_LIMIT_DAYS = float(os.environ.get("VT_AGE_LIMIT_DAYS", "60"))
 # Recheck a listing at most this often; absent-from-feed listings jump the queue.
 RECHECK_H = float(os.environ.get("VT_RECHECK_H", "18"))
 

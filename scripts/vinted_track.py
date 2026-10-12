@@ -503,11 +503,15 @@ def mode_plan(indir: str, out: str) -> int:
         if iid in st["tracked"]:
             st["tracked"][iid]["last_seen"] = now
         elif iid not in st["sold"]:
-            v["first_seen"] = now
+            # A listing returning from the aged-out archive keeps the date we
+            # first saw it, so time-on-market stays honest.
+            prior = st["archive"].get(iid) or {}
+            v["first_seen"] = prior.get("first_seen") or now
             v["last_seen"] = now
             v["last_check"] = 0
             st["tracked"][iid] = v
 
+    st["age_limit_days"] = AGE_LIMIT_DAYS
     st["pending"] = {"at": now, "seen": len(seen_now),
                      "absent": len(absent_set), "due": len(picked)}
     save_state(st)
@@ -845,11 +849,15 @@ def main_single() -> int:
             # every listing looks like it has been gone since first discovery.
             st["tracked"][iid]["last_seen"] = now
         elif iid not in st["sold"]:
-            v["first_seen"] = now
+            # A listing returning from the aged-out archive keeps the date we
+            # first saw it, so time-on-market stays honest.
+            prior = st["archive"].get(iid) or {}
+            v["first_seen"] = prior.get("first_seen") or now
             v["last_seen"] = now
             v["last_check"] = 0
             st["tracked"][iid] = v
 
+    st["age_limit_days"] = AGE_LIMIT_DAYS
     st["events"].append({"at": now, "cycle": st["cycle"],
                          "seen": len(seen_now), "absent": len(absent),
                          "checked": len(batch), "verdicts": verdicts,

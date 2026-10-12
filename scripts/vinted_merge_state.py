@@ -30,6 +30,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE = os.path.join(REPO, "data", "vinted_track.json")
@@ -62,8 +63,25 @@ def main() -> int:
     archive = {**theirs.get("archive", {}), **ours.get("archive", {})}
 
     # Working set: ours is the fresher view, but anything EITHER side has
-    # retired must not come back to life.
-    retired = set(sold) | set(archive)
+    # retired must not come back to life - with one exception.
+    #
+    # An aged-out listing is not finished, it was only too old for the window
+    # in force when it was checked. Retiring it forever meant that widening the
+    # window from 30 to 60 days recovered nothing: 2,015 live listings under 60
+    # days old stayed locked out, and tracked sat at the 30-day level. So an
+    # aged-out listing is retired only while its estimated age today still
+    # exceeds the current limit, which the tracker records in the state so the
+    # two can never disagree about it.
+    limit = float(ours.get("age_limit_days") or theirs.get("age_limit_days") or 60)
+    now = time.time()
+
+    def still_retired(rec: dict) -> bool:
+        if rec.get("final") != "aged_out":
+            return True
+        age_now = (rec.get("age_days") or 0) + (now - (rec.get("at") or now)) / 86400
+        return age_now >= limit
+
+    retired = set(sold) | {k for k, v in archive.items() if still_retired(v)}
     tracked = {k: v for k, v in ours.get("tracked", {}).items()
                if k not in retired}
 

@@ -71,6 +71,14 @@ jobs:
     env:
       VT_BANDS_PER_CYCLE: '0'      # every band
       VT_MAX_REQ: '1000'
+      # Discovery only: twice the gap the checks use. Measured over 8 days,
+      # discovery was cut short on 40-83% of cycles - both shards refused in
+      # the same minute after ~105 requests each - while checks in the same
+      # cycles often ran clean. So the burst of two shards searching the
+      # catalog at once is the likeliest trigger. On the cycles where discovery
+      # DID complete, the 60-day window found 5.5 sales/hour against 3.1 for the
+      # old 180-day window: the bottleneck is discovery, not the corpus.
+      VT_GAP: '5.0'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

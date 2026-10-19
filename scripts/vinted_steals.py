@@ -187,8 +187,12 @@ def check(s, rec: dict) -> tuple[str, dict]:
         return cast(m.group(1)) if m else None
 
     attrs = attributes(r.text)
+    hid = re.search(r'"is_hidden":(true|false)', t)
+    # Not "likes": that name holds the listing's like history, and the first
+    # version overwrote it with this single count.
     det = {"catalog_id": num("catalog_id"), "brand_id": num("brand_id"),
-           "likes": num("favourite_count"), "seller_reviews": num("feedback_count"),
+           "likes_at_check": num("favourite_count"), "seller_reviews": num("feedback_count"),
+           "hidden": (hid.group(1) == "true") if hid else None,
            "seller_rating": num("feedback_reputation", float),
            "condition": attrs.get("status"), "size": attrs.get("size"),
            "color": attrs.get("color"),
@@ -312,6 +316,8 @@ def main() -> int:
             k = str(c["id"])
             if k in watch:
                 rec = watch[k]
+                if not isinstance(rec.get("likes"), list):     # repair the first version's overwrite
+                    rec["likes"] = [[int(rec["first_seen"]), rec.get("likes")]]
                 rec["last_live"] = t0
                 if c["likes"] != rec["likes"][-1][1]:
                     rec["likes"].append([int(t0), c["likes"]])
@@ -353,6 +359,10 @@ def main() -> int:
         rec.update({x: v for x, v in det.items() if v is not None})
         rec["checks"] += 1
         rec["checked_at"] = time.time()
+        if not isinstance(rec.get("likes"), list):
+            rec["likes"] = [[int(rec["first_seen"]), rec.get("likes")]]
+        if det.get("likes_at_check") is not None:
+            rec["likes"].append([int(rec["checked_at"]), det["likes_at_check"]])
         if det.get("upload_ago_h") is not None:
             narrow_upload(rec, det["upload_ago_h"], rec["checked_at"])
         if state in ("sold", "deleted", "gone"):

@@ -59,7 +59,7 @@ RECHECK_H = 3.0
 
 class Pacer:
     def __init__(self) -> None:
-        self.gap, self.count, self.streak, self.refused = GAP, 0, 0, 0
+        self.gap, self.count, self.streak, self.refused, self.ok = GAP, 0, 0, 0, 0
 
     @property
     def stop(self) -> bool:
@@ -81,6 +81,11 @@ class Pacer:
             time.sleep(30)
         elif r.status_code == 200:
             self.streak = 0
+            self.ok += 1
+            # Drift back toward the base gap after a long clean run, so one
+            # refusal does not slow the rest of a long job for good.
+            if self.ok % 30 == 0 and self.gap > GAP:
+                self.gap = max(GAP, self.gap * 0.8)
         return r
 
 

@@ -15,8 +15,14 @@ cheap), and the table keeps the three apart rather than blending them.
 
 The walk prunes: a category with no listings is not descended into. Rows sit
 at the item-type level (Donna > Vestiti > Pantaloni, Donna > Accessori >
-Guanti), split further into the leaves only where a type has 200+ listings
-and children. Kids and Home stop at their first level.
+Guanti), split further into the leaves only where a type's count is capped
+at 960 - there 96 newest listings are the thinnest sample of the whole. Kids
+and Home stop at their first level.
+
+Each brand's file is rewritten after every row, so a run cut short by its
+time limit keeps what it reached. (The first run printed nothing until a
+brand was done and wrote its file only at the end, and the 60-minute limit
+cut Gucci off with nothing to show.)
 
 Writes data/prices/<YYYY-MM-DD>/<brand>.json. Partitioned by brand so the
 walk can be spread over several runs: --part i --parts n.
@@ -41,7 +47,7 @@ CATALOGS = os.path.join(REPO, "data", "catalogs.json")
 BRANDS = os.path.join(REPO, "data", "steals", "brands.json")
 FULL = (1904, 5, 2993)      # Donna, Uomo, Articoli griffati: down to item type
 SHALLOW = (1193, 1918)      # Bambini, Casa: first level only
-SPLIT_AT = 200
+SPLIT_AT = 960
 
 PACE = Pacer()
 
@@ -75,12 +81,13 @@ def ask(s, cid: int, ids: list[int]) -> dict | None:
         k = (c.get("line2") or "").split("·")[-1].strip()
         if k:
             cond[k] = cond.get(k, 0) + 1
+    print(f"    {cid:>5}  {n:>4} listings  ({PACE.count} requests)", flush=True)
     return {"listings": n, "capped": n >= 960, "asking": quantiles([c["price"] for c in cs]),
             "likes_median": statistics.median([c["likes"] or 0 for c in cs]) if cs else None,
             "conditions": cond}
 
 
-def walk(s, brand: str, ids: list[int], nodes: dict, kids: dict) -> list[dict]:
+def walk(s, brand: str, ids: list[int], nodes: dict, kids: dict, save=lambda rows: None) -> list[dict]:
     rows = []
 
     def row(cid, res, level):
@@ -93,6 +100,8 @@ def walk(s, brand: str, ids: list[int], nodes: dict, kids: dict) -> list[dict]:
                      "code": nodes[cid]["code"], "level": level,
                      "filter": f"https://www.vinted.it/catalog?catalog[]={cid}{q}&order=newest_first",
                      **res})
+        print(f"  row  {rows[-1]['path']}", flush=True)
+        save(rows)
 
     def visit(cid, depth, stop_depth):
         if PACE.stop:
@@ -141,14 +150,21 @@ def main() -> int:
     os.makedirs(out_dir, exist_ok=True)
     for brand in mine:
         t0 = PACE.count
-        rows = walk(s, brand, groups[brand], nodes, kids)
+        path = os.path.join(out_dir, f"{re.sub(r'[^a-z]+', '-', brand.lower())}.json")
+
+        def save(rows, done=False):
+            tmp = path + ".tmp"
+            json.dump({"brand": brand, "ids": groups[brand], "at": int(time.time()),
+                       "complete": done, "requests": PACE.count - t0, "rows": rows},
+                      open(tmp, "w"), ensure_ascii=False, indent=0)
+            os.replace(tmp, path)
+
+        print(f"{brand}:", flush=True)
+        rows = walk(s, brand, groups[brand], nodes, kids, save)
         done = not PACE.stop
-        json.dump({"brand": brand, "ids": groups[brand], "at": int(time.time()),
-                   "complete": done, "requests": PACE.count - t0, "rows": rows},
-                  open(os.path.join(out_dir, f"{re.sub(r'[^a-z]+', '-', brand.lower())}.json"), "w"),
-                  ensure_ascii=False, indent=0)
+        save(rows, done)
         print(f"{brand}: {len(rows)} rows, {PACE.count - t0} requests, "
-              f"{'complete' if done else 'STOPPED'}", flush=True)
+              f"{PACE.refused} refused, {'complete' if done else 'STOPPED'}", flush=True)
         if PACE.stop:
             break
     return 0

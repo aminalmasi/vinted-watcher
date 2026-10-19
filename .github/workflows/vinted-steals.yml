@@ -1,0 +1,44 @@
+name: vinted-steals
+
+# New listings of the ten brands, every category, watched for one day each to
+# catch the ones that sell within 12 hours. See scripts/vinted_steals.py.
+#
+# Triggered from the cluster (scheduler/dispatch_steals.sh), because GitHub's
+# own scheduler delivers a handful of runs a day whatever the cron asks for.
+# Every 30 minutes: a sale faster than the interval is caught only with
+# probability 1 - d/T, and a run is only ~40 requests - a small fraction of
+# what the sold-tracker spends, from the same shared allowance.
+
+on: { workflow_dispatch: {} }
+
+concurrency: { group: vinted-steals, cancel-in-progress: false }
+permissions: { contents: write }
+
+jobs:
+  steals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      # ref: main, not the triggering SHA: a run that waited in the queue
+      # behind the previous one must read the state that one wrote.
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+      - run: python scripts/vinted_steals.py
+      - name: Persist
+        run: |
+          git config user.name  'vinted-tracker[bot]'
+          git config user.email 'vinted-tracker@users.noreply.github.com'
+          git add data/steals
+          git diff --cached --quiet && exit 0
+          git commit -q -m "steals: $(date -u +%Y-%m-%dT%H:%MZ)"
+          # The sold-tracker pushes to main too; only this job writes
+          # data/steals, so a rebase never conflicts - it just needs a retry
+          # when the two push in the same minute.
+          for i in 1 2 3; do
+            git pull -q --rebase origin main && git push -q origin main && exit 0
+            sleep $((RANDOM % 20 + 5))
+          done
+          exit 1

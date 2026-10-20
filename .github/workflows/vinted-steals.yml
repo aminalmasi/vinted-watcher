@@ -17,7 +17,9 @@ permissions: { contents: write }
 jobs:
   steals:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # Shallow cycles stop themselves at 21 minutes, deep ones (every fourth)
+    # at 34; this limit only has to clear the deep budget.
+    timeout-minutes: 40
     steps:
       # ref: main, not the triggering SHA: a run that waited in the queue
       # behind the previous one must read the state that one wrote.

@@ -1,0 +1,63 @@
+{
+ "Gucci": [
+  0,
+  35,
+  65,
+  118,
+  190,
+  350,
+  null
+ ],
+ "Chanel": [
+  0,
+  28,
+  100,
+  null
+ ],
+ "Hermes": [
+  0,
+  90,
+  null
+ ],
+ "Christian Louboutin": [
+  0,
+  null
+ ],
+ "Dior": [
+  0,
+  20,
+  40,
+  100,
+  null
+ ],
+ "Prada": [
+  0,
+  49,
+  99,
+  200,
+  null
+ ],
+ "Saint Laurent": [
+  0,
+  25,
+  55,
+  140,
+  null
+ ],
+ "Valentino": [
+  0,
+  20,
+  38,
+  70,
+  null
+ ],
+ "Golden Goose": [
+  0,
+  130,
+  null
+ ],
+ "Bottega Veneta": [
+  0,
+  null
+ ]
+}

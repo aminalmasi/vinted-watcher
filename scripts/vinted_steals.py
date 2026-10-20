@@ -54,21 +54,26 @@ MAX_REQ = int(os.environ.get("VS_MAX_REQ", "400"))
 BLOCK_GIVEUP = 6
 # Absent-but-live listings are rechecked at most this often; a search index
 # that lags behind the item page would otherwise cost a request every cycle.
-RECHECK_H = 3.0
+# Six hours, not three: some listings are live on their page yet shown by no
+# search at all (3 of 8 probed misses), and each recheck of one is wasted.
+RECHECK_H = 6.0
+# A listing must be missing from MISSES_TO_CHECK sweeps in a row before its page
+# is read. Reading the same feed twice in a row, 1.3% of listings appeared in
+# one read and not the other - a sale or deletion between two page requests
+# shifts every later listing up a place - which over ~8k watched listings is
+# ~100 false absences a cycle. A real sale stays missing; a shifted listing
+# reappears. Sale-time bounds stay honest: they run from the last sighting.
+MISSES_TO_CHECK = 2
 
-# Brands with more than ~960 uploads a day are swept in category groups:
-# one search shows at most 960 listings, and Gucci, Dior, Prada, Saint
-# Laurent and Valentino passed that within their first day, so their sweeps
-# were cut short and their older listings could never be seen to go missing.
-# A search takes several categories at once (probed: it returns their
-# union), so six searches partition a brand. Category filters leak a little
-# (women's and men's gloves share listings), which only causes duplicates,
-# and a listing is counted once.
-SPLIT = [b.strip() for b in os.environ.get(
-    "VS_SPLIT", "Gucci,Chanel,Dior,Prada,Saint Laurent,Valentino").split(",") if b.strip()]
-CAT_GROUPS = [("women-clothing", [4]), ("women-shoes", [16]), ("women-bags", [19]),
-              ("women-accessories", [1187, 146]), ("men", [5]),
-              ("other", [2993, 1193, 1918, 2994, 2309, 4824, 4332])]
+# Brands with more uploads a day than one search can show (960) are swept in
+# price bands, each sized to ~450 uploads a day (data/steals/bands.json).
+# Price, not category: Vinted honours the price filter exactly (probed: every
+# listing in band), while category searches leak and, combined, silently drop
+# listings - seven top-level categories in one search missed listings that
+# each category alone showed on page 1, and two categories together returned
+# 0 of one of them. A band partitions a brand cleanly, and a listing's band
+# follows from its own price, so coverage needs no guessing.
+BANDS = os.path.join(DIR, "bands.json")
 
 # Most cycles sweep only the newest SHALLOW_H hours, where nearly all steals
 # happen (median time to sale 1.2h; 10% of sales come after 12h); every
@@ -82,6 +87,7 @@ HARD_END_H = WATCH_H + 6           # closed regardless, so state stays bounded
 # A cycle that runs out of time is cancelled by Actions and saves NOTHING -
 # three in a row were lost that way. So the cycle stops itself first.
 BUDGET_S = float(os.environ.get("VS_BUDGET_MIN", "21")) * 60
+DEEP_BUDGET_S = float(os.environ.get("VS_DEEP_BUDGET_MIN", "34")) * 60
 T_START = time.time()
 
 
@@ -236,37 +242,57 @@ def check(s, rec: dict) -> tuple[str, dict]:
 
 # -------------------------------------------------------------------- sweep
 
-def sweep(s, ids: list[int], cats: list[int] | None,
-          stop_below: int | None) -> tuple[list[dict], int | None, bool]:
-    """Newest-first pages for one brand (or one category group of it) until a
-    whole page is older than the oldest listing still watched.
+def band_params(band) -> list:
+    lo, hi = band
+    out = [("currency", "EUR")] if (lo or hi) else []
+    if lo:
+        out.append(("price_from", lo))
+    if hi:
+        out.append(("price_to", hi))
+    return out
+
+
+def sweep(s, ids: list[int], band, stop_below: int | None) -> tuple[list[dict], int | None, bool]:
+    """Newest-first pages for one brand (or one price band of it) until the
+    feed is older than the oldest listing still watched.
 
     Returns the cards, the lowest id the sweep is known to have passed, and
-    whether it got there. The first version stopped at the page whose MEDIAN
-    id was old enough; newest-first is not strictly id order, so listings
-    near that edge sat on the next, unfetched page and were counted absent -
-    half of all checks found them still live. One more page per sweep is far
-    cheaper than those checks.
+    whether it got there. That floor is taken 90% of the way down the last
+    page, not at its bottom: newest-first is not strictly id order, and a
+    listing near the very end of a page can sit on the next one instead.
     """
     got: list[dict] = []
-    params = [("catalog[]", c) for c in (cats or [])] + \
-        [("brand_ids[]", b) for b in ids] + [("order", "newest_first")]
-    last_max = None
+    params = band_params(band) + [("brand_ids[]", b) for b in ids] + [("order", "newest_first")]
+    floor = None
     for page in range(1, PAGES + 1):
         if PACE.stop:
-            return got, last_max, False
+            return got, floor, False
         r = PACE.get(s, "https://www.vinted.it/catalog", params=params + [("page", page)])
         if r is None or r.status_code != 200:
-            return got, last_max, False
+            return got, floor, False
         cs = cards(r.text)
         got.extend(cs)
-        organic = [c["id"] for c in cs if not c["promoted"]] or [c["id"] for c in cs]
+        organic = sorted((c["id"] for c in cs if not c["promoted"]), reverse=True) \
+            or sorted((c["id"] for c in cs), reverse=True)
         if len(organic) < 48:              # the feed ran out: everything was shown
             return got, 0, True
-        last_max = max(organic)
-        if stop_below is None or last_max < stop_below:
-            return got, (stop_below if stop_below is not None else min(organic)), True
-    return got, last_max, False
+        floor = organic[int(len(organic) * 0.9)]
+        if stop_below is None or floor < stop_below:
+            return got, floor, True
+    return got, floor, False
+
+
+def band_of(price, edges: list) -> tuple:
+    """The (lo, hi) band a price falls in; edges like [0, 35, 65, None]."""
+    p = float(price or 0)
+    for lo, hi in zip(edges, edges[1:]):
+        if hi is None or p < hi:
+            return (lo, hi)
+    return (edges[-2], edges[-1])
+
+
+def unit_name(brand: str, band, single: bool) -> str:
+    return brand if single else f"{brand}|{band[0]}-{band[1] if band[1] is not None else ''}"
 
 
 # -------------------------------------------------------------------- state
@@ -321,7 +347,7 @@ def write_closed(recs: list[dict]) -> None:
 
 
 def main() -> int:
-    global T_START
+    global T_START, BUDGET_S
     T_START = time.time()
     groups = json.load(open(BRANDS))          # {"Gucci": [567, ...], ...}
     st = load()
@@ -338,26 +364,36 @@ def main() -> int:
     ev["deep"] = deep
     shallow_cut = now - SHALLOW_H * 3600
 
-    # Sweep units: a whole brand, or one category group of a split brand.
+    # Sweep units: a whole brand, or one price band of it.
+    try:
+        bands = json.load(open(BANDS))
+    except (OSError, ValueError):
+        bands = {}
+    edges = {b: bands.get(b) or [0, None] for b in groups}
     units = []
     for brand, ids in groups.items():
-        if brand in SPLIT:
-            units += [(f"{brand}|{g}", brand, ids, cats) for g, cats in CAT_GROUPS]
-        else:
-            units.append((brand, brand, ids, None))
+        e = edges[brand]
+        for band in zip(e, e[1:]):
+            units.append((unit_name(brand, band, len(e) == 2), brand, ids, band))
+
+    def unit_of(r: dict) -> str:
+        e = edges[r["group"]]
+        return unit_name(r["group"], band_of(r.get("price_now") or r.get("price"), e), len(e) == 2)
 
     seen_now: dict[str, dict] = {}
     passed: dict[str, int] = {}
-    for unit, brand, ids, cats in units:
-        # A record belongs to the unit that first showed it; records from
-        # before the split (no unit yet) count toward every unit of their brand.
-        mine = [r for k, r in watch.items() if r["group"] == brand
-                and r.get("unit", unit) == unit and (deep or r["first_seen"] >= shallow_cut)]
+    BUDGET_S = DEEP_BUDGET_S if deep else float(os.environ.get("VS_BUDGET_MIN", "21")) * 60
+    for unit, brand, ids, band in units:
+        mine = [r for r in watch.values() if r["group"] == brand and unit_of(r) == unit
+                and (deep or r["first_seen"] >= shallow_cut)]
         prev_at = (st.get("swept_at") or {}).get(unit) or (st.get("swept_at") or {}).get(brand)
-        prev = frontier.get(unit) or frontier.get(brand)
+        # A new unit starts from the highest frontier its brand has: a listing
+        # missed as new for one cycle is better than an old one taken for new.
+        prev = frontier.get(unit) or max([v for k, v in frontier.items()
+                                          if k == brand or k.startswith(brand + "|")] or [0]) or None
         stop_below = min(int(r["id"]) for r in mine) if mine else prev
         t0 = time.time()
-        got, floor, complete = sweep(s, ids, cats, stop_below)
+        got, floor, complete = sweep(s, ids, band, stop_below)
         ev["swept"][unit] = len(got)
         if not complete:
             ev["incomplete"].append(unit)
@@ -370,7 +406,7 @@ def main() -> int:
                 continue                       # leaked into a second group
             if k in watch:
                 rec = watch[k]
-                rec.setdefault("unit", unit)
+                rec["misses"] = 0
                 if not isinstance(rec.get("likes"), list):     # repair the first version's overwrite
                     rec["likes"] = [[int(rec["first_seen"]), rec.get("likes")]]
                 rec["last_live"] = t0
@@ -384,7 +420,7 @@ def main() -> int:
                 # search index can lag, which the page's own upload time
                 # corrects for every listing that gets checked.
                 up_after = (prev_at or t0 - 3600) - 600
-                watch[k] = dict(c, group=brand, unit=unit, first_seen=t0, up_after=up_after,
+                watch[k] = dict(c, group=brand, first_seen=t0, up_after=up_after,
                                 up_lo=up_after, up_hi=t0, last_live=t0,
                                 likes=[[int(t0), c["likes"]]], checks=0)
                 seen_now[k] = watch[k]
@@ -400,15 +436,16 @@ def main() -> int:
     def covered(r: dict) -> bool:
         if not deep and r["first_seen"] < shallow_cut:
             return False                       # older than this cycle swept
-        if r.get("unit"):
-            return r["unit"] in passed and int(r["id"]) >= passed[r["unit"]]
-        brand_units = [u for u, b, _, _ in units if b == r["group"]]
-        return all(u in passed and int(r["id"]) >= passed[u] for u in brand_units)
+        u = unit_of(r)
+        return u in passed and int(r["id"]) >= passed[u]
 
     # Absent: watched, inside the span this cycle's sweep passed, not seen.
-    absent = [k for k, r in watch.items()
-              if k not in seen_now and covered(r)
-              and now - r.get("checked_at", 0) >= RECHECK_H * 3600]
+    missing = [k for k, r in watch.items() if k not in seen_now and covered(r)]
+    for k in missing:
+        watch[k]["misses"] = watch[k].get("misses", 0) + 1
+    absent = [k for k in missing if watch[k]["misses"] >= MISSES_TO_CHECK
+              and now - watch[k].get("checked_at", 0) >= RECHECK_H * 3600]
+    ev["missing_once"] = sum(1 for k in missing if watch[k]["misses"] < MISSES_TO_CHECK)
     absent.sort(key=lambda k: watch[k]["first_seen"])
     ev["absent"] = len(absent)
     for k in absent:

@@ -257,9 +257,16 @@ def sweep(s, ids: list[int], band, stop_below: int | None) -> tuple[list[dict], 
     feed is older than the oldest listing still watched.
 
     Returns the cards, the lowest id the sweep is known to have passed, and
-    whether it got there. That floor is taken 90% of the way down the last
-    page, not at its bottom: newest-first is not strictly id order, and a
-    listing near the very end of a page can sit on the next one instead.
+    whether it got there. That floor is the page's MEDIAN id, and must stay
+    the median. Newest-first feeds mix in old listings sellers have paid to
+    push back to the top: probed, 3-27% of a page's ordinary listings are
+    hours to months older than their neighbours (one Dior page held a
+    143-day-old listing). Any rule that reads the low end of a page - the
+    bottom, or 90% of the way down, as one version did - sees those and
+    concludes the feed already reaches days back, so it stops after a page or
+    two and every listing below goes "missing": 93% of the absences that
+    version checked were still live. Fresh listings run in id order and fill
+    well over half of every page, so the median is always one of them.
     """
     got: list[dict] = []
     params = band_params(band) + [("brand_ids[]", b) for b in ids] + [("order", "newest_first")]
@@ -276,7 +283,7 @@ def sweep(s, ids: list[int], band, stop_below: int | None) -> tuple[list[dict], 
             or sorted((c["id"] for c in cs), reverse=True)
         if len(organic) < 48:              # the feed ran out: everything was shown
             return got, 0, True
-        floor = organic[int(len(organic) * 0.9)]
+        floor = organic[len(organic) // 2]
         if stop_below is None or floor < stop_below:
             return got, floor, True
     return got, floor, False

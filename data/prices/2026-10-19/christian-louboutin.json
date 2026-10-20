@@ -1,0 +1,3147 @@
+{
+"brand": "Christian Louboutin",
+"ids": [
+4269
+],
+"at": 1792443012,
+"complete": true,
+"requests": 170,
+"rows": [
+{
+"brand": "Christian Louboutin",
+"catalog_id": 4,
+"path": "Donna > Vestiti",
+"code": "WOMENS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=4&brand_ids[]=4269&order=newest_first",
+"listings": 17,
+"capped": false,
+"asking": {
+"n": 17,
+"min": 9.9,
+"p10": 28.0,
+"p25": 35.0,
+"p50": 100.0,
+"p75": 200.0,
+"p90": 396.0,
+"max": 549.0
+},
+"likes_median": 9,
+"conditions": {
+"Nuovo senza cartellino": 5,
+"Ottime": 5,
+"Buone": 4,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 13,
+"path": "Donna > Vestiti > Maglioni e pullover",
+"code": "PULLOVERS_SWEATERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=13&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 549.0,
+"p10": 549.0,
+"p25": 549.0,
+"p50": 549.0,
+"p75": 549.0,
+"p90": 549.0,
+"max": 549.0
+},
+"likes_median": 3,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 8,
+"path": "Donna > Vestiti > Completi e blazer",
+"code": "BLAZERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=8&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 30.0,
+"p10": 30.0,
+"p25": 30.0,
+"p50": 30.0,
+"p75": 30.0,
+"p90": 30.0,
+"max": 30.0
+},
+"likes_median": 9,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 10,
+"path": "Donna > Vestiti > Abiti",
+"code": "DRESSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=10&brand_ids[]=4269&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 35.0,
+"p10": 48.0,
+"p25": 67.5,
+"p50": 100.0,
+"p75": 230.0,
+"p90": 308.0,
+"max": 360.0
+},
+"likes_median": 16,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 12,
+"path": "Donna > Vestiti > Top e t-shirt",
+"code": "TOPS_T_SHIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=12&brand_ids[]=4269&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 25.0,
+"p10": 28.998,
+"p25": 34.995000000000005,
+"p50": 44.99,
+"p75": 54.995000000000005,
+"p90": 60.998000000000005,
+"max": 65.0
+},
+"likes_median": 14,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Ottime": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 73,
+"path": "Donna > Vestiti > Abbigliamento sportivo",
+"code": "SPORTSWEAR_WOMEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=73&brand_ids[]=4269&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 9.9,
+"p10": 21.919999999999998,
+"p25": 39.95,
+"p50": 70.0,
+"p75": 175.0,
+"p90": 238.0,
+"max": 280.0
+},
+"likes_median": 9,
+"conditions": {
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1782,
+"path": "Donna > Vestiti > Costumi e vestiti speciali",
+"code": "SPECIAL_OUTFITS_COSTUMES_W",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1782&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 30.0,
+"p10": 30.0,
+"p25": 30.0,
+"p50": 30.0,
+"p75": 30.0,
+"p90": 30.0,
+"max": 30.0
+},
+"likes_median": 14,
+"conditions": {
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 18,
+"path": "Donna > Vestiti > Altri capi di abbigliamento",
+"code": "OTHER_CLOTHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=18&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 150.0,
+"p10": 158.0,
+"p25": 170.0,
+"p50": 200.0,
+"p75": 200.0,
+"p90": 350.0,
+"max": 450.0
+},
+"likes_median": 6,
+"conditions": {
+"Ottime": 1,
+"Buone": 3,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 16,
+"path": "Donna > Scarpe",
+"code": "FOOTWEAR",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=16&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 94.0,
+"p25": 170.0,
+"p50": 285.0,
+"p75": 383.75,
+"p90": 500.0,
+"max": 850.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 57,
+"Nuovo senza cartellino": 14,
+"Buone": 16,
+"Nuovo con cartellino": 8,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2955,
+"path": "Donna > Scarpe > Ballerine",
+"code": "WOMEN_BALLERINAS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2955&brand_ids[]=4269&order=newest_first",
+"listings": 458,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 50.0,
+"p10": 99.5,
+"p25": 150.0,
+"p50": 240.0,
+"p75": 350.0,
+"p90": 490.0,
+"max": 800.0
+},
+"likes_median": 9.5,
+"conditions": {
+"Ottime": 46,
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 13,
+"Buone": 20,
+"Discrete": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2954,
+"path": "Donna > Scarpe > Scarpe da barca, loafer e mocassini",
+"code": "WOMEN_BOAT_SHOES_LOAFERS_MOCCASINS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2954&brand_ids[]=4269&order=newest_first",
+"listings": 524,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 90.0,
+"p25": 144.5,
+"p50": 217.5,
+"p75": 305.0,
+"p90": 447.5,
+"max": 750.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Nuovo senza cartellino": 13,
+"Ottime": 63,
+"Buone": 14,
+"Discrete": 2,
+"Nuovo con cartellino": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1049,
+"path": "Donna > Scarpe > Stivali",
+"code": "W_BOOTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1049&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 50.0,
+"p10": 149.995,
+"p25": 220.0,
+"p50": 379.0,
+"p75": 560.0,
+"p90": 825.0,
+"max": 1500.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo senza cartellino": 11,
+"Ottime": 58,
+"Buone": 17,
+"Discrete": 3,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2618,
+"path": "Donna > Scarpe > Stivali > Stivaletti",
+"code": "WOMEN_ANKLE_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2618&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 50.0,
+"p10": 122.5,
+"p25": 200.0,
+"p50": 345.0,
+"p75": 550.0,
+"p90": 757.5,
+"max": 1500.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Nuovo senza cartellino": 14,
+"Ottime": 53,
+"Buone": 18,
+"Discrete": 4,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2619,
+"path": "Donna > Scarpe > Stivali > Stivali a metà polpaccio",
+"code": "WOMEN_MID_CALF_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2619&brand_ids[]=4269&order=newest_first",
+"listings": 128,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 90.0,
+"p10": 165.0,
+"p25": 250.0,
+"p50": 350.0,
+"p75": 499.25,
+"p90": 739.5,
+"max": 3500.0
+},
+"likes_median": 19.0,
+"conditions": {
+"Ottime": 61,
+"Buone": 14,
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 9,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 211,
+"path": "Donna > Scarpe > Stivali > Stivali al ginocchio",
+"code": "KNEE_LENGHT_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=211&brand_ids[]=4269&order=newest_first",
+"listings": 432,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 55.0,
+"p10": 200.0,
+"p25": 289.75,
+"p50": 450.0,
+"p75": 792.25,
+"p90": 1000.0,
+"max": 1380.0
+},
+"likes_median": 12.5,
+"conditions": {
+"Nuovo senza cartellino": 8,
+"Ottime": 61,
+"Buone": 14,
+"Nuovo con cartellino": 11,
+"Discrete": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2620,
+"path": "Donna > Scarpe > Stivali > Stivali sopra il ginocchio",
+"code": "WOMEN_OVER_KNEE_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2620&brand_ids[]=4269&order=newest_first",
+"listings": 84,
+"capped": false,
+"asking": {
+"n": 84,
+"min": 95.0,
+"p10": 254.5,
+"p25": 397.5,
+"p50": 535.0,
+"p75": 812.5,
+"p90": 1135.0,
+"max": 2500.0
+},
+"likes_median": 19.5,
+"conditions": {
+"Ottime": 49,
+"Nuovo con cartellino": 5,
+"Nuovo senza cartellino": 14,
+"Buone": 16
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2621,
+"path": "Donna > Scarpe > Stivali > Stivali da neve",
+"code": "WOMEN_SNOW_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2621&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 420.0,
+"p10": 603.0,
+"p25": 877.5,
+"p50": 1335.0,
+"p75": 1792.5,
+"p90": 2067.0,
+"max": 2250.0
+},
+"likes_median": 33.0,
+"conditions": {
+"Ottime": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 213,
+"path": "Donna > Scarpe > Stivali > Stivali Wellington",
+"code": "WELLINGTON_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=213&brand_ids[]=4269&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 250.0,
+"p10": 286.0,
+"p25": 301.25,
+"p50": 465.0,
+"p75": 612.5,
+"p90": 660.0,
+"max": 750.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Ottime": 4,
+"Nuovo senza cartellino": 3,
+"Buone": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2622,
+"path": "Donna > Scarpe > Stivali > Stivali da lavoro",
+"code": "WOMEN_WORK_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2622&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 450.0,
+"p10": 455.0,
+"p25": 462.5,
+"p50": 475.0,
+"p75": 487.5,
+"p90": 495.0,
+"max": 500.0
+},
+"likes_median": 23.0,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2623,
+"path": "Donna > Scarpe > Zoccoli e sabot",
+"code": "WOMEN_CLOGS_MULES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2623&brand_ids[]=4269&order=newest_first",
+"listings": 161,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 50.0,
+"p10": 120.0,
+"p25": 180.0,
+"p50": 270.0,
+"p75": 400.0,
+"p90": 550.0,
+"max": 998.0
+},
+"likes_median": 19.0,
+"conditions": {
+"Nuovo senza cartellino": 14,
+"Buone": 22,
+"Ottime": 45,
+"Nuovo con cartellino": 14,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2953,
+"path": "Donna > Scarpe > Espadrillas",
+"code": "WOMEN_ESPADRILLES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2953&brand_ids[]=4269&order=newest_first",
+"listings": 285,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 30.0,
+"p10": 67.5,
+"p25": 100.0,
+"p50": 150.0,
+"p75": 250.0,
+"p90": 387.0,
+"max": 700.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Buone": 20,
+"Discrete": 3,
+"Nuovo senza cartellino": 11,
+"Ottime": 55,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2952,
+"path": "Donna > Scarpe > Infradito e ciabatte",
+"code": "WOMEN_FLIPFLOPS_SLIDES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2952&brand_ids[]=4269&order=newest_first",
+"listings": 135,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 94.5,
+"p25": 133.75,
+"p50": 200.0,
+"p75": 300.0,
+"p90": 392.5,
+"max": 700.0
+},
+"likes_median": 18.5,
+"conditions": {
+"Ottime": 53,
+"Nuovo con cartellino": 16,
+"Nuovo senza cartellino": 15,
+"Buone": 12
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 543,
+"path": "Donna > Scarpe > Scarpe con tacchi alti",
+"code": "HIGH_HEELS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=543&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 99.0,
+"p25": 170.0,
+"p50": 297.5,
+"p75": 400.0,
+"p90": 500.0,
+"max": 850.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 57,
+"Nuovo senza cartellino": 12,
+"Buone": 16,
+"Nuovo con cartellino": 10,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2951,
+"path": "Donna > Scarpe > Scarpe con i lacci",
+"code": "WOMEN_LACE_UP_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2951&brand_ids[]=4269&order=newest_first",
+"listings": 785,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 60.0,
+"p10": 110.0,
+"p25": 160.0,
+"p50": 250.0,
+"p75": 350.0,
+"p90": 499.5,
+"max": 900.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 59,
+"Nuovo senza cartellino": 12,
+"Buone": 18,
+"Nuovo con cartellino": 3,
+"Discrete": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2950,
+"path": "Donna > Scarpe > Mary Jane e scarpe a T",
+"code": "WOMEN_MARY_JANES_TBAR_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2950&brand_ids[]=4269&order=newest_first",
+"listings": 31,
+"capped": false,
+"asking": {
+"n": 31,
+"min": 50.0,
+"p10": 80.0,
+"p25": 150.0,
+"p50": 241.0,
+"p75": 450.0,
+"p90": 600.0,
+"max": 800.0
+},
+"likes_median": 12,
+"conditions": {
+"Buone": 3,
+"Ottime": 20,
+"Discrete": 4,
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2949,
+"path": "Donna > Scarpe > Sandali",
+"code": "WOMEN_SANDALS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2949&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 39.0,
+"p10": 85.0,
+"p25": 127.5,
+"p50": 210.0,
+"p75": 303.75,
+"p90": 434.5,
+"max": 750.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 49,
+"Nuovo con cartellino": 9,
+"Buone": 22,
+"Discrete": 4,
+"Nuovo senza cartellino": 12
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 215,
+"path": "Donna > Scarpe > Pantofole",
+"code": "SLIPPERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=215&brand_ids[]=4269&order=newest_first",
+"listings": 25,
+"capped": false,
+"asking": {
+"n": 25,
+"min": 77.0,
+"p10": 141.8,
+"p25": 165.0,
+"p50": 239.0,
+"p75": 290.0,
+"p90": 350.0,
+"max": 500.0
+},
+"likes_median": 16,
+"conditions": {
+"Nuovo con cartellino": 7,
+"Ottime": 11,
+"Nuovo senza cartellino": 6,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2630,
+"path": "Donna > Scarpe > Scarpe sportive",
+"code": "WOMEN_SPORT_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2630&brand_ids[]=4269&order=newest_first",
+"listings": 94,
+"capped": false,
+"asking": {
+"n": 94,
+"min": 70.0,
+"p10": 111.5,
+"p25": 192.25,
+"p50": 300.0,
+"p75": 448.75,
+"p90": 500.0,
+"max": 850.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Ottime": 49,
+"Nuovo senza cartellino": 11,
+"Buone": 26,
+"Discrete": 3,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2632,
+"path": "Donna > Scarpe > Scarpe da ginnastica",
+"code": "WOMEN_TRAINERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2632&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 90.0,
+"p25": 177.5,
+"p50": 250.0,
+"p75": 321.25,
+"p90": 450.0,
+"max": 700.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Nuovo senza cartellino": 10,
+"Ottime": 62,
+"Buone": 13,
+"Nuovo con cartellino": 10,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 19,
+"path": "Donna > Borse",
+"code": "BAGS_BACKPACKS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=19&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 12.5,
+"p25": 105.0,
+"p50": 290.0,
+"p75": 546.25,
+"p90": 760.0,
+"max": 1990.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 41,
+"Nuovo senza cartellino": 36,
+"Discrete": 1,
+"Nuovo con cartellino": 11,
+"Buone": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 157,
+"path": "Donna > Borse > Zaini",
+"code": "BACKPACKS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=157&brand_ids[]=4269&order=newest_first",
+"listings": 68,
+"capped": false,
+"asking": {
+"n": 68,
+"min": 25.0,
+"p10": 398.5,
+"p25": 500.0,
+"p50": 750.0,
+"p75": 1000.0,
+"p90": 1300.0,
+"max": 2100.0
+},
+"likes_median": 9.5,
+"conditions": {
+"Ottime": 19,
+"Nuovo senza cartellino": 32,
+"Buone": 9,
+"Nuovo con cartellino": 8
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2940,
+"path": "Donna > Borse > Borse da spiaggia",
+"code": "WOMEN_BEACH_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2940&brand_ids[]=4269&order=newest_first",
+"listings": 13,
+"capped": false,
+"asking": {
+"n": 13,
+"min": 49.0,
+"p10": 250.0,
+"p25": 290.0,
+"p50": 350.0,
+"p75": 515.0,
+"p90": 656.0,
+"max": 900.0
+},
+"likes_median": 8,
+"conditions": {
+"Nuovo senza cartellino": 3,
+"Ottime": 5,
+"Buone": 1,
+"Nuovo con cartellino": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2941,
+"path": "Donna > Borse > Valigette",
+"code": "WOMEN_BRIEFCASES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2941&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 25.0,
+"p10": 135.0,
+"p25": 300.0,
+"p50": 300.0,
+"p75": 380.0,
+"p90": 902.0,
+"max": 1250.0
+},
+"likes_median": 5,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Ottime": 2,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2942,
+"path": "Donna > Borse > Borse a secchiello",
+"code": "WOMEN_BUCKET_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2942&brand_ids[]=4269&order=newest_first",
+"listings": 24,
+"capped": false,
+"asking": {
+"n": 24,
+"min": 200.0,
+"p10": 263.5,
+"p25": 387.5,
+"p50": 599.5,
+"p75": 756.25,
+"p90": 1337.7,
+"max": 4900.0
+},
+"likes_median": 14.5,
+"conditions": {
+"Ottime": 7,
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1848,
+"path": "Donna > Borse > Marsupio",
+"code": "W_BUM_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1848&brand_ids[]=4269&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 200.0,
+"p10": 245.0,
+"p25": 385.0,
+"p50": 650.0,
+"p75": 775.0,
+"p90": 1065.0,
+"max": 1200.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Nuovo senza cartellino": 5,
+"Nuovo con cartellino": 4,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 159,
+"path": "Donna > Borse > Pochette",
+"code": "CLUTCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=159&brand_ids[]=4269&order=newest_first",
+"listings": 312,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 120.0,
+"p25": 200.0,
+"p50": 350.0,
+"p75": 462.25,
+"p90": 825.0,
+"max": 1999.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo senza cartellino": 33,
+"Ottime": 41,
+"Buone": 8,
+"Nuovo con cartellino": 11,
+"Discrete": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2943,
+"path": "Donna > Borse > Porta abiti",
+"code": "WOMEN_GARMENT_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2943&brand_ids[]=4269&order=newest_first",
+"listings": 132,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 7.25,
+"p25": 10.0,
+"p50": 14.95,
+"p75": 20.0,
+"p90": 29.0,
+"max": 700.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 47,
+"Nuovo con cartellino": 7,
+"Ottime": 38,
+"Buone": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2944,
+"path": "Donna > Borse > Borse da palestra",
+"code": "WOMEN_GYM_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2944&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 450.0,
+"p10": 450.0,
+"p25": 450.0,
+"p50": 450.0,
+"p75": 450.0,
+"p90": 450.0,
+"max": 450.0
+},
+"likes_median": 1,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 156,
+"path": "Donna > Borse > Borsette",
+"code": "HANDBAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=156&brand_ids[]=4269&order=newest_first",
+"listings": 554,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 100.0,
+"p10": 249.0,
+"p25": 350.0,
+"p50": 544.5,
+"p75": 800.0,
+"p90": 1200.0,
+"max": 2350.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo senza cartellino": 34,
+"Nuovo con cartellino": 13,
+"Ottime": 40,
+"Buone": 9
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2945,
+"path": "Donna > Borse > Borse hobo",
+"code": "WOMEN_HOBO_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2945&brand_ids[]=4269&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 380.0,
+"p10": 391.4,
+"p25": 399.5,
+"p50": 400.0,
+"p75": 770.0,
+"p90": 970.0,
+"max": 1000.0
+},
+"likes_median": 8,
+"conditions": {
+"Nuovo con cartellino": 1,
+"Ottime": 4,
+"Nuovo senza cartellino": 1,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1849,
+"path": "Donna > Borse > Borsoni e sacche da viaggio",
+"code": "W_HOLDALLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1849&brand_ids[]=4269&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 200.0,
+"p10": 200.0,
+"p25": 262.5,
+"p50": 575.0,
+"p75": 886.75,
+"p90": 1290.0,
+"max": 1650.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 1,
+"Ottime": 6,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1850,
+"path": "Donna > Borse > Bagagli e valigie",
+"code": "W_LUGGAGE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1850&brand_ids[]=4269&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 388.0,
+"p10": 488.4,
+"p25": 639.0,
+"p50": 890.0,
+"p75": 1245.0,
+"p90": 1458.0,
+"max": 1600.0
+},
+"likes_median": 31,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 161,
+"path": "Donna > Borse > Pochette per il make-up",
+"code": "MAKE_UP_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=161&brand_ids[]=4269&order=newest_first",
+"listings": 16,
+"capped": false,
+"asking": {
+"n": 16,
+"min": 10.0,
+"p10": 17.5,
+"p25": 35.0,
+"p50": 49.5,
+"p75": 157.5,
+"p90": 275.0,
+"max": 550.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo con cartellino": 4,
+"Ottime": 5,
+"Nuovo senza cartellino": 5,
+"Buone": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1784,
+"path": "Donna > Borse > Borse a cartella e messenger",
+"code": "SATCHELS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1784&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 400.0,
+"p10": 450.0,
+"p25": 525.0,
+"p50": 650.0,
+"p75": 775.0,
+"p90": 850.0,
+"max": 900.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Buone": 1,
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 158,
+"path": "Donna > Borse > Borse a spalla",
+"code": "SHOULDER_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=158&brand_ids[]=4269&order=newest_first",
+"listings": 301,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 48.0,
+"p10": 200.0,
+"p25": 300.0,
+"p50": 482.5,
+"p75": 612.5,
+"p90": 799.5,
+"max": 2000.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo senza cartellino": 26,
+"Ottime": 45,
+"Nuovo con cartellino": 17,
+"Buone": 6,
+"Discrete": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 552,
+"path": "Donna > Borse > Borse tote",
+"code": "TOTE_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=552&brand_ids[]=4269&order=newest_first",
+"listings": 92,
+"capped": false,
+"asking": {
+"n": 92,
+"min": 6.0,
+"p10": 280.0,
+"p25": 418.75,
+"p50": 600.0,
+"p75": 812.5,
+"p90": 1000.0,
+"max": 2500.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Nuovo senza cartellino": 25,
+"Ottime": 45,
+"Nuovo con cartellino": 14,
+"Buone": 7,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 160,
+"path": "Donna > Borse > Portafogli",
+"code": "PURSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=160&brand_ids[]=4269&order=newest_first",
+"listings": 332,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 100.0,
+"p25": 130.0,
+"p50": 185.5,
+"p75": 272.5,
+"p90": 349.5,
+"max": 850.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo senza cartellino": 19,
+"Discrete": 4,
+"Buone": 10,
+"Ottime": 50,
+"Nuovo con cartellino": 13
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2939,
+"path": "Donna > Borse > Pochette da polso",
+"code": "WOMEN_WRISTLETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2939&brand_ids[]=4269&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 50.0,
+"p10": 239.0,
+"p25": 311.5,
+"p50": 450.0,
+"p75": 537.5,
+"p90": 769.0,
+"max": 1750.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 4,
+"Buone": 1,
+"Ottime": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1187,
+"path": "Donna > Accessori",
+"code": "ACCESSORIES_JEWELLERY",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=1187&brand_ids[]=4269&order=newest_first",
+"listings": 406,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 12.5,
+"p25": 25.0,
+"p50": 87.0,
+"p75": 180.0,
+"p90": 280.0,
+"max": 950.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 15,
+"Nuovo senza cartellino": 32,
+"Ottime": 46,
+"Buone": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 20,
+"path": "Donna > Accessori > Cinture",
+"code": "BELTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=20&brand_ids[]=4269&order=newest_first",
+"listings": 49,
+"capped": false,
+"asking": {
+"n": 49,
+"min": 45.0,
+"p10": 120.0,
+"p25": 190.0,
+"p50": 235.0,
+"p75": 300.0,
+"p90": 380.0,
+"max": 400.0
+},
+"likes_median": 13,
+"conditions": {
+"Nuovo senza cartellino": 19,
+"Nuovo con cartellino": 12,
+"Ottime": 18
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2932,
+"path": "Donna > Accessori > Fazzoletti",
+"code": "WOMEN_HANDKERCHIEFS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2932&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 70.0,
+"p10": 78.0,
+"p25": 90.0,
+"p50": 110.0,
+"p75": 130.0,
+"p90": 142.0,
+"max": 150.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 88,
+"path": "Donna > Accessori > Cappelli e berretti",
+"code": "WOM_ACC_HATS_CAPS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=88&brand_ids[]=4269&order=newest_first",
+"listings": 28,
+"capped": false,
+"asking": {
+"n": 28,
+"min": 22.0,
+"p10": 75.5,
+"p25": 115.0,
+"p50": 165.0,
+"p75": 250.0,
+"p90": 312.0,
+"max": 350.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 9,
+"Ottime": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 21,
+"path": "Donna > Accessori > Gioielli",
+"code": "JEWELRY",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=21&brand_ids[]=4269&order=newest_first",
+"listings": 58,
+"capped": false,
+"asking": {
+"n": 58,
+"min": 19.0,
+"p10": 28.0,
+"p25": 50.0,
+"p50": 87.0,
+"p75": 132.5,
+"p90": 176.0,
+"max": 300.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Buone": 5,
+"Ottime": 15,
+"Nuovo con cartellino": 16,
+"Nuovo senza cartellino": 22
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1852,
+"path": "Donna > Accessori > Portachiavi",
+"code": "KEY_RINGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1852&brand_ids[]=4269&order=newest_first",
+"listings": 44,
+"capped": false,
+"asking": {
+"n": 44,
+"min": 12.0,
+"p10": 32.4,
+"p25": 50.0,
+"p50": 87.5,
+"p75": 142.5,
+"p90": 157.0,
+"max": 380.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Nuovo senza cartellino": 15,
+"Ottime": 9,
+"Nuovo con cartellino": 17,
+"Buone": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 89,
+"path": "Donna > Accessori > Sciarpe e scialli",
+"code": "WOM_ACC_SCARVES_SHAWLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=89&brand_ids[]=4269&order=newest_first",
+"listings": 12,
+"capped": false,
+"asking": {
+"n": 12,
+"min": 85.0,
+"p10": 85.5,
+"p25": 90.0,
+"p50": 122.5,
+"p75": 163.75,
+"p90": 196.6,
+"max": 250.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Ottime": 6,
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 26,
+"path": "Donna > Accessori > Occhiali da sole",
+"code": "SUNGLASSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=26&brand_ids[]=4269&order=newest_first",
+"listings": 12,
+"capped": false,
+"asking": {
+"n": 12,
+"min": 90.0,
+"p10": 108.0,
+"p25": 195.0,
+"p50": 240.0,
+"p75": 345.0,
+"p90": 399.0,
+"max": 400.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 4,
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 6
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1851,
+"path": "Donna > Accessori > Ombrelli",
+"code": "W_ACC_UMBRELLAS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1851&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 75.0,
+"p10": 82.5,
+"p25": 93.75,
+"p50": 112.5,
+"p75": 131.25,
+"p90": 142.5,
+"max": 150.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Buone": 1,
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1140,
+"path": "Donna > Accessori > Altri accessori",
+"code": "W_OTHER_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1140&brand_ids[]=4269&order=newest_first",
+"listings": 199,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 7.5,
+"p25": 13.0,
+"p50": 30.0,
+"p75": 79.25,
+"p90": 199.5,
+"max": 1500.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 20,
+"Nuovo senza cartellino": 42,
+"Ottime": 29,
+"Buone": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 146,
+"path": "Donna > Bellezza",
+"code": "COSMETICS_AND_BEAUTY_PRODUCTS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=146&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 9.0,
+"p10": 20.0,
+"p25": 25.0,
+"p50": 40.0,
+"p75": 81.25,
+"p90": 150.0,
+"max": 290.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 964,
+"path": "Donna > Bellezza > Make-up",
+"code": "WOM_COS_MAK_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=964&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 25.0,
+"p25": 30.0,
+"p50": 38.5,
+"p75": 51.25,
+"p90": 70.75,
+"max": 150.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 152,
+"path": "Donna > Bellezza > Profumi",
+"code": "WOM_COS_PERFUME",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=152&brand_ids[]=4269&order=newest_first",
+"listings": 230,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 41.5,
+"p25": 100.0,
+"p50": 150.0,
+"p75": 180.0,
+"p90": 200.0,
+"max": 290.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 948,
+"path": "Donna > Bellezza > Cura del viso",
+"code": "COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=948&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 65.0,
+"p10": 69.0,
+"p25": 75.0,
+"p50": 76.0,
+"p75": 85.0,
+"p90": 85.0,
+"max": 85.0
+},
+"likes_median": 1,
+"conditions": {
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1906,
+"path": "Donna > Bellezza > Accessori di bellezza",
+"code": "W_BEAUTY_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1906&brand_ids[]=4269&order=newest_first",
+"listings": 39,
+"capped": false,
+"asking": {
+"n": 39,
+"min": 5.0,
+"p10": 14.4,
+"p25": 20.0,
+"p50": 30.0,
+"p75": 45.0,
+"p90": 51.0,
+"max": 140.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo con cartellino": 39
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1264,
+"path": "Donna > Bellezza > Cura delle mani",
+"code": "BEAUTY_HAND_ONLY",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1264&brand_ids[]=4269&order=newest_first",
+"listings": 14,
+"capped": false,
+"asking": {
+"n": 14,
+"min": 5.0,
+"p10": 25.0,
+"p25": 25.0,
+"p50": 30.0,
+"p75": 35.0,
+"p90": 39.85,
+"max": 100.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 14
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 960,
+"path": "Donna > Bellezza > Cura delle unghie",
+"code": "WOM_COS_HAN_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=960&brand_ids[]=4269&order=newest_first",
+"listings": 254,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 15.5,
+"p25": 20.0,
+"p50": 25.0,
+"p75": 35.0,
+"p90": 45.0,
+"max": 155.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 153,
+"path": "Donna > Bellezza > Altri prodotti di bellezza",
+"code": "OTHER_COSMETICS_AND_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=153&brand_ids[]=4269&order=newest_first",
+"listings": 24,
+"capped": false,
+"asking": {
+"n": 24,
+"min": 8.0,
+"p10": 25.0,
+"p25": 33.75,
+"p50": 47.5,
+"p75": 52.75,
+"p90": 68.5,
+"max": 158.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 24
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2050,
+"path": "Uomo > Vestiti",
+"code": "MEN_CLOTHING",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2050&brand_ids[]=4269&order=newest_first",
+"listings": 32,
+"capped": false,
+"asking": {
+"n": 32,
+"min": 20.0,
+"p10": 30.0,
+"p25": 79.25,
+"p50": 100.0,
+"p75": 156.25,
+"p90": 268.0,
+"max": 390.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Nuovo senza cartellino": 15,
+"Buone": 4,
+"Ottime": 7,
+"Nuovo con cartellino": 6
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 76,
+"path": "Uomo > Vestiti > Camicie e t-shirt",
+"code": "MEN_TOPS_T_SHIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=76&brand_ids[]=4269&order=newest_first",
+"listings": 16,
+"capped": false,
+"asking": {
+"n": 16,
+"min": 30.0,
+"p10": 52.5,
+"p25": 79.25,
+"p50": 100.0,
+"p75": 130.75,
+"p90": 150.0,
+"max": 150.0
+},
+"likes_median": 12.5,
+"conditions": {
+"Nuovo senza cartellino": 8,
+"Ottime": 4,
+"Nuovo con cartellino": 3,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 79,
+"path": "Uomo > Vestiti > Maglioni e pullover",
+"code": "MEN_PULLOVERS_SWEATERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=79&brand_ids[]=4269&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 90.0,
+"p10": 115.5,
+"p25": 153.75,
+"p50": 192.0,
+"p75": 224.25,
+"p90": 251.7,
+"max": 270.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Nuovo senza cartellino": 2,
+"Ottime": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 34,
+"path": "Uomo > Vestiti > Pantaloni",
+"code": "MEN_TROUSERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=34&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 20.0,
+"p10": 20.0,
+"p25": 20.0,
+"p50": 20.0,
+"p75": 20.0,
+"p90": 20.0,
+"max": 20.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Buone": 1,
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 30,
+"path": "Uomo > Vestiti > Abbigliamento sportivo",
+"code": "SPORTSWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=30&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 100.0,
+"p10": 100.0,
+"p25": 100.0,
+"p50": 200.0,
+"p75": 250.0,
+"p90": 334.0,
+"max": 390.0
+},
+"likes_median": 3,
+"conditions": {
+"Buone": 1,
+"Nuovo senza cartellino": 3,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 83,
+"path": "Uomo > Vestiti > Altri capi di abbigliamento",
+"code": "MEN_OTHER",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=83&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 20.0,
+"p10": 24.0,
+"p25": 30.0,
+"p50": 120.0,
+"p75": 300.0,
+"p90": 342.0,
+"max": 370.0
+},
+"likes_median": 11,
+"conditions": {
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 2,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1231,
+"path": "Uomo > Scarpe",
+"code": "MEN_SHOES_NEW",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=1231&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 25.0,
+"p10": 95.0,
+"p25": 125.0,
+"p50": 227.5,
+"p75": 350.0,
+"p90": 465.0,
+"max": 700.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo senza cartellino": 21,
+"Ottime": 45,
+"Nuovo con cartellino": 11,
+"Discrete": 5,
+"Buone": 14
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2656,
+"path": "Uomo > Scarpe > Scarpe da barca, loafer e mocassini",
+"code": "MEN_BOAT_LOAFERS_MOCCASINS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2656&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 75.0,
+"p10": 120.0,
+"p25": 178.75,
+"p50": 269.0,
+"p75": 382.5,
+"p90": 562.5,
+"max": 1100.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo senza cartellino": 17,
+"Ottime": 55,
+"Nuovo con cartellino": 7,
+"Discrete": 3,
+"Buone": 14
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1233,
+"path": "Uomo > Scarpe > Stivali",
+"code": "MEN_BOOTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1233&brand_ids[]=4269&order=newest_first",
+"listings": 506,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 130.0,
+"p25": 200.0,
+"p50": 300.0,
+"p75": 462.5,
+"p90": 650.0,
+"max": 1000.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo senza cartellino": 12,
+"Ottime": 58,
+"Buone": 16,
+"Nuovo con cartellino": 7,
+"Discrete": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2970,
+"path": "Uomo > Scarpe > Zoccoli e sabot",
+"code": "MEN_CLOGS_MULES_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2970&brand_ids[]=4269&order=newest_first",
+"listings": 9,
+"capped": false,
+"asking": {
+"n": 9,
+"min": 130.0,
+"p10": 194.0,
+"p25": 250.0,
+"p50": 275.0,
+"p75": 300.0,
+"p90": 314.0,
+"max": 370.0
+},
+"likes_median": 18,
+"conditions": {
+"Ottime": 4,
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 2,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2657,
+"path": "Uomo > Scarpe > Espadrillas",
+"code": "MEN_ESPADRILLES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2657&brand_ids[]=4269&order=newest_first",
+"listings": 114,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 90.0,
+"p25": 150.0,
+"p50": 250.0,
+"p75": 300.0,
+"p90": 415.0,
+"max": 550.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Buone": 23,
+"Discrete": 1,
+"Ottime": 49,
+"Nuovo con cartellino": 11,
+"Nuovo senza cartellino": 12
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2969,
+"path": "Uomo > Scarpe > Infradito e ciabatte",
+"code": "MEN_FLIPFLOPS_SLIDES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2969&brand_ids[]=4269&order=newest_first",
+"listings": 38,
+"capped": false,
+"asking": {
+"n": 38,
+"min": 90.0,
+"p10": 128.0,
+"p25": 160.0,
+"p50": 220.0,
+"p75": 295.5,
+"p90": 400.0,
+"max": 600.0
+},
+"likes_median": 18.0,
+"conditions": {
+"Nuovo con cartellino": 7,
+"Nuovo senza cartellino": 3,
+"Ottime": 24,
+"Buone": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1238,
+"path": "Uomo > Scarpe > Scarpe formali",
+"code": "MEN_FORMAL",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1238&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 40.0,
+"p10": 117.5,
+"p25": 180.0,
+"p50": 247.5,
+"p75": 399.9925,
+"p90": 600.0,
+"max": 920.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 12,
+"Nuovo senza cartellino": 11,
+"Ottime": 57,
+"Buone": 15,
+"Discrete": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2968,
+"path": "Uomo > Scarpe > Sandali",
+"code": "MEN_SANDALS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2968&brand_ids[]=4269&order=newest_first",
+"listings": 39,
+"capped": false,
+"asking": {
+"n": 39,
+"min": 100.0,
+"p10": 150.0,
+"p25": 199.5,
+"p50": 230.0,
+"p75": 377.5,
+"p90": 450.0,
+"max": 750.0
+},
+"likes_median": 13,
+"conditions": {
+"Ottime": 18,
+"Nuovo con cartellino": 10,
+"Buone": 4,
+"Nuovo senza cartellino": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2659,
+"path": "Uomo > Scarpe > Pantofole",
+"code": "MEN_SLIPPERS_2",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2659&brand_ids[]=4269&order=newest_first",
+"listings": 17,
+"capped": false,
+"asking": {
+"n": 17,
+"min": 80.0,
+"p10": 135.2,
+"p25": 180.0,
+"p50": 249.0,
+"p75": 300.0,
+"p90": 450.0,
+"max": 500.0
+},
+"likes_median": 9,
+"conditions": {
+"Nuovo senza cartellino": 3,
+"Ottime": 8,
+"Buone": 3,
+"Discrete": 1,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1452,
+"path": "Uomo > Scarpe > Scarpe sportive",
+"code": "SPORT_SHOES_MEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1452&brand_ids[]=4269&order=newest_first",
+"listings": 118,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 25.0,
+"p10": 150.0,
+"p25": 200.0,
+"p50": 300.0,
+"p75": 400.0,
+"p90": 515.0,
+"max": 855.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Buone": 22,
+"Ottime": 53,
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 7,
+"Discrete": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1242,
+"path": "Uomo > Scarpe > Scarpe da ginnastica",
+"code": "MEN_SNEAKERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1242&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 25.0,
+"p10": 95.0,
+"p25": 125.0,
+"p50": 227.5,
+"p75": 350.0,
+"p90": 424.95,
+"max": 700.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo senza cartellino": 16,
+"Ottime": 52,
+"Nuovo con cartellino": 8,
+"Discrete": 5,
+"Buone": 15
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 82,
+"path": "Uomo > Accessori",
+"code": "MEN_ACCESSORIES",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=82&brand_ids[]=4269&order=newest_first",
+"listings": 577,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 34.0,
+"p25": 120.0,
+"p50": 200.0,
+"p75": 392.25,
+"p90": 695.0,
+"max": 4000.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 15,
+"Nuovo senza cartellino": 36,
+"Ottime": 34,
+"Buone": 9,
+"Discrete": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 94,
+"path": "Uomo > Accessori > Borse e zaini",
+"code": "BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=94&brand_ids[]=4269&order=newest_first",
+"listings": 403,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 17.99,
+"p10": 117.0,
+"p25": 173.75,
+"p50": 310.0,
+"p75": 550.0,
+"p90": 900.0,
+"max": 4000.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 19,
+"Nuovo senza cartellino": 27,
+"Ottime": 38,
+"Buone": 10,
+"Discrete": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 96,
+"path": "Uomo > Accessori > Cinture",
+"code": "MEN_ACC_BELTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=96&brand_ids[]=4269&order=newest_first",
+"listings": 43,
+"capped": false,
+"asking": {
+"n": 43,
+"min": 7.0,
+"p10": 120.0,
+"p25": 185.0,
+"p50": 250.0,
+"p75": 300.0,
+"p90": 374.0,
+"max": 469.0
+},
+"likes_median": 11,
+"conditions": {
+"Nuovo senza cartellino": 20,
+"Ottime": 14,
+"Nuovo con cartellino": 8,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 86,
+"path": "Uomo > Accessori > Cappelli e berretti",
+"code": "HATS_CAPS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=86&brand_ids[]=4269&order=newest_first",
+"listings": 27,
+"capped": false,
+"asking": {
+"n": 27,
+"min": 22.0,
+"p10": 92.0,
+"p25": 110.0,
+"p50": 180.0,
+"p75": 265.0,
+"p90": 316.0,
+"max": 350.0
+},
+"likes_median": 3,
+"conditions": {
+"Nuovo con cartellino": 8,
+"Nuovo senza cartellino": 13,
+"Ottime": 6
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 95,
+"path": "Uomo > Accessori > Gioielli",
+"code": "APPAREL",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=95&brand_ids[]=4269&order=newest_first",
+"listings": 26,
+"capped": false,
+"asking": {
+"n": 26,
+"min": 48.0,
+"p10": 50.0,
+"p25": 66.25,
+"p50": 87.0,
+"p75": 132.5,
+"p90": 155.0,
+"max": 900.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Buone": 2,
+"Nuovo con cartellino": 6,
+"Nuovo senza cartellino": 12,
+"Ottime": 6
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2957,
+"path": "Uomo > Accessori > Fazzoletto da taschino",
+"code": "MEN_POCKET_SQUARES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2957&brand_ids[]=4269&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 200.0,
+"p10": 214.0,
+"p25": 235.0,
+"p50": 270.0,
+"p75": 335.0,
+"p90": 374.0,
+"max": 400.0
+},
+"likes_median": 2,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Ottime": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 98,
+"path": "Uomo > Accessori > Occhiali da sole",
+"code": "MEN_ACC_SUNGLASSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=98&brand_ids[]=4269&order=newest_first",
+"listings": 8,
+"capped": false,
+"asking": {
+"n": 8,
+"min": 100.0,
+"p10": 156.0,
+"p25": 202.5,
+"p50": 220.0,
+"p75": 307.5,
+"p90": 375.0,
+"max": 480.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Nuovo senza cartellino": 4,
+"Ottime": 2,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2956,
+"path": "Uomo > Accessori > Cravatte e papillon",
+"code": "MEN_TIES_BOWTIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2956&brand_ids[]=4269&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 12.0,
+"p10": 14.4,
+"p25": 18.0,
+"p50": 110.0,
+"p75": 400.0,
+"p90": 760.0,
+"max": 1000.0
+},
+"likes_median": 14.0,
+"conditions": {
+"Ottime": 2,
+"Discrete": 1,
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 99,
+"path": "Uomo > Accessori > Altro",
+"code": "MEN_ACC_OTHER",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=99&brand_ids[]=4269&order=newest_first",
+"listings": 63,
+"capped": false,
+"asking": {
+"n": 63,
+"min": 3.0,
+"p10": 8.0,
+"p25": 22.5,
+"p50": 99.0,
+"p75": 230.0,
+"p90": 400.0,
+"max": 1500.0
+},
+"likes_median": 6,
+"conditions": {
+"Ottime": 18,
+"Nuovo senza cartellino": 30,
+"Nuovo con cartellino": 12,
+"Buone": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 139,
+"path": "Uomo > Cura del corpo",
+"code": "COSMETICS_AND_BEAUTY_ITEMS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=139&brand_ids[]=4269&order=newest_first",
+"listings": 80,
+"capped": false,
+"asking": {
+"n": 80,
+"min": 15.0,
+"p10": 44.5,
+"p25": 100.0,
+"p50": 150.0,
+"p75": 200.0,
+"p90": 240.5,
+"max": 280.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Nuovo con cartellino": 80
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2055,
+"path": "Uomo > Cura del corpo > Strumenti e accessori",
+"code": "MEN_BEAUTY_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2055&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 95.0,
+"p10": 95.0,
+"p25": 95.0,
+"p50": 95.0,
+"p75": 95.0,
+"p90": 95.0,
+"max": 95.0
+},
+"likes_median": 28,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 142,
+"path": "Uomo > Cura del corpo > Cura delle mani e delle unghie",
+"code": "HAND_NAIL_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=142&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 50.0,
+"p10": 50.0,
+"p25": 50.0,
+"p50": 50.0,
+"p75": 50.0,
+"p90": 50.0,
+"max": 50.0
+},
+"likes_median": 2,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 145,
+"path": "Uomo > Cura del corpo > Dopobarba e colonia",
+"code": "PERFUME",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=145&brand_ids[]=4269&order=newest_first",
+"listings": 74,
+"capped": false,
+"asking": {
+"n": 74,
+"min": 20.0,
+"p10": 49.5,
+"p25": 106.25,
+"p50": 152.5,
+"p75": 200.0,
+"p90": 243.5,
+"max": 280.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Nuovo con cartellino": 74
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 144,
+"path": "Uomo > Cura del corpo > Make-up",
+"code": "MAKE_UP",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=144&brand_ids[]=4269&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 15.0,
+"p10": 25.0,
+"p25": 40.0,
+"p50": 65.0,
+"p75": 82.5,
+"p90": 93.0,
+"max": 100.0
+},
+"likes_median": 2,
+"conditions": {
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1863,
+"path": "Uomo > Cura del corpo > Kit per la rasatura",
+"code": "MEN_SETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1863&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 80.0,
+"p10": 80.0,
+"p25": 80.0,
+"p50": 80.0,
+"p75": 80.0,
+"p90": 80.0,
+"max": 80.0
+},
+"likes_median": 4,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2983,
+"path": "Articoli griffati > Articoli griffati per donna",
+"code": "DESIGNER_WOMEN",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2983&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 500.0,
+"p25": 538.75,
+"p50": 600.0,
+"p75": 700.0,
+"p90": 850.0,
+"max": 3000.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 39,
+"Nuovo senza cartellino": 34,
+"Buone": 5,
+"Nuovo con cartellino": 18
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2984,
+"path": "Articoli griffati > Articoli griffati per donna > Borse griffate",
+"code": "DESIGNER_WOMEN_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2984&brand_ids[]=4269&order=newest_first",
+"listings": 746,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 500.0,
+"p25": 591.25,
+"p50": 700.0,
+"p75": 850.0,
+"p90": 1275.0,
+"max": 2495.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo senza cartellino": 43,
+"Nuovo con cartellino": 23,
+"Ottime": 26,
+"Buone": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2985,
+"path": "Articoli griffati > Articoli griffati per donna > Scarpe griffate",
+"code": "DESIGNER_WOMEN_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2985&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 500.0,
+"p25": 538.75,
+"p50": 599.0,
+"p75": 692.5,
+"p90": 850.0,
+"max": 3000.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 39,
+"Nuovo senza cartellino": 29,
+"Buone": 6,
+"Nuovo con cartellino": 22
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2986,
+"path": "Articoli griffati > Articoli griffati per donna > Accessori griffati",
+"code": "DESIGNER_WOMEN_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2986&brand_ids[]=4269&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 850.0,
+"p10": 880.0,
+"p25": 925.0,
+"p50": 1150.0,
+"p75": 1387.5,
+"p90": 1455.0,
+"max": 1500.0
+},
+"likes_median": 14.5,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2987,
+"path": "Articoli griffati > Articoli griffati per donna > Abbigliamento griffato",
+"code": "DESIGNER_WOMEN_CLOTHING",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2987&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 549.0,
+"p10": 549.0,
+"p25": 549.0,
+"p50": 549.0,
+"p75": 549.0,
+"p90": 549.0,
+"max": 549.0
+},
+"likes_median": 3,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2988,
+"path": "Articoli griffati > Articoli griffati per uomo",
+"code": "DESIGNER_MEN",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2988&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 500.0,
+"p25": 500.0,
+"p50": 600.0,
+"p75": 691.25,
+"p90": 750.0,
+"max": 2500.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo senza cartellino": 19,
+"Ottime": 51,
+"Nuovo con cartellino": 19,
+"Buone": 7
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2990,
+"path": "Articoli griffati > Articoli griffati per uomo > Scarpe griffate",
+"code": "DESIGNER_MEN_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2990&brand_ids[]=4269&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 500.0,
+"p25": 500.0,
+"p50": 600.0,
+"p75": 682.5,
+"p90": 750.0,
+"max": 2500.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo senza cartellino": 18,
+"Ottime": 52,
+"Nuovo con cartellino": 20,
+"Buone": 6
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2991,
+"path": "Articoli griffati > Articoli griffati per uomo > Accessori griffati",
+"code": "DESIGNER_MEN_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2991&brand_ids[]=4269&order=newest_first",
+"listings": 137,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 500.0,
+"p25": 600.0,
+"p50": 770.0,
+"p75": 950.0,
+"p90": 1362.5,
+"max": 4000.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo senza cartellino": 39,
+"Buone": 10,
+"Nuovo con cartellino": 18,
+"Ottime": 29
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1195,
+"path": "Bambini > Abbigliamento bambina",
+"code": "GIRLS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1195&brand_ids[]=4269&order=newest_first",
+"listings": 695,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 79.5,
+"p25": 113.75,
+"p50": 200.0,
+"p75": 300.0,
+"p90": 445.0,
+"max": 570.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 49,
+"Nuovo senza cartellino": 17,
+"Nuovo con cartellino": 15,
+"Buone": 11,
+"Discrete": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1194,
+"path": "Bambini > Abbigliamento bambino",
+"code": "BOYS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1194&brand_ids[]=4269&order=newest_first",
+"listings": 76,
+"capped": false,
+"asking": {
+"n": 76,
+"min": 1.5,
+"p10": 77.5,
+"p25": 100.0,
+"p50": 157.5,
+"p75": 270.0,
+"p90": 400.0,
+"max": 600.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Ottime": 40,
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 5,
+"Buone": 15,
+"Discrete": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1499,
+"path": "Bambini > Giocattoli",
+"code": "TOYS_AND_GAMES_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1499&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 5.0,
+"p10": 7.0,
+"p25": 10.0,
+"p50": 100.0,
+"p75": 200.0,
+"p90": 350.0,
+"max": 450.0
+},
+"likes_median": 9,
+"conditions": {
+"Ottime": 2,
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1496,
+"path": "Bambini > Passeggini, marsupi e seggiolini per auto",
+"code": "STROLLERS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1496&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 59.0,
+"p10": 59.0,
+"p25": 59.0,
+"p50": 59.0,
+"p75": 59.0,
+"p90": 59.0,
+"max": 59.0
+},
+"likes_median": 4,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1498,
+"path": "Bambini > Arredamento e decorazioni",
+"code": "KIDS_FURNITURE_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1498&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 15.0,
+"p10": 16.5,
+"p25": 18.75,
+"p50": 22.5,
+"p75": 26.25,
+"p90": 28.5,
+"max": 30.0
+},
+"likes_median": 12.5,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1501,
+"path": "Bambini > Articoli per la scuola",
+"code": "BOOKS_AND_SCHOOL_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1501&brand_ids[]=4269&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 20.0,
+"p10": 30.0,
+"p25": 45.0,
+"p50": 70.0,
+"p75": 95.0,
+"p90": 110.0,
+"max": 120.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 3477,
+"path": "Casa > Utensili da cucina",
+"code": "KITCHEN_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3477&brand_ids[]=4269&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 25.0,
+"p10": 25.0,
+"p25": 25.0,
+"p50": 25.0,
+"p75": 25.0,
+"p90": 25.0,
+"max": 25.0
+},
+"likes_median": 3,
+"conditions": {
+"Buone": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1920,
+"path": "Casa > Stoviglie",
+"code": "H_TABLEWARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1920&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 50.0,
+"p10": 110.0,
+"p25": 200.0,
+"p50": 200.0,
+"p75": 245.0,
+"p90": 308.0,
+"max": 350.0
+},
+"likes_median": 14,
+"conditions": {
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 3,
+"Ottime": 1
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1919,
+"path": "Casa > Tessili",
+"code": "H_TEXTILES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1919&brand_ids[]=4269&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 7.0,
+"p10": 12.2,
+"p25": 20.0,
+"p50": 20.0,
+"p75": 35.0,
+"p90": 146.0,
+"max": 220.0
+},
+"likes_median": 3,
+"conditions": {
+"Ottime": 2,
+"Nuovo senza cartellino": 3
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 1934,
+"path": "Casa > Accessori per la casa",
+"code": "H_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1934&brand_ids[]=4269&order=newest_first",
+"listings": 54,
+"capped": false,
+"asking": {
+"n": 54,
+"min": 2.0,
+"p10": 12.0,
+"p25": 15.625,
+"p50": 33.0,
+"p75": 57.5,
+"p90": 100.0,
+"max": 300.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Nuovo senza cartellino": 13,
+"Buone": 10,
+"Nuovo con cartellino": 11,
+"Ottime": 16,
+"Discrete": 4
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 5428,
+"path": "Casa > Materiale per ufficio",
+"code": "OFFICE_SUPPLIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=5428&brand_ids[]=4269&order=newest_first",
+"listings": 21,
+"capped": false,
+"asking": {
+"n": 21,
+"min": 15.0,
+"p10": 20.0,
+"p25": 28.0,
+"p50": 45.0,
+"p75": 70.0,
+"p90": 90.0,
+"max": 250.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo senza cartellino": 14,
+"Ottime": 2,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 2915,
+"path": "Casa > Festeggiamenti e feste",
+"code": "HOLIDAYS_CELEBRATIONS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2915&brand_ids[]=4269&order=newest_first",
+"listings": 210,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 4.0,
+"p25": 5.0,
+"p50": 10.0,
+"p75": 15.0,
+"p90": 29.0,
+"max": 350.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 15,
+"Nuovo senza cartellino": 38,
+"Ottime": 37,
+"Buone": 4,
+"Discrete": 2
+}
+},
+{
+"brand": "Christian Louboutin",
+"catalog_id": 5106,
+"path": "Casa > Animali",
+"code": "H_PET_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=5106&brand_ids[]=4269&order=newest_first",
+"listings": 16,
+"capped": false,
+"asking": {
+"n": 16,
+"min": 24.0,
+"p10": 27.5,
+"p25": 95.0,
+"p50": 260.0,
+"p75": 412.5,
+"p90": 685.0,
+"max": 2000.0
+},
+"likes_median": 2.5,
+"conditions": {
+"Nuovo senza cartellino": 9,
+"Ottime": 3,
+"Buone": 1,
+"Nuovo con cartellino": 3
+}
+}
+]
+}

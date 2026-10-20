@@ -1,0 +1,6520 @@
+{
+"brand": "Chanel",
+"ids": [
+481
+],
+"at": 1792439033,
+"complete": true,
+"requests": 252,
+"rows": [
+{
+"brand": "Chanel",
+"catalog_id": 4,
+"path": "Donna > Vestiti",
+"code": "WOMENS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=4&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 35.495000000000005,
+"p25": 99.75,
+"p50": 215.0,
+"p75": 497.5,
+"p90": 1099.5,
+"max": 2850.0
+},
+"likes_median": 2.5,
+"conditions": {
+"Ottime": 69,
+"Buone": 11,
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1037,
+"path": "Donna > Vestiti > Abbigliamento da esterno",
+"code": "COATS_JACKETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1037&brand_ids[]=481&order=newest_first",
+"listings": 884,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 18.0,
+"p10": 500.0,
+"p25": 799.9975000000001,
+"p50": 1250.0,
+"p75": 2000.0,
+"p90": 3425.0,
+"max": 10300.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Nuovo senza cartellino": 10,
+"Ottime": 69,
+"Nuovo con cartellino": 5,
+"Discrete": 1,
+"Buone": 11
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 13,
+"path": "Donna > Vestiti > Maglioni e pullover",
+"code": "PULLOVERS_SWEATERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=13&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 79.0,
+"p10": 150.0,
+"p25": 266.25,
+"p50": 550.0,
+"p75": 831.0,
+"p90": 1325.0,
+"max": 2600.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 74,
+"Nuovo con cartellino": 6,
+"Buone": 10,
+"Nuovo senza cartellino": 5,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 196,
+"path": "Donna > Vestiti > Maglioni e pullover > Felpe e felpe con cappuccio",
+"code": "HOODIES_JUMPERS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=196&brand_ids[]=481&order=newest_first",
+"listings": 46,
+"capped": false,
+"asking": {
+"n": 46,
+"min": 140.0,
+"p10": 250.0,
+"p25": 300.0,
+"p50": 525.0,
+"p75": 700.0,
+"p90": 1599.5,
+"max": 2499.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Ottime": 31,
+"Nuovo con cartellino": 3,
+"Buone": 7,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1917,
+"path": "Donna > Vestiti > Maglioni e pullover > Maglioni",
+"code": "W_NEW_SWEATERS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1917&brand_ids[]=481&order=newest_first",
+"listings": 403,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 55.0,
+"p10": 140.0,
+"p25": 298.75,
+"p50": 480.0,
+"p75": 791.25,
+"p90": 1200.0,
+"max": 2500.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Ottime": 76,
+"Nuovo con cartellino": 3,
+"Nuovo senza cartellino": 10,
+"Buone": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1067,
+"path": "Donna > Vestiti > Maglioni e pullover > Kimono",
+"code": "KIMONOS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1067&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 400.0,
+"p10": 400.0,
+"p25": 400.0,
+"p50": 400.0,
+"p75": 400.0,
+"p90": 400.0,
+"max": 400.0
+},
+"likes_median": 6,
+"conditions": {
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 194,
+"path": "Donna > Vestiti > Maglioni e pullover > Cardigan",
+"code": "CARDIGANS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=194&brand_ids[]=481&order=newest_first",
+"listings": 461,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 75.0,
+"p10": 150.0,
+"p25": 287.5,
+"p50": 575.0,
+"p75": 962.25,
+"p90": 1475.0,
+"max": 2600.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Ottime": 72,
+"Buone": 15,
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 6,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 195,
+"path": "Donna > Vestiti > Maglioni e pullover > Bolero",
+"code": "BOLERO",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=195&brand_ids[]=481&order=newest_first",
+"listings": 15,
+"capped": false,
+"asking": {
+"n": 15,
+"min": 200.0,
+"p10": 360.0,
+"p25": 500.0,
+"p50": 990.0,
+"p75": 1450.0,
+"p90": 3580.0,
+"max": 4800.0
+},
+"likes_median": 20,
+"conditions": {
+"Ottime": 11,
+"Buone": 3,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1874,
+"path": "Donna > Vestiti > Maglioni e pullover > Panciotti",
+"code": "WOMEN_WAISTCOAT_SWEATER",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1874&brand_ids[]=481&order=newest_first",
+"listings": 21,
+"capped": false,
+"asking": {
+"n": 21,
+"min": 150.0,
+"p10": 399.0,
+"p25": 525.0,
+"p50": 860.0,
+"p75": 1800.0,
+"p90": 2800.0,
+"max": 4350.0
+},
+"likes_median": 20,
+"conditions": {
+"Ottime": 12,
+"Buone": 4,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 197,
+"path": "Donna > Vestiti > Maglioni e pullover > Altri maglioni e pullover",
+"code": "WOM_PUL_OTHER",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=197&brand_ids[]=481&order=newest_first",
+"listings": 68,
+"capped": false,
+"asking": {
+"n": 68,
+"min": 90.0,
+"p10": 150.0,
+"p25": 250.0,
+"p50": 405.0,
+"p75": 660.0,
+"p90": 996.5,
+"max": 4800.0
+},
+"likes_median": 15.0,
+"conditions": {
+"Ottime": 44,
+"Buone": 8,
+"Nuovo senza cartellino": 13,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 8,
+"path": "Donna > Vestiti > Completi e blazer",
+"code": "BLAZERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=8&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 30.0,
+"p10": 467.5,
+"p25": 790.0,
+"p50": 1395.0,
+"p75": 2412.5,
+"p90": 2850.0,
+"max": 12222.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Ottime": 69,
+"Buone": 17,
+"Nuovo senza cartellino": 4,
+"Nuovo con cartellino": 3,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 532,
+"path": "Donna > Vestiti > Completi e blazer > Blazer",
+"code": "WOM_BLA_BLAZERS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=532&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 30.0,
+"p10": 495.0,
+"p25": 835.0,
+"p50": 1300.0,
+"p75": 2325.0,
+"p90": 2850.0,
+"max": 6500.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Ottime": 66,
+"Buone": 20,
+"Nuovo senza cartellino": 3,
+"Nuovo con cartellino": 3,
+"Discrete": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1125,
+"path": "Donna > Vestiti > Completi e blazer > Completi con pantaloni",
+"code": "W_PANTSUITS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1125&brand_ids[]=481&order=newest_first",
+"listings": 41,
+"capped": false,
+"asking": {
+"n": 41,
+"min": 250.0,
+"p10": 450.0,
+"p25": 700.0,
+"p50": 950.0,
+"p75": 1650.0,
+"p90": 2800.0,
+"max": 4750.0
+},
+"likes_median": 26,
+"conditions": {
+"Ottime": 25,
+"Buone": 9,
+"Discrete": 1,
+"Nuovo senza cartellino": 4,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1126,
+"path": "Donna > Vestiti > Completi e blazer > Completi con gonna",
+"code": "W_SKIRT_SUITS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1126&brand_ids[]=481&order=newest_first",
+"listings": 211,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 110.0,
+"p10": 565.0,
+"p25": 915.0,
+"p50": 1499.5,
+"p75": 2250.0,
+"p90": 3350.0,
+"max": 12222.0
+},
+"likes_median": 12.0,
+"conditions": {
+"Ottime": 70,
+"Nuovo senza cartellino": 6,
+"Buone": 19,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1128,
+"path": "Donna > Vestiti > Completi e blazer > Completi spezzati",
+"code": "W_SUIT_SEPARATES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1128&brand_ids[]=481&order=newest_first",
+"listings": 54,
+"capped": false,
+"asking": {
+"n": 54,
+"min": 55.0,
+"p10": 200.0,
+"p25": 422.5,
+"p50": 825.0,
+"p75": 1575.0,
+"p90": 2119.0,
+"max": 7000.0
+},
+"likes_median": 22.5,
+"conditions": {
+"Ottime": 39,
+"Nuovo con cartellino": 1,
+"Buone": 6,
+"Nuovo senza cartellino": 8
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1129,
+"path": "Donna > Vestiti > Completi e blazer > Altri completi e blazer",
+"code": "W_OTHER_SUITS_BLAZERS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1129&brand_ids[]=481&order=newest_first",
+"listings": 145,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 250.0,
+"p10": 552.5,
+"p25": 999.0,
+"p50": 1500.0,
+"p75": 2500.0,
+"p90": 3575.0,
+"max": 7250.0
+},
+"likes_median": 15.5,
+"conditions": {
+"Ottime": 70,
+"Nuovo senza cartellino": 14,
+"Buone": 8,
+"Discrete": 1,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 10,
+"path": "Donna > Vestiti > Abiti",
+"code": "DRESSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=10&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 60.0,
+"p10": 350.0,
+"p25": 500.0,
+"p50": 727.5,
+"p75": 1100.0,
+"p90": 2000.0,
+"max": 6700.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Ottime": 72,
+"Nuovo senza cartellino": 7,
+"Buone": 10,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 178,
+"path": "Donna > Vestiti > Abiti > Mini abiti",
+"code": "MINI_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=178&brand_ids[]=481&order=newest_first",
+"listings": 151,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 90.0,
+"p10": 349.5,
+"p25": 500.0,
+"p50": 739.5,
+"p75": 1285.0,
+"p90": 1900.0,
+"max": 4900.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Ottime": 69,
+"Nuovo senza cartellino": 13,
+"Nuovo con cartellino": 6,
+"Buone": 8
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1056,
+"path": "Donna > Vestiti > Abiti > Abiti longuette",
+"code": "MIDI_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1056&brand_ids[]=481&order=newest_first",
+"listings": 199,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 335.0,
+"p25": 465.0,
+"p50": 687.5,
+"p75": 980.0,
+"p90": 2000.0,
+"max": 4000.0
+},
+"likes_median": 13.5,
+"conditions": {
+"Ottime": 67,
+"Nuovo senza cartellino": 15,
+"Buone": 10,
+"Nuovo con cartellino": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1055,
+"path": "Donna > Vestiti > Abiti > Abiti lunghi",
+"code": "MAXI_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1055&brand_ids[]=481&order=newest_first",
+"listings": 73,
+"capped": false,
+"asking": {
+"n": 73,
+"min": 150.0,
+"p10": 353.8,
+"p25": 550.0,
+"p50": 985.0,
+"p75": 1600.0,
+"p90": 2770.0,
+"max": 7000.0
+},
+"likes_median": 23,
+"conditions": {
+"Ottime": 51,
+"Nuovo con cartellino": 4,
+"Buone": 8,
+"Nuovo senza cartellino": 9,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1774,
+"path": "Donna > Vestiti > Abiti > Abiti per occasioni speciali",
+"code": "OCCASIONAL_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1774&brand_ids[]=481&order=newest_first",
+"listings": 122,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 145.0,
+"p10": 490.0,
+"p25": 600.0,
+"p50": 1200.0,
+"p75": 1850.0,
+"p90": 3575.0,
+"max": 7500.0
+},
+"likes_median": 21.0,
+"conditions": {
+"Ottime": 69,
+"Buone": 7,
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 17,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1065,
+"path": "Donna > Vestiti > Abiti > Abiti estivi",
+"code": "SUMMER_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1065&brand_ids[]=481&order=newest_first",
+"listings": 94,
+"capped": false,
+"asking": {
+"n": 94,
+"min": 160.0,
+"p10": 373.0,
+"p25": 500.0,
+"p50": 737.5,
+"p75": 1075.0,
+"p90": 1994.0,
+"max": 15000.0
+},
+"likes_median": 21.5,
+"conditions": {
+"Nuovo senza cartellino": 15,
+"Nuovo con cartellino": 5,
+"Ottime": 62,
+"Buone": 11,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1779,
+"path": "Donna > Vestiti > Abiti > Abiti invernali",
+"code": "WINTER_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1779&brand_ids[]=481&order=newest_first",
+"listings": 135,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 120.0,
+"p10": 380.0,
+"p25": 482.5,
+"p50": 700.0,
+"p75": 1200.0,
+"p90": 1800.0,
+"max": 5500.0
+},
+"likes_median": 10.5,
+"conditions": {
+"Ottime": 75,
+"Buone": 10,
+"Nuovo senza cartellino": 8,
+"Nuovo con cartellino": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1057,
+"path": "Donna > Vestiti > Abiti > Abiti da lavoro e formali",
+"code": "FORMAL_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1057&brand_ids[]=481&order=newest_first",
+"listings": 187,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 100.0,
+"p10": 350.0,
+"p25": 500.0,
+"p50": 700.0,
+"p75": 1005.0,
+"p90": 1550.0,
+"max": 3500.0
+},
+"likes_median": 12.0,
+"conditions": {
+"Nuovo senza cartellino": 16,
+"Ottime": 70,
+"Nuovo con cartellino": 1,
+"Buone": 8,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1059,
+"path": "Donna > Vestiti > Abiti > Abiti casual",
+"code": "CASUAL_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1059&brand_ids[]=481&order=newest_first",
+"listings": 21,
+"capped": false,
+"asking": {
+"n": 21,
+"min": 300.0,
+"p10": 380.0,
+"p25": 480.0,
+"p50": 550.0,
+"p75": 1000.0,
+"p90": 1700.0,
+"max": 3200.0
+},
+"likes_median": 14,
+"conditions": {
+"Ottime": 17,
+"Buone": 2,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1061,
+"path": "Donna > Vestiti > Abiti > Abiti senza spalline",
+"code": "STRAPLESS_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1061&brand_ids[]=481&order=newest_first",
+"listings": 12,
+"capped": false,
+"asking": {
+"n": 12,
+"min": 380.0,
+"p10": 427.5,
+"p25": 536.25,
+"p50": 650.0,
+"p75": 937.5,
+"p90": 1830.0,
+"max": 2500.0
+},
+"likes_median": 12.5,
+"conditions": {
+"Ottime": 9,
+"Buone": 1,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1058,
+"path": "Donna > Vestiti > Abiti > Tubini neri",
+"code": "LITTLE_BLACK_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1058&brand_ids[]=481&order=newest_first",
+"listings": 116,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 95.0,
+"p10": 310.0,
+"p25": 420.0,
+"p50": 595.0,
+"p75": 855.0,
+"p90": 1325.0,
+"max": 2500.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Buone": 11,
+"Ottime": 71,
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 11,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 179,
+"path": "Donna > Vestiti > Abiti > Abiti in denim",
+"code": "JEANS_DRESSES_TUNICS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=179&brand_ids[]=481&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 455.0,
+"p10": 459.0,
+"p25": 465.0,
+"p50": 600.0,
+"p75": 1500.0,
+"p90": 2280.0,
+"max": 2800.0
+},
+"likes_median": 5,
+"conditions": {
+"Ottime": 3,
+"Nuovo senza cartellino": 1,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 176,
+"path": "Donna > Vestiti > Abiti > Altri abiti",
+"code": "WOM_DRE_OTHER",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=176&brand_ids[]=481&order=newest_first",
+"listings": 52,
+"capped": false,
+"asking": {
+"n": 52,
+"min": 40.0,
+"p10": 353.0,
+"p25": 515.0,
+"p50": 765.0,
+"p75": 1125.0,
+"p90": 1905.0,
+"max": 6000.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Ottime": 35,
+"Nuovo senza cartellino": 9,
+"Buone": 6,
+"Discrete": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 11,
+"path": "Donna > Vestiti > Gonne",
+"code": "SKIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=11&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 24.99,
+"p10": 95.0,
+"p25": 167.5,
+"p50": 271.5,
+"p75": 500.0,
+"p90": 765.0,
+"max": 1095.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Buone": 17,
+"Ottime": 64,
+"Nuovo senza cartellino": 13,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 198,
+"path": "Donna > Vestiti > Gonne > Minigonne",
+"code": "MINI_SKIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=198&brand_ids[]=481&order=newest_first",
+"listings": 297,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 93.0,
+"p25": 178.0,
+"p50": 310.0,
+"p75": 505.0,
+"p90": 800.0,
+"max": 1350.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Buone": 14,
+"Ottime": 67,
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2927,
+"path": "Donna > Vestiti > Gonne > Gonne al ginocchio",
+"code": "WOMEN_KNEE_LENGTH_SKIRTS_REAL",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2927&brand_ids[]=481&order=newest_first",
+"listings": 675,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 24.99,
+"p10": 85.0,
+"p25": 133.75,
+"p50": 219.5,
+"p75": 405.0,
+"p90": 650.0,
+"max": 1280.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Ottime": 66,
+"Nuovo senza cartellino": 13,
+"Buone": 13,
+"Discrete": 2,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 199,
+"path": "Donna > Vestiti > Gonne > Gonne longuette",
+"code": "KNEE_LENGTH_SKIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=199&brand_ids[]=481&order=newest_first",
+"listings": 293,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 100.0,
+"p25": 157.5,
+"p50": 260.0,
+"p75": 380.0,
+"p90": 575.0,
+"max": 4900.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Buone": 21,
+"Ottime": 65,
+"Nuovo senza cartellino": 7,
+"Discrete": 1,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 200,
+"path": "Donna > Vestiti > Gonne > Maxigonne",
+"code": "MAXI_SKIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=200&brand_ids[]=481&order=newest_first",
+"listings": 93,
+"capped": false,
+"asking": {
+"n": 93,
+"min": 80.0,
+"p10": 132.0,
+"p25": 200.0,
+"p50": 350.0,
+"p75": 700.0,
+"p90": 950.0,
+"max": 1900.0
+},
+"likes_median": 16,
+"conditions": {
+"Ottime": 61,
+"Buone": 11,
+"Nuovo con cartellino": 6,
+"Discrete": 5,
+"Nuovo senza cartellino": 10
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2928,
+"path": "Donna > Vestiti > Gonne > Gonne asimmetriche",
+"code": "WOMEN_ASYMMETRIC_SKIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2928&brand_ids[]=481&order=newest_first",
+"listings": 6,
+"capped": false,
+"asking": {
+"n": 6,
+"min": 80.0,
+"p10": 145.0,
+"p25": 237.5,
+"p50": 385.0,
+"p75": 600.0,
+"p90": 1000.0,
+"max": 1350.0
+},
+"likes_median": 10.5,
+"conditions": {
+"Ottime": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 5491,
+"path": "Donna > Vestiti > Skort",
+"code": "SKORTS_WOMEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=5491&brand_ids[]=481&order=newest_first",
+"listings": 15,
+"capped": false,
+"asking": {
+"n": 15,
+"min": 89.0,
+"p10": 112.0,
+"p25": 152.0,
+"p50": 340.0,
+"p75": 720.0,
+"p90": 2869.6,
+"max": 7500.0
+},
+"likes_median": 11,
+"conditions": {
+"Nuovo senza cartellino": 3,
+"Ottime": 8,
+"Buone": 1,
+"Discrete": 1,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 12,
+"path": "Donna > Vestiti > Top e t-shirt",
+"code": "TOPS_T_SHIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=12&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 25.0,
+"p10": 99.5,
+"p25": 149.5,
+"p50": 250.0,
+"p75": 481.75,
+"p90": 750.0,
+"max": 2600.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 63,
+"Buone": 10,
+"Nuovo senza cartellino": 16,
+"Nuovo con cartellino": 5,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 222,
+"path": "Donna > Vestiti > Top e t-shirt > Camicie",
+"code": "SHIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=222&brand_ids[]=481&order=newest_first",
+"listings": 210,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 65.0,
+"p10": 99.5,
+"p25": 160.0,
+"p50": 275.0,
+"p75": 450.0,
+"p90": 625.0,
+"max": 6000.0
+},
+"likes_median": 10.5,
+"conditions": {
+"Nuovo senza cartellino": 11,
+"Ottime": 68,
+"Buone": 12,
+"Nuovo con cartellino": 4,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1043,
+"path": "Donna > Vestiti > Top e t-shirt > Bluse",
+"code": "BLOUSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1043&brand_ids[]=481&order=newest_first",
+"listings": 247,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 35.0,
+"p10": 120.0,
+"p25": 167.5,
+"p50": 350.0,
+"p75": 583.75,
+"p90": 825.0,
+"max": 2900.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Ottime": 64,
+"Nuovo senza cartellino": 19,
+"Buone": 9,
+"Nuovo con cartellino": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 14,
+"path": "Donna > Vestiti > Top e t-shirt > Canottiere",
+"code": "VESTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=14&brand_ids[]=481&order=newest_first",
+"listings": 59,
+"capped": false,
+"asking": {
+"n": 59,
+"min": 100.0,
+"p10": 170.0,
+"p25": 387.5,
+"p50": 600.0,
+"p75": 1075.0,
+"p90": 2000.0,
+"max": 5500.0
+},
+"likes_median": 18,
+"conditions": {
+"Ottime": 39,
+"Nuovo con cartellino": 2,
+"Discrete": 3,
+"Buone": 8,
+"Nuovo senza cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 221,
+"path": "Donna > Vestiti > Top e t-shirt > T-shirt",
+"code": "WOM_TOP_T_SHIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=221&brand_ids[]=481&order=newest_first",
+"listings": 309,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 25.0,
+"p10": 82.5,
+"p25": 126.75,
+"p50": 232.5,
+"p75": 490.0,
+"p90": 751.0,
+"max": 2000.0
+},
+"likes_median": 9.5,
+"conditions": {
+"Buone": 16,
+"Nuovo senza cartellino": 19,
+"Ottime": 55,
+"Nuovo con cartellino": 4,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 534,
+"path": "Donna > Vestiti > Top e t-shirt > Canotte",
+"code": "TANK_TOPS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=534&brand_ids[]=481&order=newest_first",
+"listings": 215,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 55.0,
+"p10": 145.0,
+"p25": 200.0,
+"p50": 294.5,
+"p75": 492.25,
+"p90": 694.0,
+"max": 2000.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Ottime": 69,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 5,
+"Discrete": 4,
+"Buone": 8
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 227,
+"path": "Donna > Vestiti > Top e t-shirt > Tuniche",
+"code": "TUNICS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=227&brand_ids[]=481&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 240.0,
+"p10": 290.0,
+"p25": 400.0,
+"p50": 425.0,
+"p75": 505.0,
+"p90": 640.0,
+"max": 675.0
+},
+"likes_median": 21,
+"conditions": {
+"Ottime": 8,
+"Buone": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1041,
+"path": "Donna > Vestiti > Top e t-shirt > Top corti",
+"code": "CROP_TOPS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1041&brand_ids[]=481&order=newest_first",
+"listings": 66,
+"capped": false,
+"asking": {
+"n": 66,
+"min": 100.0,
+"p10": 210.0,
+"p25": 300.0,
+"p50": 535.0,
+"p75": 865.0,
+"p90": 1645.0,
+"max": 3600.0
+},
+"likes_median": 22.0,
+"conditions": {
+"Ottime": 41,
+"Nuovo senza cartellino": 11,
+"Buone": 9,
+"Nuovo con cartellino": 3,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 223,
+"path": "Donna > Vestiti > Top e t-shirt > Top a maniche corte",
+"code": "SHORT_SLEEVE_BLOUSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=223&brand_ids[]=481&order=newest_first",
+"listings": 69,
+"capped": false,
+"asking": {
+"n": 69,
+"min": 55.0,
+"p10": 150.0,
+"p25": 250.0,
+"p50": 360.0,
+"p75": 500.0,
+"p90": 888.0,
+"max": 3500.0
+},
+"likes_median": 12,
+"conditions": {
+"Ottime": 50,
+"Nuovo senza cartellino": 9,
+"Buone": 8,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 225,
+"path": "Donna > Vestiti > Top e t-shirt > Top con manica ¾",
+"code": "MIDDLE_SLEEVE_BLOUSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=225&brand_ids[]=481&order=newest_first",
+"listings": 18,
+"capped": false,
+"asking": {
+"n": 18,
+"min": 65.0,
+"p10": 76.3,
+"p25": 102.5,
+"p50": 170.0,
+"p75": 394.25,
+"p90": 573.0,
+"max": 1200.0
+},
+"likes_median": 12.5,
+"conditions": {
+"Buone": 2,
+"Ottime": 14,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 224,
+"path": "Donna > Vestiti > Top e t-shirt > Top a maniche lunghe",
+"code": "LONG_SLEEVE_BLOUSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=224&brand_ids[]=481&order=newest_first",
+"listings": 71,
+"capped": false,
+"asking": {
+"n": 71,
+"min": 80.0,
+"p10": 140.0,
+"p25": 217.5,
+"p50": 437.0,
+"p75": 774.5,
+"p90": 1200.0,
+"max": 4500.0
+},
+"likes_median": 12,
+"conditions": {
+"Ottime": 43,
+"Buone": 9,
+"Nuovo senza cartellino": 15,
+"Nuovo con cartellino": 2,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1835,
+"path": "Donna > Vestiti > Top e t-shirt > Body",
+"code": "TOPS_BODIES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1835&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 160.0,
+"p10": 488.0,
+"p25": 980.0,
+"p50": 1800.0,
+"p75": 1800.0,
+"p90": 1800.0,
+"max": 1800.0
+},
+"likes_median": 61,
+"conditions": {
+"Ottime": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1042,
+"path": "Donna > Vestiti > Top e t-shirt > Top con spalle scoperte",
+"code": "TUBE_TOPS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1042&brand_ids[]=481&order=newest_first",
+"listings": 39,
+"capped": false,
+"asking": {
+"n": 39,
+"min": 80.0,
+"p10": 184.0,
+"p25": 265.0,
+"p50": 400.0,
+"p75": 665.0,
+"p90": 910.0,
+"max": 2800.0
+},
+"likes_median": 33,
+"conditions": {
+"Ottime": 23,
+"Nuovo senza cartellino": 6,
+"Buone": 5,
+"Nuovo con cartellino": 4,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1045,
+"path": "Donna > Vestiti > Top e t-shirt > Dolcevita",
+"code": "W_TURTLENECKS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1045&brand_ids[]=481&order=newest_first",
+"listings": 18,
+"capped": false,
+"asking": {
+"n": 18,
+"min": 150.0,
+"p10": 192.5,
+"p25": 269.75,
+"p50": 505.0,
+"p75": 958.75,
+"p90": 1420.0,
+"max": 3000.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Ottime": 12,
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1837,
+"path": "Donna > Vestiti > Top e t-shirt > Top con peplo",
+"code": "PEPLUM_TOPS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1837&brand_ids[]=481&order=newest_first",
+"listings": 6,
+"capped": false,
+"asking": {
+"n": 6,
+"min": 300.0,
+"p10": 335.0,
+"p25": 393.75,
+"p50": 482.5,
+"p75": 612.5,
+"p90": 725.0,
+"max": 800.0
+},
+"likes_median": 15.0,
+"conditions": {
+"Buone": 1,
+"Ottime": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1044,
+"path": "Donna > Vestiti > Top e t-shirt > Top allacciati al collo",
+"code": "HALTER_TOPS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1044&brand_ids[]=481&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 200.0,
+"p10": 235.0,
+"p25": 370.0,
+"p50": 445.0,
+"p75": 875.0,
+"p90": 1000.0,
+"max": 1900.0
+},
+"likes_median": 22,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Ottime": 3,
+"Nuovo senza cartellino": 3,
+"Buone": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 228,
+"path": "Donna > Vestiti > Top e t-shirt > Altri top e t-shirt",
+"code": "WOM_TOP_OTHER",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=228&brand_ids[]=481&order=newest_first",
+"listings": 82,
+"capped": false,
+"asking": {
+"n": 82,
+"min": 55.0,
+"p10": 166.5,
+"p25": 276.25,
+"p50": 450.0,
+"p75": 650.0,
+"p90": 1000.0,
+"max": 1900.0
+},
+"likes_median": 13.5,
+"conditions": {
+"Ottime": 51,
+"Nuovo con cartellino": 2,
+"Buone": 13,
+"Nuovo senza cartellino": 13,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 183,
+"path": "Donna > Vestiti > Jeans",
+"code": "JEANS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=183&brand_ids[]=481&order=newest_first",
+"listings": 283,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 35.99,
+"p10": 127.5,
+"p25": 250.0,
+"p50": 575.0,
+"p75": 1092.5,
+"p90": 1825.0,
+"max": 5500.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Buone": 6,
+"Nuovo senza cartellino": 23,
+"Ottime": 58,
+"Nuovo con cartellino": 9
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 9,
+"path": "Donna > Vestiti > Pantaloni e leggings",
+"code": "TROUSERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=9&brand_ids[]=481&order=newest_first",
+"listings": 694,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 35.0,
+"p10": 75.0,
+"p25": 137.5,
+"p50": 220.0,
+"p75": 399.25,
+"p90": 790.0,
+"max": 2300.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Nuovo senza cartellino": 21,
+"Ottime": 58,
+"Nuovo con cartellino": 10,
+"Buone": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 15,
+"path": "Donna > Vestiti > Pantaloncini e pantaloni corti",
+"code": "SHORTS_CAPRIS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=15&brand_ids[]=481&order=newest_first",
+"listings": 108,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 90.0,
+"p10": 214.5,
+"p25": 337.5,
+"p50": 450.0,
+"p75": 712.5,
+"p90": 1297.5,
+"max": 3500.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Ottime": 63,
+"Buone": 7,
+"Nuovo con cartellino": 9,
+"Nuovo senza cartellino": 16,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1035,
+"path": "Donna > Vestiti > Tute jumpsuit e playsuit",
+"code": "JUMPSUITS_UK",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1035&brand_ids[]=481&order=newest_first",
+"listings": 41,
+"capped": false,
+"asking": {
+"n": 41,
+"min": 27.5,
+"p10": 520.0,
+"p25": 800.0,
+"p50": 1190.0,
+"p75": 2200.0,
+"p90": 3400.0,
+"max": 3990.0
+},
+"likes_median": 11,
+"conditions": {
+"Ottime": 27,
+"Buone": 5,
+"Nuovo senza cartellino": 7,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 28,
+"path": "Donna > Vestiti > Costumi da bagno",
+"code": "SWIMWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=28&brand_ids[]=481&order=newest_first",
+"listings": 173,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 70.0,
+"p10": 199.5,
+"p25": 290.0,
+"p50": 450.0,
+"p75": 705.0,
+"p90": 1275.0,
+"max": 6600.0
+},
+"likes_median": 18.0,
+"conditions": {
+"Nuovo senza cartellino": 27,
+"Ottime": 50,
+"Nuovo con cartellino": 12,
+"Buone": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 29,
+"path": "Donna > Vestiti > Lingerie e indumenti da notte",
+"code": "LINGERIE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=29&brand_ids[]=481&order=newest_first",
+"listings": 58,
+"capped": false,
+"asking": {
+"n": 58,
+"min": 28.0,
+"p10": 96.3,
+"p25": 131.75,
+"p50": 250.0,
+"p75": 395.0,
+"p90": 693.0,
+"max": 1780.0
+},
+"likes_median": 15.5,
+"conditions": {
+"Nuovo con cartellino": 14,
+"Nuovo senza cartellino": 17,
+"Ottime": 22,
+"Buone": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1176,
+"path": "Donna > Vestiti > Vestiti premaman",
+"code": "MATERNITY_CLOTHES_MAIN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1176&brand_ids[]=481&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 70.0,
+"p10": 232.0,
+"p25": 407.5,
+"p50": 509.5,
+"p75": 1435.0,
+"p90": 2281.0,
+"max": 3100.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Ottime": 5,
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 2,
+"Buone": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 73,
+"path": "Donna > Vestiti > Abbigliamento sportivo",
+"code": "SPORTSWEAR_WOMEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=73&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 34.0,
+"p25": 49.9975,
+"p50": 70.0,
+"p75": 102.5,
+"p90": 154.5,
+"max": 750.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Ottime": 63,
+"Buone": 15,
+"Nuovo senza cartellino": 9,
+"Nuovo con cartellino": 5,
+"Discrete": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 571,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Capispalla",
+"code": "WOM_SPO_OUTERWEAR",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=571&brand_ids[]=481&order=newest_first",
+"listings": 6,
+"capped": false,
+"asking": {
+"n": 6,
+"min": 390.0,
+"p10": 420.0,
+"p25": 460.0,
+"p50": 670.0,
+"p75": 2462.5,
+"p90": 3175.0,
+"max": 3350.0
+},
+"likes_median": 22.0,
+"conditions": {
+"Ottime": 5,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 572,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Tute",
+"code": "TRAINING_COSTUMES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=572&brand_ids[]=481&order=newest_first",
+"listings": 9,
+"capped": false,
+"asking": {
+"n": 9,
+"min": 12.0,
+"p10": 26.4,
+"p25": 85.0,
+"p50": 650.0,
+"p75": 1100.0,
+"p90": 2120.0,
+"max": 2200.0
+},
+"likes_median": 10,
+"conditions": {
+"Ottime": 5,
+"Buone": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 573,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Pantaloni",
+"code": "WOM_SPO_TROUSERS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=573&brand_ids[]=481&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 340.0,
+"p10": 406.0,
+"p25": 510.0,
+"p50": 750.0,
+"p75": 800.0,
+"p90": 1310.0,
+"max": 2000.0
+},
+"likes_median": 5,
+"conditions": {
+"Ottime": 5,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 578,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Pantaloncini",
+"code": "WOM_SPO_SHORTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=578&brand_ids[]=481&order=newest_first",
+"listings": 6,
+"capped": false,
+"asking": {
+"n": 6,
+"min": 150.0,
+"p10": 262.5,
+"p25": 406.25,
+"p50": 519.5,
+"p75": 659.75,
+"p90": 990.0,
+"max": 1280.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Ottime": 5,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 574,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Abiti",
+"code": "WOM_SPO_DRESSES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=574&brand_ids[]=481&order=newest_first",
+"listings": 22,
+"capped": false,
+"asking": {
+"n": 22,
+"min": 299.0,
+"p10": 359.0,
+"p25": 500.0,
+"p50": 650.0,
+"p75": 983.75,
+"p90": 1090.0,
+"max": 2000.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Nuovo senza cartellino": 4,
+"Nuovo con cartellino": 1,
+"Buone": 1,
+"Ottime": 16
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 575,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Gonne",
+"code": "WOM_SPO_SKIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=575&brand_ids[]=481&order=newest_first",
+"listings": 22,
+"capped": false,
+"asking": {
+"n": 22,
+"min": 120.0,
+"p10": 141.0,
+"p25": 185.0,
+"p50": 277.5,
+"p75": 392.5,
+"p90": 690.0,
+"max": 1000.0
+},
+"likes_median": 14.5,
+"conditions": {
+"Ottime": 14,
+"Buone": 6,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 576,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Top e t-shirt",
+"code": "WOM_SPO_TOPS_T_SHIRTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=576&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 125.0,
+"p10": 190.0,
+"p25": 287.5,
+"p50": 450.0,
+"p75": 495.0,
+"p90": 522.0,
+"max": 540.0
+},
+"likes_median": 13,
+"conditions": {
+"Ottime": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3268,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Maglie di squadra",
+"code": "WOM_JERSEYS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=3268&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 2000.0,
+"p10": 2000.0,
+"p25": 2000.0,
+"p50": 2000.0,
+"p75": 2000.0,
+"p90": 2000.0,
+"max": 2000.0
+},
+"likes_median": 9,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 577,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Felpe e felpe con cappuccio",
+"code": "WOM_SPO_PULLOVERS_SWEATERS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=577&brand_ids[]=481&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 360.0,
+"p10": 380.0,
+"p25": 410.0,
+"p50": 600.0,
+"p75": 700.0,
+"p90": 760.0,
+"max": 800.0
+},
+"likes_median": 24,
+"conditions": {
+"Ottime": 4,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 579,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Accessori sportivi",
+"code": "WOM_SPO_ACCESSORIES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=579&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 18.0,
+"p10": 35.0,
+"p25": 50.0,
+"p50": 70.0,
+"p75": 112.5,
+"p90": 159.0,
+"max": 280.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 62,
+"Buone": 15,
+"Nuovo senza cartellino": 9,
+"Nuovo con cartellino": 6,
+"Discrete": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1439,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Reggiseni sportivi",
+"code": "SPORTS_BRA",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1439&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 200.0,
+"p10": 200.0,
+"p25": 200.0,
+"p50": 200.0,
+"p75": 200.0,
+"p90": 200.0,
+"max": 200.0
+},
+"likes_median": 77,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 580,
+"path": "Donna > Vestiti > Abbigliamento sportivo > Altri indumenti sportivi",
+"code": "WOM_SPO_OTHER",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=580&brand_ids[]=481&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 180.0,
+"p10": 194.0,
+"p25": 215.0,
+"p50": 250.0,
+"p75": 285.0,
+"p90": 306.0,
+"max": 320.0
+},
+"likes_median": 24.5,
+"conditions": {
+"Ottime": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1782,
+"path": "Donna > Vestiti > Costumi e vestiti speciali",
+"code": "SPECIAL_OUTFITS_COSTUMES_W",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1782&brand_ids[]=481&order=newest_first",
+"listings": 40,
+"capped": false,
+"asking": {
+"n": 40,
+"min": 5.0,
+"p10": 245.0,
+"p25": 887.5,
+"p50": 1470.0,
+"p75": 2050.0,
+"p90": 2515.0,
+"max": 3300.0
+},
+"likes_median": 14.5,
+"conditions": {
+"Ottime": 26,
+"Nuovo senza cartellino": 5,
+"Buone": 7,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 18,
+"path": "Donna > Vestiti > Altri capi di abbigliamento",
+"code": "OTHER_CLOTHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=18&brand_ids[]=481&order=newest_first",
+"listings": 202,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 40.0,
+"p25": 100.0,
+"p50": 295.0,
+"p75": 758.75,
+"p90": 1175.0,
+"max": 4500.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Nuovo con cartellino": 7,
+"Nuovo senza cartellino": 33,
+"Ottime": 46,
+"Buone": 9,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 16,
+"path": "Donna > Scarpe",
+"code": "FOOTWEAR",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=16&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 160.0,
+"p25": 250.0,
+"p50": 380.0,
+"p75": 612.25,
+"p90": 999.5,
+"max": 1980.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 60,
+"Buone": 21,
+"Nuovo senza cartellino": 8,
+"Discrete": 4,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2955,
+"path": "Donna > Scarpe > Ballerine",
+"code": "WOMEN_BALLERINAS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2955&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 64.0,
+"p10": 160.0,
+"p25": 235.0,
+"p50": 400.0,
+"p75": 557.5,
+"p90": 825.0,
+"max": 1200.0
+},
+"likes_median": 25.5,
+"conditions": {
+"Ottime": 50,
+"Buone": 28,
+"Discrete": 5,
+"Nuovo senza cartellino": 8,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2954,
+"path": "Donna > Scarpe > Scarpe da barca, loafer e mocassini",
+"code": "WOMEN_BOAT_SHOES_LOAFERS_MOCCASINS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2954&brand_ids[]=481&order=newest_first",
+"listings": 699,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 75.0,
+"p10": 187.5,
+"p25": 365.0,
+"p50": 600.0,
+"p75": 962.25,
+"p90": 1400.0,
+"max": 2290.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Nuovo senza cartellino": 15,
+"Ottime": 53,
+"Nuovo con cartellino": 12,
+"Buone": 13,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1049,
+"path": "Donna > Scarpe > Stivali",
+"code": "W_BOOTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1049&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 65.0,
+"p10": 250.0,
+"p25": 350.0,
+"p50": 600.0,
+"p75": 799.25,
+"p90": 1125.0,
+"max": 2760.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Buone": 18,
+"Ottime": 61,
+"Discrete": 3,
+"Nuovo senza cartellino": 5,
+"Nuovo con cartellino": 9
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2618,
+"path": "Donna > Scarpe > Stivali > Stivaletti",
+"code": "WOMEN_ANKLE_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2618&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 100.0,
+"p10": 250.0,
+"p25": 350.0,
+"p50": 495.0,
+"p75": 676.25,
+"p90": 800.0,
+"max": 1800.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Buone": 16,
+"Ottime": 68,
+"Nuovo senza cartellino": 8,
+"Nuovo con cartellino": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2619,
+"path": "Donna > Scarpe > Stivali > Stivali a metà polpaccio",
+"code": "WOMEN_MID_CALF_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2619&brand_ids[]=481&order=newest_first",
+"listings": 457,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 130.0,
+"p10": 247.0,
+"p25": 300.0,
+"p50": 450.0,
+"p75": 699.25,
+"p90": 990.0,
+"max": 1500.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Buone": 24,
+"Ottime": 57,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 211,
+"path": "Donna > Scarpe > Stivali > Stivali al ginocchio",
+"code": "KNEE_LENGHT_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=211&brand_ids[]=481&order=newest_first",
+"listings": 598,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 65.0,
+"p10": 225.0,
+"p25": 435.0,
+"p50": 600.0,
+"p75": 891.25,
+"p90": 1190.0,
+"max": 2760.0
+},
+"likes_median": 15.5,
+"conditions": {
+"Ottime": 57,
+"Buone": 19,
+"Nuovo con cartellino": 6,
+"Discrete": 4,
+"Nuovo senza cartellino": 10
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2620,
+"path": "Donna > Scarpe > Stivali > Stivali sopra il ginocchio",
+"code": "WOMEN_OVER_KNEE_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2620&brand_ids[]=481&order=newest_first",
+"listings": 73,
+"capped": false,
+"asking": {
+"n": 73,
+"min": 150.0,
+"p10": 300.0,
+"p25": 400.0,
+"p50": 550.0,
+"p75": 950.0,
+"p90": 1700.0,
+"max": 2500.0
+},
+"likes_median": 19,
+"conditions": {
+"Ottime": 37,
+"Buone": 14,
+"Nuovo senza cartellino": 14,
+"Discrete": 3,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2621,
+"path": "Donna > Scarpe > Stivali > Stivali da neve",
+"code": "WOMEN_SNOW_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2621&brand_ids[]=481&order=newest_first",
+"listings": 56,
+"capped": false,
+"asking": {
+"n": 56,
+"min": 135.0,
+"p10": 275.0,
+"p25": 400.0,
+"p50": 672.5,
+"p75": 950.0,
+"p90": 1400.0,
+"max": 4000.0
+},
+"likes_median": 21.5,
+"conditions": {
+"Discrete": 1,
+"Nuovo con cartellino": 8,
+"Nuovo senza cartellino": 13,
+"Ottime": 32,
+"Buone": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 213,
+"path": "Donna > Scarpe > Stivali > Stivali Wellington",
+"code": "WELLINGTON_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=213&brand_ids[]=481&order=newest_first",
+"listings": 125,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 65.0,
+"p10": 200.0,
+"p25": 347.5,
+"p50": 700.0,
+"p75": 1550.0,
+"p90": 1855.0,
+"max": 2500.0
+},
+"likes_median": 36.0,
+"conditions": {
+"Ottime": 43,
+"Nuovo senza cartellino": 13,
+"Discrete": 7,
+"Nuovo con cartellino": 20,
+"Buone": 13
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2622,
+"path": "Donna > Scarpe > Stivali > Stivali da lavoro",
+"code": "WOMEN_WORK_BOOTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2622&brand_ids[]=481&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 400.0,
+"p10": 404.5,
+"p25": 411.25,
+"p50": 422.5,
+"p75": 433.75,
+"p90": 440.5,
+"max": 445.0
+},
+"likes_median": 2.5,
+"conditions": {
+"Ottime": 1,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2623,
+"path": "Donna > Scarpe > Zoccoli e sabot",
+"code": "WOMEN_CLOGS_MULES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2623&brand_ids[]=481&order=newest_first",
+"listings": 388,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 40.0,
+"p10": 160.0,
+"p25": 246.75,
+"p50": 350.0,
+"p75": 500.0,
+"p90": 750.0,
+"max": 1950.0
+},
+"likes_median": 19.5,
+"conditions": {
+"Ottime": 60,
+"Discrete": 4,
+"Nuovo con cartellino": 6,
+"Buone": 22,
+"Nuovo senza cartellino": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2953,
+"path": "Donna > Scarpe > Espadrillas",
+"code": "WOMEN_ESPADRILLES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2953&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 82.5,
+"p25": 150.0,
+"p50": 250.0,
+"p75": 423.75,
+"p90": 500.0,
+"max": 900.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 46,
+"Buone": 26,
+"Discrete": 10,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2952,
+"path": "Donna > Scarpe > Infradito e ciabatte",
+"code": "WOMEN_FLIPFLOPS_SLIDES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2952&brand_ids[]=481&order=newest_first",
+"listings": 466,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 80.0,
+"p10": 150.0,
+"p25": 237.5,
+"p50": 340.0,
+"p75": 502.5,
+"p90": 850.0,
+"max": 2250.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Ottime": 55,
+"Buone": 17,
+"Nuovo senza cartellino": 11,
+"Discrete": 5,
+"Nuovo con cartellino": 8
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 543,
+"path": "Donna > Scarpe > Scarpe con tacchi alti",
+"code": "HIGH_HEELS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=543&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 130.0,
+"p25": 160.0,
+"p50": 272.5,
+"p75": 379.75,
+"p90": 725.0,
+"max": 1980.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Ottime": 63,
+"Nuovo senza cartellino": 7,
+"Buone": 20,
+"Nuovo con cartellino": 3,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2951,
+"path": "Donna > Scarpe > Scarpe con i lacci",
+"code": "WOMEN_LACE_UP_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2951&brand_ids[]=481&order=newest_first",
+"listings": 436,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 6.5,
+"p10": 126.0,
+"p25": 220.0,
+"p50": 307.5,
+"p75": 421.25,
+"p90": 625.0,
+"max": 2202.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 64,
+"Nuovo senza cartellino": 10,
+"Buone": 17,
+"Discrete": 3,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2950,
+"path": "Donna > Scarpe > Mary Jane e scarpe a T",
+"code": "WOMEN_MARY_JANES_TBAR_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2950&brand_ids[]=481&order=newest_first",
+"listings": 131,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 70.0,
+"p10": 199.5,
+"p25": 280.0,
+"p50": 500.0,
+"p75": 812.5,
+"p90": 1119.5,
+"max": 2000.0
+},
+"likes_median": 15.0,
+"conditions": {
+"Buone": 18,
+"Ottime": 52,
+"Nuovo con cartellino": 13,
+"Nuovo senza cartellino": 8,
+"Discrete": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2949,
+"path": "Donna > Scarpe > Sandali",
+"code": "WOMEN_SANDALS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2949&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 140.0,
+"p25": 215.0,
+"p50": 350.0,
+"p75": 600.0,
+"p90": 910.0,
+"max": 2800.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Ottime": 50,
+"Buone": 36,
+"Discrete": 4,
+"Nuovo con cartellino": 4,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 215,
+"path": "Donna > Scarpe > Pantofole",
+"code": "SLIPPERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=215&brand_ids[]=481&order=newest_first",
+"listings": 20,
+"capped": false,
+"asking": {
+"n": 20,
+"min": 150.0,
+"p10": 177.9,
+"p25": 245.0,
+"p50": 400.0,
+"p75": 615.0,
+"p90": 952.0,
+"max": 2000.0
+},
+"likes_median": 10.5,
+"conditions": {
+"Buone": 8,
+"Ottime": 7,
+"Nuovo con cartellino": 4,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2630,
+"path": "Donna > Scarpe > Scarpe sportive",
+"code": "WOMEN_SPORT_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2630&brand_ids[]=481&order=newest_first",
+"listings": 97,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 60.0,
+"p10": 155.0,
+"p25": 250.0,
+"p50": 470.0,
+"p75": 650.0,
+"p90": 800.0,
+"max": 4200.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Buone": 20,
+"Ottime": 57,
+"Nuovo con cartellino": 6,
+"Nuovo senza cartellino": 10,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2632,
+"path": "Donna > Scarpe > Scarpe da ginnastica",
+"code": "WOMEN_TRAINERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2632&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 140.0,
+"p25": 250.0,
+"p50": 350.0,
+"p75": 650.0,
+"p90": 1050.0,
+"max": 2000.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Nuovo con cartellino": 10,
+"Nuovo senza cartellino": 12,
+"Ottime": 45,
+"Buone": 25,
+"Discrete": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 19,
+"path": "Donna > Borse",
+"code": "BAGS_BACKPACKS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=19&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 20.0,
+"p25": 30.0,
+"p50": 300.0,
+"p75": 1916.25,
+"p90": 3645.0,
+"max": 8500.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo con cartellino": 15,
+"Ottime": 40,
+"Buone": 19,
+"Nuovo senza cartellino": 20,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 157,
+"path": "Donna > Borse > Zaini",
+"code": "BACKPACKS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=157&brand_ids[]=481&order=newest_first",
+"listings": 206,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 43.0,
+"p10": 900.0,
+"p25": 1397.5,
+"p50": 2115.0,
+"p75": 2825.0,
+"p90": 4240.0,
+"max": 10000.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Buone": 22,
+"Nuovo senza cartellino": 10,
+"Ottime": 57,
+"Nuovo con cartellino": 4,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2940,
+"path": "Donna > Borse > Borse da spiaggia",
+"code": "WOMEN_BEACH_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2940&brand_ids[]=481&order=newest_first",
+"listings": 61,
+"capped": false,
+"asking": {
+"n": 61,
+"min": 30.0,
+"p10": 85.0,
+"p25": 160.0,
+"p50": 790.0,
+"p75": 2400.0,
+"p90": 4000.0,
+"max": 6000.0
+},
+"likes_median": 21,
+"conditions": {
+"Ottime": 32,
+"Nuovo senza cartellino": 12,
+"Buone": 11,
+"Nuovo con cartellino": 5,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2941,
+"path": "Donna > Borse > Valigette",
+"code": "WOMEN_BRIEFCASES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2941&brand_ids[]=481&order=newest_first",
+"listings": 51,
+"capped": false,
+"asking": {
+"n": 51,
+"min": 70.0,
+"p10": 150.0,
+"p25": 500.0,
+"p50": 2300.0,
+"p75": 3324.5,
+"p90": 5000.0,
+"max": 5796.0
+},
+"likes_median": 18,
+"conditions": {
+"Discrete": 7,
+"Ottime": 27,
+"Buone": 12,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2942,
+"path": "Donna > Borse > Borse a secchiello",
+"code": "WOMEN_BUCKET_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2942&brand_ids[]=481&order=newest_first",
+"listings": 140,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 190.0,
+"p25": 1000.0,
+"p50": 1850.0,
+"p75": 3050.0,
+"p90": 5250.0,
+"max": 8950.0
+},
+"likes_median": 25.5,
+"conditions": {
+"Ottime": 51,
+"Buone": 17,
+"Nuovo con cartellino": 12,
+"Nuovo senza cartellino": 13,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1848,
+"path": "Donna > Borse > Marsupio",
+"code": "W_BUM_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1848&brand_ids[]=481&order=newest_first",
+"listings": 62,
+"capped": false,
+"asking": {
+"n": 62,
+"min": 200.0,
+"p10": 550.0,
+"p25": 1000.0,
+"p50": 1500.0,
+"p75": 2312.5,
+"p90": 2895.0,
+"max": 3605.0
+},
+"likes_median": 27.0,
+"conditions": {
+"Ottime": 39,
+"Buone": 11,
+"Nuovo senza cartellino": 9,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 159,
+"path": "Donna > Borse > Pochette",
+"code": "CLUTCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=159&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 10.0,
+"p25": 29.75,
+"p50": 215.0,
+"p75": 756.25,
+"p90": 1562.0,
+"max": 3000.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo con cartellino": 17,
+"Nuovo senza cartellino": 32,
+"Ottime": 37,
+"Buone": 8,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2943,
+"path": "Donna > Borse > Porta abiti",
+"code": "WOMEN_GARMENT_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2943&brand_ids[]=481&order=newest_first",
+"listings": 528,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 8.0,
+"p25": 15.0,
+"p50": 23.5,
+"p75": 35.0,
+"p90": 47.0,
+"max": 178.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 48,
+"Nuovo senza cartellino": 39,
+"Nuovo con cartellino": 4,
+"Buone": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2944,
+"path": "Donna > Borse > Borse da palestra",
+"code": "WOMEN_GYM_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2944&brand_ids[]=481&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 29.0,
+"p10": 100.0,
+"p25": 162.5,
+"p50": 320.0,
+"p75": 575.0,
+"p90": 3000.0,
+"max": 3500.0
+},
+"likes_median": 42,
+"conditions": {
+"Ottime": 1,
+"Buone": 5,
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 156,
+"path": "Donna > Borse > Borsette",
+"code": "HANDBAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=156&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 220.0,
+"p10": 900.0,
+"p25": 1650.0,
+"p50": 2850.0,
+"p75": 4625.0,
+"p90": 6500.0,
+"max": 9990.0
+},
+"likes_median": 12.0,
+"conditions": {
+"Ottime": 63,
+"Buone": 16,
+"Nuovo con cartellino": 7,
+"Nuovo senza cartellino": 8,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2945,
+"path": "Donna > Borse > Borse hobo",
+"code": "WOMEN_HOBO_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2945&brand_ids[]=481&order=newest_first",
+"listings": 81,
+"capped": false,
+"asking": {
+"n": 81,
+"min": 75.0,
+"p10": 1150.0,
+"p25": 1800.0,
+"p50": 3180.0,
+"p75": 4389.0,
+"p90": 5650.0,
+"max": 10500.0
+},
+"likes_median": 25,
+"conditions": {
+"Ottime": 53,
+"Buone": 13,
+"Nuovo senza cartellino": 8,
+"Nuovo con cartellino": 6,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1849,
+"path": "Donna > Borse > Borsoni e sacche da viaggio",
+"code": "W_HOLDALLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1849&brand_ids[]=481&order=newest_first",
+"listings": 54,
+"capped": false,
+"asking": {
+"n": 54,
+"min": 10.0,
+"p10": 43.0,
+"p25": 101.25,
+"p50": 577.5,
+"p75": 1125.0,
+"p90": 2773.0,
+"max": 9750.0
+},
+"likes_median": 20.5,
+"conditions": {
+"Ottime": 31,
+"Nuovo senza cartellino": 10,
+"Buone": 8,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1850,
+"path": "Donna > Borse > Bagagli e valigie",
+"code": "W_LUGGAGE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1850&brand_ids[]=481&order=newest_first",
+"listings": 33,
+"capped": false,
+"asking": {
+"n": 33,
+"min": 50.0,
+"p10": 102.4,
+"p25": 450.0,
+"p50": 1000.0,
+"p75": 2600.0,
+"p90": 2800.0,
+"max": 4700.0
+},
+"likes_median": 25,
+"conditions": {
+"Ottime": 17,
+"Buone": 10,
+"Nuovo senza cartellino": 4,
+"Nuovo con cartellino": 1,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 161,
+"path": "Donna > Borse > Pochette per il make-up",
+"code": "MAKE_UP_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=161&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 15.0,
+"p25": 20.0,
+"p50": 25.0,
+"p75": 32.2475,
+"p90": 62.5,
+"max": 349.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Nuovo senza cartellino": 37,
+"Ottime": 17,
+"Nuovo con cartellino": 37,
+"Buone": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1784,
+"path": "Donna > Borse > Borse a cartella e messenger",
+"code": "SATCHELS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1784&brand_ids[]=481&order=newest_first",
+"listings": 40,
+"capped": false,
+"asking": {
+"n": 40,
+"min": 8.0,
+"p10": 1062.0,
+"p25": 1472.5,
+"p50": 1998.5,
+"p75": 2957.5,
+"p90": 5230.0,
+"max": 7995.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Nuovo con cartellino": 3,
+"Ottime": 18,
+"Nuovo senza cartellino": 7,
+"Buone": 11,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 158,
+"path": "Donna > Borse > Borse a spalla",
+"code": "SHOULDER_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=158&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 119.0,
+"p10": 780.0,
+"p25": 1600.0,
+"p50": 2390.0,
+"p75": 2925.0,
+"p90": 4250.0,
+"max": 8500.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Ottime": 62,
+"Buone": 26,
+"Discrete": 3,
+"Nuovo con cartellino": 3,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 552,
+"path": "Donna > Borse > Borse tote",
+"code": "TOTE_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=552&brand_ids[]=481&order=newest_first",
+"listings": 721,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.5,
+"p10": 37.0,
+"p25": 120.0,
+"p50": 300.0,
+"p75": 1162.5,
+"p90": 2415.0,
+"max": 5490.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Ottime": 39,
+"Buone": 22,
+"Nuovo senza cartellino": 22,
+"Discrete": 7,
+"Nuovo con cartellino": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 160,
+"path": "Donna > Borse > Portafogli",
+"code": "PURSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=160&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 162.5,
+"p25": 199.75,
+"p50": 305.0,
+"p75": 499.25,
+"p90": 738.5,
+"max": 1350.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Nuovo con cartellino": 7,
+"Buone": 28,
+"Ottime": 45,
+"Discrete": 8,
+"Nuovo senza cartellino": 8
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2939,
+"path": "Donna > Borse > Pochette da polso",
+"code": "WOMEN_WRISTLETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2939&brand_ids[]=481&order=newest_first",
+"listings": 34,
+"capped": false,
+"asking": {
+"n": 34,
+"min": 7.0,
+"p10": 20.6,
+"p25": 35.0,
+"p50": 345.0,
+"p75": 812.5,
+"p90": 2200.0,
+"max": 7500.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Buone": 8,
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 2,
+"Ottime": 13
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1187,
+"path": "Donna > Accessori",
+"code": "ACCESSORIES_JEWELLERY",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=1187&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 17.5,
+"p25": 44.25,
+"p50": 130.0,
+"p75": 300.0,
+"p90": 575.0,
+"max": 2000.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Buone": 18,
+"Nuovo senza cartellino": 18,
+"Ottime": 39,
+"Discrete": 8,
+"Nuovo con cartellino": 13
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2931,
+"path": "Donna > Accessori > Bandana e fazzoletti per la testa",
+"code": "WOMEN_BANDANAS_HEADSCARVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2931&brand_ids[]=481&order=newest_first",
+"listings": 374,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 18.0,
+"p10": 72.0,
+"p25": 100.0,
+"p50": 175.0,
+"p75": 250.0,
+"p90": 335.0,
+"max": 750.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo senza cartellino": 26,
+"Buone": 18,
+"Ottime": 42,
+"Nuovo con cartellino": 10
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 20,
+"path": "Donna > Accessori > Cinture",
+"code": "BELTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=20&brand_ids[]=481&order=newest_first",
+"listings": 718,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 7.0,
+"p10": 170.0,
+"p25": 349.75,
+"p50": 625.0,
+"p75": 892.5,
+"p90": 1574.5,
+"max": 3000.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Ottime": 62,
+"Nuovo senza cartellino": 15,
+"Buone": 14,
+"Nuovo con cartellino": 4,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 90,
+"path": "Donna > Accessori > Guanti",
+"code": "GLOVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=90&brand_ids[]=481&order=newest_first",
+"listings": 130,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 149.5,
+"p25": 249.75,
+"p50": 350.0,
+"p75": 492.5,
+"p90": 690.0,
+"max": 1800.0
+},
+"likes_median": 20.0,
+"conditions": {
+"Ottime": 46,
+"Nuovo senza cartellino": 24,
+"Buone": 15,
+"Nuovo con cartellino": 11
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1123,
+"path": "Donna > Accessori > Accessori per capelli",
+"code": "W_HAIR_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1123&brand_ids[]=481&order=newest_first",
+"listings": 350,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.49,
+"p10": 16.25,
+"p25": 26.0,
+"p50": 45.0,
+"p75": 72.5,
+"p90": 350.0,
+"max": 700.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Ottime": 21,
+"Nuovo con cartellino": 33,
+"Nuovo senza cartellino": 36,
+"Discrete": 1,
+"Buone": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2932,
+"path": "Donna > Accessori > Fazzoletti",
+"code": "WOMEN_HANDKERCHIEFS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2932&brand_ids[]=481&order=newest_first",
+"listings": 145,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 50.0,
+"p25": 88.75,
+"p50": 150.0,
+"p75": 212.5,
+"p90": 297.5,
+"max": 429.95
+},
+"likes_median": 6.0,
+"conditions": {
+"Ottime": 54,
+"Buone": 12,
+"Nuovo con cartellino": 5,
+"Nuovo senza cartellino": 24,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 88,
+"path": "Donna > Accessori > Cappelli e berretti",
+"code": "WOM_ACC_HATS_CAPS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=88&brand_ids[]=481&order=newest_first",
+"listings": 314,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.5,
+"p10": 25.0,
+"p25": 87.5,
+"p50": 397.5,
+"p75": 705.0,
+"p90": 1200.0,
+"max": 3999.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Ottime": 37,
+"Nuovo con cartellino": 16,
+"Nuovo senza cartellino": 39,
+"Buone": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 21,
+"path": "Donna > Accessori > Gioielli",
+"code": "JEWELRY",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=21&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 30.0,
+"p25": 76.25,
+"p50": 297.5,
+"p75": 560.0,
+"p90": 925.0,
+"max": 2750.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo senza cartellino": 38,
+"Ottime": 33,
+"Buone": 9,
+"Discrete": 6,
+"Nuovo con cartellino": 10
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1785,
+"path": "Donna > Accessori > Gioielli > Cavigliere",
+"code": "ANKLETS_NEW",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1785&brand_ids[]=481&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 5.0,
+"p10": 92.0,
+"p25": 237.5,
+"p50": 330.0,
+"p75": 510.0,
+"p90": 742.0,
+"max": 850.0
+},
+"likes_median": 16,
+"conditions": {
+"Buone": 2,
+"Nuovo senza cartellino": 3,
+"Ottime": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2937,
+"path": "Donna > Accessori > Gioielli > Gioielli per il corpo",
+"code": "WOMEN_BODY_JEWELLERY",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2937&brand_ids[]=481&order=newest_first",
+"listings": 42,
+"capped": false,
+"asking": {
+"n": 42,
+"min": 8.0,
+"p10": 20.5,
+"p25": 35.0,
+"p50": 59.0,
+"p75": 475.0,
+"p90": 1135.0,
+"max": 6900.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Ottime": 19,
+"Nuovo senza cartellino": 9,
+"Nuovo con cartellino": 13,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 165,
+"path": "Donna > Accessori > Gioielli > Braccialetti",
+"code": "BRACELETS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=165&brand_ids[]=481&order=newest_first",
+"listings": 757,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 32.5,
+"p25": 200.0,
+"p50": 411.0,
+"p75": 768.75,
+"p90": 1321.75,
+"max": 2500.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Nuovo senza cartellino": 23,
+"Ottime": 38,
+"Nuovo con cartellino": 15,
+"Buone": 16,
+"Discrete": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 167,
+"path": "Donna > Accessori > Gioielli > Spille",
+"code": "BROOCHES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=167&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 7.5,
+"p10": 99.5,
+"p25": 290.0,
+"p50": 422.5,
+"p75": 596.25,
+"p90": 850.0,
+"max": 2300.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo senza cartellino": 11,
+"Ottime": 71,
+"Buone": 9,
+"Nuovo con cartellino": 4,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2938,
+"path": "Donna > Accessori > Gioielli > Charm e ciondoli",
+"code": "WOMEN_CHARMS_PENDANTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2938&brand_ids[]=481&order=newest_first",
+"listings": 693,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 12.5,
+"p10": 19.0,
+"p25": 23.75,
+"p50": 30.0,
+"p75": 50.0,
+"p90": 90.0,
+"max": 270.0
+},
+"likes_median": 10.0,
+"conditions": {
+"Nuovo senza cartellino": 53,
+"Discrete": 1,
+"Ottime": 17,
+"Nuovo con cartellino": 24,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 163,
+"path": "Donna > Accessori > Gioielli > Orecchini",
+"code": "EARRINGS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=163&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 90.0,
+"p10": 180.0,
+"p25": 298.75,
+"p50": 400.0,
+"p75": 490.0,
+"p90": 643.75,
+"max": 1487.5
+},
+"likes_median": 7.0,
+"conditions": {
+"Ottime": 49,
+"Discrete": 5,
+"Buone": 21,
+"Nuovo senza cartellino": 19,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 166,
+"path": "Donna > Accessori > Gioielli > Set di gioielli",
+"code": "WOM_ACC_JEW_SETS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=166&brand_ids[]=481&order=newest_first",
+"listings": 71,
+"capped": false,
+"asking": {
+"n": 71,
+"min": 4.0,
+"p10": 50.0,
+"p25": 230.0,
+"p50": 550.0,
+"p75": 1049.5,
+"p90": 1800.0,
+"max": 8800.0
+},
+"likes_median": 17,
+"conditions": {
+"Nuovo senza cartellino": 15,
+"Ottime": 40,
+"Buone": 5,
+"Nuovo con cartellino": 10,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 164,
+"path": "Donna > Accessori > Gioielli > Collane",
+"code": "NECKLACES_BEADS_PENDANTS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=164&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 192.5,
+"p25": 409.0,
+"p50": 595.0,
+"p75": 1005.0,
+"p90": 1499.5,
+"max": 22250.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Ottime": 54,
+"Discrete": 5,
+"Nuovo senza cartellino": 25,
+"Buone": 6,
+"Nuovo con cartellino": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 553,
+"path": "Donna > Accessori > Gioielli > Anelli",
+"code": "WOM_ACC_JEW_RINGS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=553&brand_ids[]=481&order=newest_first",
+"listings": 206,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 50.0,
+"p10": 210.0,
+"p25": 278.75,
+"p50": 380.0,
+"p75": 794.0,
+"p90": 1600.0,
+"max": 2800.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Ottime": 59,
+"Nuovo senza cartellino": 20,
+"Buone": 8,
+"Discrete": 2,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 162,
+"path": "Donna > Accessori > Gioielli > Altri gioielli",
+"code": "WOM_ACC_JEW_OTHER",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=162&brand_ids[]=481&order=newest_first",
+"listings": 403,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 8.25,
+"p25": 15.0,
+"p50": 27.25,
+"p75": 69.25,
+"p90": 345.0,
+"max": 1800.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 30,
+"Nuovo con cartellino": 27,
+"Buone": 8,
+"Nuovo senza cartellino": 28,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1852,
+"path": "Donna > Accessori > Portachiavi",
+"code": "KEY_RINGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1852&brand_ids[]=481&order=newest_first",
+"listings": 411,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 18.0,
+"p25": 20.0,
+"p50": 30.0,
+"p75": 50.0,
+"p90": 149.5,
+"max": 600.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Nuovo con cartellino": 33,
+"Nuovo senza cartellino": 35,
+"Ottime": 21,
+"Buone": 6,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 89,
+"path": "Donna > Accessori > Sciarpe e scialli",
+"code": "WOM_ACC_SCARVES_SHAWLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=89&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 60.0,
+"p25": 100.0,
+"p50": 180.0,
+"p75": 308.2,
+"p90": 400.0,
+"max": 1200.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 56,
+"Nuovo senza cartellino": 23,
+"Buone": 11,
+"Discrete": 3,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 26,
+"path": "Donna > Accessori > Occhiali da sole",
+"code": "SUNGLASSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=26&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 20.0,
+"p25": 78.75,
+"p50": 130.0,
+"p75": 232.5,
+"p90": 300.0,
+"max": 450.0
+},
+"likes_median": 1.5,
+"conditions": {
+"Nuovo senza cartellino": 13,
+"Ottime": 46,
+"Buone": 25,
+"Discrete": 5,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1851,
+"path": "Donna > Accessori > Ombrelli",
+"code": "W_ACC_UMBRELLAS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1851&brand_ids[]=481&order=newest_first",
+"listings": 36,
+"capped": false,
+"asking": {
+"n": 36,
+"min": 15.0,
+"p10": 125.0,
+"p25": 207.4625,
+"p50": 300.0,
+"p75": 400.0,
+"p90": 450.0,
+"max": 950.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Buone": 4,
+"Ottime": 21,
+"Nuovo senza cartellino": 8,
+"Nuovo con cartellino": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 22,
+"path": "Donna > Accessori > Orologi",
+"code": "WATCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=22&brand_ids[]=481&order=newest_first",
+"listings": 298,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 18.0,
+"p10": 225.0,
+"p25": 750.0,
+"p50": 1895.0,
+"p75": 2725.0,
+"p90": 4049.5,
+"max": 17000.0
+},
+"likes_median": 12.0,
+"conditions": {
+"Buone": 18,
+"Ottime": 62,
+"Nuovo senza cartellino": 7,
+"Discrete": 7,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1140,
+"path": "Donna > Accessori > Altri accessori",
+"code": "W_OTHER_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1140&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 4.0,
+"p10": 7.0,
+"p25": 15.0,
+"p50": 25.0,
+"p75": 45.464999999999996,
+"p90": 125.0,
+"max": 1200.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Buone": 13,
+"Nuovo con cartellino": 17,
+"Ottime": 43,
+"Discrete": 2,
+"Nuovo senza cartellino": 21
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 146,
+"path": "Donna > Bellezza",
+"code": "COSMETICS_AND_BEAUTY_PRODUCTS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=146&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 7.5,
+"p25": 16.75,
+"p50": 37.5,
+"p75": 65.0,
+"p90": 125.0,
+"max": 300.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 964,
+"path": "Donna > Bellezza > Make-up",
+"code": "WOM_COS_MAK_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=964&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 7.0,
+"p10": 12.0,
+"p25": 20.0,
+"p50": 26.5,
+"p75": 35.75,
+"p90": 57.5,
+"max": 550.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 152,
+"path": "Donna > Bellezza > Profumi",
+"code": "WOM_COS_PERFUME",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=152&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 6.75,
+"p25": 20.0,
+"p50": 60.0,
+"p75": 86.0,
+"p90": 137.5,
+"max": 220.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 948,
+"path": "Donna > Bellezza > Cura del viso",
+"code": "COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=948&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 4.99,
+"p10": 12.5,
+"p25": 35.0,
+"p50": 54.995000000000005,
+"p75": 75.0,
+"p90": 122.5,
+"max": 350.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1906,
+"path": "Donna > Bellezza > Accessori di bellezza",
+"code": "W_BEAUTY_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1906&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 8.0,
+"p25": 13.4625,
+"p50": 15.0,
+"p75": 25.75,
+"p90": 38.5,
+"max": 85.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1903,
+"path": "Donna > Bellezza > Accessori di bellezza > Accessori per capelli",
+"code": "W_HAIR_TOOLS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1903&brand_ids[]=481&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 10.0,
+"p10": 20.8,
+"p25": 26.5,
+"p50": 57.5,
+"p75": 92.5,
+"p90": 121.0,
+"max": 130.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo con cartellino": 10
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 950,
+"path": "Donna > Bellezza > Accessori di bellezza > Accessori per la cura del viso",
+"code": "BEAUTY_TOOLS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=950&brand_ids[]=481&order=newest_first",
+"listings": 345,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 10.0,
+"p25": 15.0,
+"p50": 20.0,
+"p75": 35.0,
+"p90": 49.0,
+"max": 100.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 958,
+"path": "Donna > Bellezza > Accessori di bellezza > Accessori per la cura del corpo",
+"code": "WOM_COS_BOD_BEAUTY_TOOLS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=958&brand_ids[]=481&order=newest_first",
+"listings": 62,
+"capped": false,
+"asking": {
+"n": 62,
+"min": 3.0,
+"p10": 10.0,
+"p25": 18.0,
+"p50": 40.0,
+"p75": 90.0,
+"p90": 188.5,
+"max": 450.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 62
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 962,
+"path": "Donna > Bellezza > Accessori di bellezza > Accessori per la cura delle unghie",
+"code": "WOM_COS_HAN_BEAUTY_TOOLS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=962&brand_ids[]=481&order=newest_first",
+"listings": 208,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 10.0,
+"p25": 11.125,
+"p50": 18.0,
+"p75": 25.0,
+"p90": 37.95,
+"max": 155.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 967,
+"path": "Donna > Bellezza > Accessori di bellezza > Accessori per il make-up",
+"code": "WOM_COS_MAK_BEAUTY_TOOLS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=967&brand_ids[]=481&order=newest_first",
+"listings": 901,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 8.0,
+"p25": 12.0,
+"p50": 15.0,
+"p75": 25.0,
+"p90": 36.0,
+"max": 175.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1264,
+"path": "Donna > Bellezza > Cura delle mani",
+"code": "BEAUTY_HAND_ONLY",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1264&brand_ids[]=481&order=newest_first",
+"listings": 264,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 22.494999999999997,
+"p25": 30.0,
+"p50": 40.0,
+"p75": 45.0,
+"p90": 87.0,
+"max": 539.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 960,
+"path": "Donna > Bellezza > Cura delle unghie",
+"code": "WOM_COS_HAN_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=960&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 10.0,
+"p25": 12.0,
+"p50": 15.0,
+"p75": 20.0,
+"p90": 30.0,
+"max": 85.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 956,
+"path": "Donna > Bellezza > Cura del corpo",
+"code": "WOM_COS_BOD_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=956&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 25.0,
+"p25": 38.0,
+"p50": 50.0,
+"p75": 67.75,
+"p90": 87.5,
+"max": 200.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1902,
+"path": "Donna > Bellezza > Cura dei capelli",
+"code": "W_HAIR_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1902&brand_ids[]=481&order=newest_first",
+"listings": 16,
+"capped": false,
+"asking": {
+"n": 16,
+"min": 3.5,
+"p10": 12.8,
+"p25": 22.975,
+"p50": 45.0,
+"p75": 52.5,
+"p90": 64.5,
+"max": 68.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo con cartellino": 16
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 153,
+"path": "Donna > Bellezza > Altri prodotti di bellezza",
+"code": "OTHER_COSMETICS_AND_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=153&brand_ids[]=481&order=newest_first",
+"listings": 653,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 1.0,
+"p10": 5.0,
+"p25": 10.0,
+"p50": 20.0,
+"p75": 35.0,
+"p90": 82.5,
+"max": 500.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2050,
+"path": "Uomo > Vestiti",
+"code": "MEN_CLOTHING",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2050&brand_ids[]=481&order=newest_first",
+"listings": 400,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 25.0,
+"p25": 58.0,
+"p50": 120.0,
+"p75": 250.0,
+"p90": 775.0,
+"max": 3800.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Ottime": 52,
+"Nuovo senza cartellino": 18,
+"Nuovo con cartellino": 8,
+"Buone": 15,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 257,
+"path": "Uomo > Vestiti > Jeans",
+"code": "MEN_TRO_JEANS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=257&brand_ids[]=481&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 22.99,
+"p10": 51.196,
+"p25": 95.0,
+"p50": 200.0,
+"p75": 450.0,
+"p90": 1020.0,
+"max": 1800.0
+},
+"likes_median": 14,
+"conditions": {
+"Ottime": 4,
+"Buone": 1,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1206,
+"path": "Uomo > Vestiti > Abbigliamento da esterno",
+"code": "MEN_OUTERWEAR_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1206&brand_ids[]=481&order=newest_first",
+"listings": 21,
+"capped": false,
+"asking": {
+"n": 21,
+"min": 50.0,
+"p10": 200.0,
+"p25": 650.0,
+"p50": 1000.0,
+"p75": 1650.0,
+"p90": 2000.0,
+"max": 7000.0
+},
+"likes_median": 42,
+"conditions": {
+"Ottime": 13,
+"Nuovo senza cartellino": 5,
+"Nuovo con cartellino": 1,
+"Buone": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 76,
+"path": "Uomo > Vestiti > Camicie e t-shirt",
+"code": "MEN_TOPS_T_SHIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=76&brand_ids[]=481&order=newest_first",
+"listings": 66,
+"capped": false,
+"asking": {
+"n": 66,
+"min": 9.0,
+"p10": 37.0,
+"p25": 91.25,
+"p50": 160.0,
+"p75": 323.75,
+"p90": 500.0,
+"max": 1700.0
+},
+"likes_median": 15.5,
+"conditions": {
+"Nuovo senza cartellino": 16,
+"Ottime": 34,
+"Discrete": 1,
+"Nuovo con cartellino": 5,
+"Buone": 10
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 32,
+"path": "Uomo > Vestiti > Completi e blazer",
+"code": "SUITS_BLAZERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=32&brand_ids[]=481&order=newest_first",
+"listings": 29,
+"capped": false,
+"asking": {
+"n": 29,
+"min": 8.0,
+"p10": 63.0,
+"p25": 95.0,
+"p50": 175.0,
+"p75": 600.0,
+"p90": 1800.0,
+"max": 3700.0
+},
+"likes_median": 13,
+"conditions": {
+"Ottime": 16,
+"Nuovo senza cartellino": 6,
+"Nuovo con cartellino": 3,
+"Buone": 3,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 79,
+"path": "Uomo > Vestiti > Maglioni e pullover",
+"code": "MEN_PULLOVERS_SWEATERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=79&brand_ids[]=481&order=newest_first",
+"listings": 68,
+"capped": false,
+"asking": {
+"n": 68,
+"min": 43.0,
+"p10": 100.0,
+"p25": 180.0,
+"p50": 300.0,
+"p75": 564.25,
+"p90": 990.0,
+"max": 6200.0
+},
+"likes_median": 19.0,
+"conditions": {
+"Ottime": 38,
+"Nuovo con cartellino": 4,
+"Buone": 8,
+"Nuovo senza cartellino": 17,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 34,
+"path": "Uomo > Vestiti > Pantaloni",
+"code": "MEN_TROUSERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=34&brand_ids[]=481&order=newest_first",
+"listings": 13,
+"capped": false,
+"asking": {
+"n": 13,
+"min": 22.0,
+"p10": 47.0,
+"p25": 55.0,
+"p50": 90.0,
+"p75": 152.0,
+"p90": 298.0,
+"max": 1000.0
+},
+"likes_median": 8,
+"conditions": {
+"Ottime": 7,
+"Nuovo senza cartellino": 3,
+"Buone": 2,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 80,
+"path": "Uomo > Vestiti > Pantaloncini",
+"code": "SHORTS_CAPRI_PANTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=80&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 100.0,
+"p10": 120.0,
+"p25": 150.0,
+"p50": 200.0,
+"p75": 225.0,
+"p90": 240.0,
+"max": 250.0
+},
+"likes_median": 15,
+"conditions": {
+"Ottime": 2,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 85,
+"path": "Uomo > Vestiti > Calzini e intimo",
+"code": "UNDERWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=85&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 260.0,
+"p10": 260.0,
+"p25": 260.0,
+"p50": 260.0,
+"p75": 260.0,
+"p90": 260.0,
+"max": 260.0
+},
+"likes_median": 27,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 84,
+"path": "Uomo > Vestiti > Costumi da bagno",
+"code": "MEN_SWIMWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=84&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 289.0,
+"p10": 289.0,
+"p25": 289.0,
+"p50": 289.0,
+"p75": 289.0,
+"p90": 289.0,
+"max": 289.0
+},
+"likes_median": 18,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 30,
+"path": "Uomo > Vestiti > Abbigliamento sportivo",
+"code": "SPORTSWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=30&brand_ids[]=481&order=newest_first",
+"listings": 179,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 25.0,
+"p25": 50.0,
+"p50": 89.5,
+"p75": 160.0,
+"p90": 250.0,
+"max": 650.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Buone": 20,
+"Nuovo senza cartellino": 10,
+"Ottime": 52,
+"Discrete": 7,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 92,
+"path": "Uomo > Vestiti > Costumi e vestiti speciali",
+"code": "SPECIALISED_CLOTHING_COSTUMES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=92&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 15.0,
+"p10": 21.0,
+"p25": 30.0,
+"p50": 45.0,
+"p75": 77.5,
+"p90": 97.0,
+"max": 110.0
+},
+"likes_median": 5,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 83,
+"path": "Uomo > Vestiti > Altri capi di abbigliamento",
+"code": "MEN_OTHER",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=83&brand_ids[]=481&order=newest_first",
+"listings": 9,
+"capped": false,
+"asking": {
+"n": 9,
+"min": 24.0,
+"p10": 36.8,
+"p25": 60.0,
+"p50": 80.0,
+"p75": 150.0,
+"p90": 680.0,
+"max": 1200.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Ottime": 2,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1231,
+"path": "Uomo > Scarpe",
+"code": "MEN_SHOES_NEW",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=1231&brand_ids[]=481&order=newest_first",
+"listings": 518,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 35.0,
+"p10": 282.0,
+"p25": 390.0,
+"p50": 599.995,
+"p75": 900.0,
+"p90": 1300.0,
+"max": 2500.0
+},
+"likes_median": 13.5,
+"conditions": {
+"Discrete": 3,
+"Ottime": 42,
+"Nuovo senza cartellino": 14,
+"Buone": 16,
+"Nuovo con cartellino": 21
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2656,
+"path": "Uomo > Scarpe > Scarpe da barca, loafer e mocassini",
+"code": "MEN_BOAT_LOAFERS_MOCCASINS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2656&brand_ids[]=481&order=newest_first",
+"listings": 13,
+"capped": false,
+"asking": {
+"n": 13,
+"min": 90.0,
+"p10": 92.0,
+"p25": 140.0,
+"p50": 300.0,
+"p75": 350.0,
+"p90": 800.0,
+"max": 1100.0
+},
+"likes_median": 13,
+"conditions": {
+"Buone": 3,
+"Ottime": 7,
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1233,
+"path": "Uomo > Scarpe > Stivali",
+"code": "MEN_BOOTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1233&brand_ids[]=481&order=newest_first",
+"listings": 47,
+"capped": false,
+"asking": {
+"n": 47,
+"min": 75.0,
+"p10": 168.0,
+"p25": 277.5,
+"p50": 400.0,
+"p75": 689.5,
+"p90": 834.0,
+"max": 2400.0
+},
+"likes_median": 9,
+"conditions": {
+"Ottime": 31,
+"Buone": 9,
+"Nuovo senza cartellino": 3,
+"Discrete": 3,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2657,
+"path": "Uomo > Scarpe > Espadrillas",
+"code": "MEN_ESPADRILLES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2657&brand_ids[]=481&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 100.0,
+"p10": 100.0,
+"p25": 165.0,
+"p50": 320.0,
+"p75": 475.0,
+"p90": 550.0,
+"max": 1050.0
+},
+"likes_median": 16,
+"conditions": {
+"Nuovo con cartellino": 1,
+"Ottime": 7,
+"Buone": 2,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2969,
+"path": "Uomo > Scarpe > Infradito e ciabatte",
+"code": "MEN_FLIPFLOPS_SLIDES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2969&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 55.0,
+"p10": 84.0,
+"p25": 127.5,
+"p50": 200.0,
+"p75": 412.5,
+"p90": 540.0,
+"max": 625.0
+},
+"likes_median": 15,
+"conditions": {
+"Ottime": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1238,
+"path": "Uomo > Scarpe > Scarpe formali",
+"code": "MEN_FORMAL",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1238&brand_ids[]=481&order=newest_first",
+"listings": 63,
+"capped": false,
+"asking": {
+"n": 63,
+"min": 70.0,
+"p10": 152.0,
+"p25": 200.0,
+"p50": 320.0,
+"p75": 500.0,
+"p90": 750.0,
+"max": 1500.0
+},
+"likes_median": 9,
+"conditions": {
+"Nuovo con cartellino": 4,
+"Discrete": 2,
+"Ottime": 41,
+"Nuovo senza cartellino": 10,
+"Buone": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2968,
+"path": "Uomo > Scarpe > Sandali",
+"code": "MEN_SANDALS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2968&brand_ids[]=481&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 299.0,
+"p10": 299.6,
+"p25": 365.0,
+"p50": 450.0,
+"p75": 674.5,
+"p90": 950.0,
+"max": 1100.0
+},
+"likes_median": 13,
+"conditions": {
+"Ottime": 4,
+"Nuovo con cartellino": 1,
+"Buone": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2659,
+"path": "Uomo > Scarpe > Pantofole",
+"code": "MEN_SLIPPERS_2",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2659&brand_ids[]=481&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 38.0,
+"p10": 69.2,
+"p25": 116.0,
+"p50": 194.0,
+"p75": 272.0,
+"p90": 318.8,
+"max": 350.0
+},
+"likes_median": 25.0,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1452,
+"path": "Uomo > Scarpe > Scarpe sportive",
+"code": "SPORT_SHOES_MEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1452&brand_ids[]=481&order=newest_first",
+"listings": 20,
+"capped": false,
+"asking": {
+"n": 20,
+"min": 35.0,
+"p10": 159.5,
+"p25": 307.5,
+"p50": 400.0,
+"p75": 650.0,
+"p90": 982.0,
+"max": 1000.0
+},
+"likes_median": 12.5,
+"conditions": {
+"Discrete": 1,
+"Ottime": 15,
+"Buone": 2,
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1242,
+"path": "Uomo > Scarpe > Scarpe da ginnastica",
+"code": "MEN_SNEAKERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1242&brand_ids[]=481&order=newest_first",
+"listings": 350,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 40.0,
+"p10": 284.5,
+"p25": 398.0,
+"p50": 600.0,
+"p75": 900.0,
+"p90": 1300.0,
+"max": 2500.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Ottime": 45,
+"Nuovo senza cartellino": 13,
+"Buone": 17,
+"Nuovo con cartellino": 20,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 82,
+"path": "Uomo > Accessori",
+"code": "MEN_ACCESSORIES",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=82&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.5,
+"p10": 26.0,
+"p25": 50.0,
+"p50": 92.5,
+"p75": 171.25,
+"p90": 355.0,
+"max": 2600.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 6,
+"Ottime": 50,
+"Buone": 14,
+"Nuovo senza cartellino": 22,
+"Discrete": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 94,
+"path": "Uomo > Accessori > Borse e zaini",
+"code": "BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=94&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 72.0,
+"p25": 250.0,
+"p50": 1150.0,
+"p75": 2400.0,
+"p90": 3500.0,
+"max": 10300.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Nuovo con cartellino": 3,
+"Ottime": 63,
+"Nuovo senza cartellino": 14,
+"Buone": 15,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 246,
+"path": "Uomo > Accessori > Borse e zaini > Zaini",
+"code": "MEN_ACC_BAG_BACKPACKS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=246&brand_ids[]=481&order=newest_first",
+"listings": 71,
+"capped": false,
+"asking": {
+"n": 71,
+"min": 43.0,
+"p10": 800.0,
+"p25": 1495.0,
+"p50": 2200.0,
+"p75": 3415.0,
+"p90": 4500.0,
+"max": 10000.0
+},
+"likes_median": 21,
+"conditions": {
+"Ottime": 38,
+"Nuovo senza cartellino": 7,
+"Buone": 15,
+"Discrete": 4,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2963,
+"path": "Uomo > Accessori > Borse e zaini > Valigette",
+"code": "MEN_BRIEFCASES",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2963&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 90.0,
+"p10": 372.0,
+"p25": 795.0,
+"p50": 1500.0,
+"p75": 3000.0,
+"p90": 3900.0,
+"max": 4500.0
+},
+"likes_median": 7,
+"conditions": {
+"Ottime": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1799,
+"path": "Uomo > Accessori > Borse e zaini > Marsupio",
+"code": "MEN_ACC_BUMBAGS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1799&brand_ids[]=481&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 650.0,
+"p10": 765.0,
+"p25": 937.5,
+"p50": 1225.0,
+"p75": 1512.5,
+"p90": 1685.0,
+"max": 1800.0
+},
+"likes_median": 93.5,
+"conditions": {
+"Ottime": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2962,
+"path": "Uomo > Accessori > Borse e zaini > Porta abiti",
+"code": "MEN_GARMENT_BAGS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2962&brand_ids[]=481&order=newest_first",
+"listings": 20,
+"capped": false,
+"asking": {
+"n": 20,
+"min": 5.0,
+"p10": 19.0,
+"p25": 28.75,
+"p50": 50.0,
+"p75": 65.0,
+"p90": 76.5,
+"max": 150.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 6,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 2,
+"Buone": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2961,
+"path": "Uomo > Accessori > Borse e zaini > Borse da palestra",
+"code": "MEN_GYM_BAGS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=2961&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 750.0,
+"p10": 1100.0,
+"p25": 1625.0,
+"p50": 2500.0,
+"p75": 4000.0,
+"p90": 4900.0,
+"max": 5500.0
+},
+"likes_median": 11,
+"conditions": {
+"Ottime": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1798,
+"path": "Uomo > Accessori > Borse e zaini > Borsoni e sacche da viaggio",
+"code": "MEN_HOLDALLS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1798&brand_ids[]=481&order=newest_first",
+"listings": 8,
+"capped": false,
+"asking": {
+"n": 8,
+"min": 13.62,
+"p10": 18.086000000000002,
+"p25": 27.5,
+"p50": 72.5,
+"p75": 192.25,
+"p90": 607.3,
+"max": 1490.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Nuovo senza cartellino": 3,
+"Buone": 1,
+"Ottime": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1862,
+"path": "Uomo > Accessori > Borse e zaini > Valigie e bagagli",
+"code": "MEN_LUGGAGE",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1862&brand_ids[]=481&order=newest_first",
+"listings": 18,
+"capped": false,
+"asking": {
+"n": 18,
+"min": 50.0,
+"p10": 65.5,
+"p25": 177.5,
+"p50": 890.0,
+"p75": 2425.0,
+"p90": 2660.0,
+"max": 2950.0
+},
+"likes_median": 21.5,
+"conditions": {
+"Buone": 6,
+"Ottime": 6,
+"Nuovo senza cartellino": 4,
+"Nuovo con cartellino": 1,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1797,
+"path": "Uomo > Accessori > Borse e zaini > Borse a cartella e messenger",
+"code": "MEN_ACC_SATCHELS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=1797&brand_ids[]=481&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 5.0,
+"p10": 18.5,
+"p25": 66.25,
+"p50": 760.0,
+"p75": 1867.5,
+"p90": 4450.0,
+"max": 6700.0
+},
+"likes_median": 1.5,
+"conditions": {
+"Ottime": 4,
+"Nuovo senza cartellino": 2,
+"Buone": 3,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 247,
+"path": "Uomo > Accessori > Borse e zaini > Borse a tracolla",
+"code": "MEN_ACC_BAG_SHOULDER_BAGS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=247&brand_ids[]=481&order=newest_first",
+"listings": 937,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 165.0,
+"p10": 422.5,
+"p25": 1375.0,
+"p50": 2150.0,
+"p75": 3500.0,
+"p90": 3840.0,
+"max": 10300.0
+},
+"likes_median": 18.0,
+"conditions": {
+"Ottime": 69,
+"Buone": 13,
+"Nuovo senza cartellino": 11,
+"Discrete": 2,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 248,
+"path": "Uomo > Accessori > Borse e zaini > Portafogli",
+"code": "WALLETS",
+"level": "leaf",
+"filter": "https://www.vinted.it/catalog?catalog[]=248&brand_ids[]=481&order=newest_first",
+"listings": 620,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 4.0,
+"p10": 37.5,
+"p25": 97.5,
+"p50": 230.0,
+"p75": 400.0,
+"p90": 600.0,
+"max": 1900.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Nuovo con cartellino": 9,
+"Ottime": 48,
+"Nuovo senza cartellino": 15,
+"Buone": 19,
+"Discrete": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2960,
+"path": "Uomo > Accessori > Bandana e fazzoletti per la testa",
+"code": "MEN_BANDANAS_HEADSCARVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2960&brand_ids[]=481&order=newest_first",
+"listings": 47,
+"capped": false,
+"asking": {
+"n": 47,
+"min": 13.5,
+"p10": 69.6,
+"p25": 99.5,
+"p50": 150.0,
+"p75": 230.0,
+"p90": 337.6,
+"max": 680.0
+},
+"likes_median": 8,
+"conditions": {
+"Ottime": 27,
+"Buone": 2,
+"Nuovo senza cartellino": 16,
+"Discrete": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 96,
+"path": "Uomo > Accessori > Cinture",
+"code": "MEN_ACC_BELTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=96&brand_ids[]=481&order=newest_first",
+"listings": 166,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 150.0,
+"p25": 347.25,
+"p50": 622.5,
+"p75": 986.25,
+"p90": 1670.0,
+"max": 9999.0
+},
+"likes_median": 15.5,
+"conditions": {
+"Nuovo senza cartellino": 17,
+"Ottime": 57,
+"Nuovo con cartellino": 4,
+"Buone": 17,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2959,
+"path": "Uomo > Accessori > Bretelle",
+"code": "MEN_BRACES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2959&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 360.0,
+"p10": 360.0,
+"p25": 360.0,
+"p50": 360.0,
+"p75": 360.0,
+"p90": 360.0,
+"max": 360.0
+},
+"likes_median": 30,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 91,
+"path": "Uomo > Accessori > Guanti",
+"code": "MEN_ACC_GLOVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=91&brand_ids[]=481&order=newest_first",
+"listings": 34,
+"capped": false,
+"asking": {
+"n": 34,
+"min": 30.0,
+"p10": 209.0,
+"p25": 322.25,
+"p50": 429.0,
+"p75": 500.0,
+"p90": 664.0,
+"max": 1200.0
+},
+"likes_median": 17.5,
+"conditions": {
+"Nuovo con cartellino": 6,
+"Ottime": 14,
+"Nuovo senza cartellino": 11,
+"Buone": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2958,
+"path": "Uomo > Accessori > Fazzoletti",
+"code": "MEN_HANDKERCHIEFS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2958&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 45.0,
+"p10": 80.0,
+"p25": 132.5,
+"p50": 220.0,
+"p75": 235.0,
+"p90": 244.0,
+"max": 250.0
+},
+"likes_median": 3,
+"conditions": {
+"Nuovo senza cartellino": 2,
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 86,
+"path": "Uomo > Accessori > Cappelli e berretti",
+"code": "HATS_CAPS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=86&brand_ids[]=481&order=newest_first",
+"listings": 93,
+"capped": false,
+"asking": {
+"n": 93,
+"min": 24.5,
+"p10": 248.4,
+"p25": 300.0,
+"p50": 500.0,
+"p75": 749.0,
+"p90": 1030.0,
+"max": 3999.0
+},
+"likes_median": 21,
+"conditions": {
+"Nuovo con cartellino": 9,
+"Ottime": 47,
+"Buone": 5,
+"Nuovo senza cartellino": 31,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 95,
+"path": "Uomo > Accessori > Gioielli",
+"code": "APPAREL",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=95&brand_ids[]=481&order=newest_first",
+"listings": 776,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 20.0,
+"p25": 50.0,
+"p50": 349.5,
+"p75": 677.75,
+"p90": 1345.0,
+"max": 1995.0
+},
+"likes_median": 12.0,
+"conditions": {
+"Buone": 14,
+"Ottime": 46,
+"Nuovo senza cartellino": 20,
+"Nuovo con cartellino": 15,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2957,
+"path": "Uomo > Accessori > Fazzoletto da taschino",
+"code": "MEN_POCKET_SQUARES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2957&brand_ids[]=481&order=newest_first",
+"listings": 14,
+"capped": false,
+"asking": {
+"n": 14,
+"min": 5.0,
+"p10": 7.1,
+"p25": 17.5,
+"p50": 32.5,
+"p75": 57.25,
+"p90": 70.5,
+"max": 850.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo senza cartellino": 5,
+"Nuovo con cartellino": 3,
+"Ottime": 5,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 87,
+"path": "Uomo > Accessori > Sciarpe e scialli",
+"code": "SCARVES_SHAWLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=87&brand_ids[]=481&order=newest_first",
+"listings": 21,
+"capped": false,
+"asking": {
+"n": 21,
+"min": 50.0,
+"p10": 70.0,
+"p25": 90.0,
+"p50": 480.0,
+"p75": 700.0,
+"p90": 1200.0,
+"max": 1300.0
+},
+"likes_median": 6,
+"conditions": {
+"Nuovo senza cartellino": 6,
+"Ottime": 14,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 98,
+"path": "Uomo > Accessori > Occhiali da sole",
+"code": "MEN_ACC_SUNGLASSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=98&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.5,
+"p10": 21.25,
+"p25": 62.5,
+"p50": 120.0,
+"p75": 222.5,
+"p90": 300.0,
+"max": 450.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 50,
+"Buone": 22,
+"Nuovo senza cartellino": 14,
+"Discrete": 4,
+"Nuovo con cartellino": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2956,
+"path": "Uomo > Accessori > Cravatte e papillon",
+"code": "MEN_TIES_BOWTIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2956&brand_ids[]=481&order=newest_first",
+"listings": 701,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 25.0,
+"p25": 49.0,
+"p50": 72.5,
+"p75": 115.0,
+"p90": 177.5,
+"max": 950.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 56,
+"Nuovo senza cartellino": 22,
+"Nuovo con cartellino": 4,
+"Buone": 11,
+"Discrete": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 97,
+"path": "Uomo > Accessori > Orologi",
+"code": "MEN_ACC_WATCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=97&brand_ids[]=481&order=newest_first",
+"listings": 100,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 120.0,
+"p25": 1475.0,
+"p50": 2175.0,
+"p75": 3047.5,
+"p90": 4500.0,
+"max": 9000.0
+},
+"likes_median": 16.0,
+"conditions": {
+"Buone": 14,
+"Ottime": 61,
+"Discrete": 4,
+"Nuovo senza cartellino": 13,
+"Nuovo con cartellino": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 99,
+"path": "Uomo > Accessori > Altro",
+"code": "MEN_ACC_OTHER",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=99&brand_ids[]=481&order=newest_first",
+"listings": 284,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 1.5,
+"p10": 5.5,
+"p25": 15.0,
+"p50": 26.5,
+"p75": 45.75,
+"p90": 89.0,
+"max": 925.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Discrete": 3,
+"Ottime": 35,
+"Nuovo senza cartellino": 36,
+"Nuovo con cartellino": 16,
+"Buone": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 139,
+"path": "Uomo > Cura del corpo",
+"code": "COSMETICS_AND_BEAUTY_ITEMS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=139&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 14.5,
+"p25": 38.75,
+"p50": 70.0,
+"p75": 100.0,
+"p90": 125.0,
+"max": 200.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 143,
+"path": "Uomo > Cura del corpo > Cura del viso",
+"code": "FACE_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=143&brand_ids[]=481&order=newest_first",
+"listings": 218,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 16.0,
+"p25": 30.0,
+"p50": 49.5,
+"p75": 70.0,
+"p90": 100.0,
+"max": 195.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2055,
+"path": "Uomo > Cura del corpo > Strumenti e accessori",
+"code": "MEN_BEAUTY_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2055&brand_ids[]=481&order=newest_first",
+"listings": 31,
+"capped": false,
+"asking": {
+"n": 31,
+"min": 12.0,
+"p10": 15.0,
+"p25": 23.5,
+"p50": 29.0,
+"p75": 50.0,
+"p90": 68.0,
+"max": 110.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo con cartellino": 31
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 140,
+"path": "Uomo > Cura del corpo > Cura dei capelli",
+"code": "HAIR_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=140&brand_ids[]=481&order=newest_first",
+"listings": 16,
+"capped": false,
+"asking": {
+"n": 16,
+"min": 30.0,
+"p10": 44.5,
+"p25": 50.0,
+"p50": 57.0,
+"p75": 61.25,
+"p90": 73.995,
+"max": 80.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo con cartellino": 16
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 141,
+"path": "Uomo > Cura del corpo > Cura del corpo",
+"code": "BODY_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=141&brand_ids[]=481&order=newest_first",
+"listings": 139,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 9.0,
+"p10": 30.0,
+"p25": 38.0,
+"p50": 52.5,
+"p75": 76.25,
+"p90": 100.0,
+"max": 9999.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 142,
+"path": "Uomo > Cura del corpo > Cura delle mani e delle unghie",
+"code": "HAND_NAIL_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=142&brand_ids[]=481&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 24.5,
+"p10": 25.55,
+"p25": 27.125,
+"p50": 29.75,
+"p75": 32.375,
+"p90": 33.95,
+"max": 35.0
+},
+"likes_median": 20.5,
+"conditions": {
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 145,
+"path": "Uomo > Cura del corpo > Dopobarba e colonia",
+"code": "PERFUME",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=145&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 12.0,
+"p25": 48.5,
+"p50": 82.5,
+"p75": 100.0,
+"p90": 130.0,
+"max": 200.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 96
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 144,
+"path": "Uomo > Cura del corpo > Make-up",
+"code": "MAKE_UP",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=144&brand_ids[]=481&order=newest_first",
+"listings": 28,
+"capped": false,
+"asking": {
+"n": 28,
+"min": 3.0,
+"p10": 15.0,
+"p25": 18.75,
+"p50": 26.0,
+"p75": 30.0,
+"p90": 35.6,
+"max": 65.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo con cartellino": 28
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1863,
+"path": "Uomo > Cura del corpo > Kit per la rasatura",
+"code": "MEN_SETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1863&brand_ids[]=481&order=newest_first",
+"listings": 9,
+"capped": false,
+"asking": {
+"n": 9,
+"min": 5.55,
+"p10": 17.11,
+"p25": 25.0,
+"p50": 79.0,
+"p75": 200.0,
+"p90": 420.0,
+"max": 700.0
+},
+"likes_median": 10,
+"conditions": {
+"Nuovo con cartellino": 9
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 968,
+"path": "Uomo > Cura del corpo > Altri articoli per la cura del corpo",
+"code": "MEN_COS_OTH_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=968&brand_ids[]=481&order=newest_first",
+"listings": 32,
+"capped": false,
+"asking": {
+"n": 32,
+"min": 5.0,
+"p10": 6.4,
+"p25": 23.75,
+"p50": 59.989999999999995,
+"p75": 86.25,
+"p90": 128.5,
+"max": 150.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo con cartellino": 32
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2983,
+"path": "Articoli griffati > Articoli griffati per donna",
+"code": "DESIGNER_WOMEN",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2983&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 565.0,
+"p25": 700.0,
+"p50": 1050.0,
+"p75": 2000.0,
+"p90": 2775.0,
+"max": 8500.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 65,
+"Buone": 14,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2984,
+"path": "Articoli griffati > Articoli griffati per donna > Borse griffate",
+"code": "DESIGNER_WOMEN_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2984&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 530.0,
+"p10": 795.0,
+"p25": 1221.0,
+"p50": 2135.0,
+"p75": 3037.5,
+"p90": 5100.0,
+"max": 8500.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Ottime": 62,
+"Buone": 23,
+"Nuovo con cartellino": 6,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2985,
+"path": "Articoli griffati > Articoli griffati per donna > Scarpe griffate",
+"code": "DESIGNER_WOMEN_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2985&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 510.0,
+"p25": 600.0,
+"p50": 785.0,
+"p75": 1000.0,
+"p90": 1200.0,
+"max": 2760.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Ottime": 56,
+"Buone": 10,
+"Nuovo senza cartellino": 16,
+"Nuovo con cartellino": 14
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2986,
+"path": "Articoli griffati > Articoli griffati per donna > Accessori griffati",
+"code": "DESIGNER_WOMEN_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2986&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 515.0,
+"p25": 565.0,
+"p50": 750.0,
+"p75": 1100.0,
+"p90": 1993.75,
+"max": 22250.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Buone": 13,
+"Ottime": 53,
+"Nuovo senza cartellino": 26,
+"Nuovo con cartellino": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2987,
+"path": "Articoli griffati > Articoli griffati per donna > Abbigliamento griffato",
+"code": "DESIGNER_WOMEN_CLOTHING",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2987&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 550.0,
+"p25": 700.0,
+"p50": 970.0,
+"p75": 1500.0,
+"p90": 2550.0,
+"max": 12222.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 73,
+"Nuovo senza cartellino": 7,
+"Nuovo con cartellino": 8,
+"Buone": 8
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2988,
+"path": "Articoli griffati > Articoli griffati per uomo",
+"code": "DESIGNER_MEN",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2988&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 600.0,
+"p25": 695.0,
+"p50": 999.0,
+"p75": 1999.0,
+"p90": 2550.0,
+"max": 10300.0
+},
+"likes_median": 12.0,
+"conditions": {
+"Ottime": 47,
+"Nuovo senza cartellino": 19,
+"Buone": 12,
+"Nuovo con cartellino": 18
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2990,
+"path": "Articoli griffati > Articoli griffati per uomo > Scarpe griffate",
+"code": "DESIGNER_MEN_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2990&brand_ids[]=481&order=newest_first",
+"listings": 279,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 582.5,
+"p25": 650.0,
+"p50": 850.0,
+"p75": 1062.5,
+"p90": 1425.0,
+"max": 2500.0
+},
+"likes_median": 14.0,
+"conditions": {
+"Ottime": 43,
+"Nuovo senza cartellino": 13,
+"Buone": 14,
+"Nuovo con cartellino": 26
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2991,
+"path": "Articoli griffati > Articoli griffati per uomo > Accessori griffati",
+"code": "DESIGNER_MEN_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2991&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 500.0,
+"p10": 650.0,
+"p25": 847.2049999999999,
+"p50": 1765.0,
+"p75": 2825.0,
+"p90": 3500.0,
+"max": 10300.0
+},
+"likes_median": 11.0,
+"conditions": {
+"Ottime": 64,
+"Nuovo senza cartellino": 15,
+"Buone": 13,
+"Nuovo con cartellino": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2992,
+"path": "Articoli griffati > Articoli griffati per uomo > Abbigliamento griffato",
+"code": "DESIGNER_MEN_CLOTHING",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2992&brand_ids[]=481&order=newest_first",
+"listings": 65,
+"capped": false,
+"asking": {
+"n": 65,
+"min": 500.0,
+"p10": 513.2,
+"p25": 600.0,
+"p50": 986.0,
+"p75": 1650.0,
+"p90": 2680.0,
+"max": 7000.0
+},
+"likes_median": 21,
+"conditions": {
+"Ottime": 42,
+"Nuovo con cartellino": 6,
+"Nuovo senza cartellino": 14,
+"Buone": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1195,
+"path": "Bambini > Abbigliamento bambina",
+"code": "GIRLS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1195&brand_ids[]=481&order=newest_first",
+"listings": 277,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 7.5,
+"p25": 22.0,
+"p50": 210.0,
+"p75": 550.0,
+"p90": 1000.0,
+"max": 3000.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Ottime": 52,
+"Buone": 13,
+"Discrete": 3,
+"Nuovo con cartellino": 10,
+"Nuovo senza cartellino": 18
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1194,
+"path": "Bambini > Abbigliamento bambino",
+"code": "BOYS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1194&brand_ids[]=481&order=newest_first",
+"listings": 71,
+"capped": false,
+"asking": {
+"n": 71,
+"min": 2.0,
+"p10": 15.0,
+"p25": 45.0,
+"p50": 250.0,
+"p75": 510.0,
+"p90": 950.0,
+"max": 2500.0
+},
+"likes_median": 5,
+"conditions": {
+"Ottime": 40,
+"Nuovo senza cartellino": 14,
+"Buone": 13,
+"Discrete": 1,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1499,
+"path": "Bambini > Giocattoli",
+"code": "TOYS_AND_GAMES_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1499&brand_ids[]=481&order=newest_first",
+"listings": 17,
+"capped": false,
+"asking": {
+"n": 17,
+"min": 2.0,
+"p10": 5.0,
+"p25": 7.0,
+"p50": 35.0,
+"p75": 199.0,
+"p90": 858.0,
+"max": 2000.0
+},
+"likes_median": 4,
+"conditions": {
+"Nuovo senza cartellino": 5,
+"Nuovo con cartellino": 3,
+"Buone": 2,
+"Discrete": 1,
+"Ottime": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1496,
+"path": "Bambini > Passeggini, marsupi e seggiolini per auto",
+"code": "STROLLERS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1496&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 3.0,
+"p10": 3.8,
+"p25": 5.0,
+"p50": 7.0,
+"p75": 16.0,
+"p90": 21.4,
+"max": 25.0
+},
+"likes_median": 2,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Ottime": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1498,
+"path": "Bambini > Arredamento e decorazioni",
+"code": "KIDS_FURNITURE_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1498&brand_ids[]=481&order=newest_first",
+"listings": 35,
+"capped": false,
+"asking": {
+"n": 35,
+"min": 3.0,
+"p10": 5.4,
+"p25": 10.0,
+"p50": 18.0,
+"p75": 65.0,
+"p90": 260.0,
+"max": 800.0
+},
+"likes_median": 5,
+"conditions": {
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 8,
+"Ottime": 10,
+"Discrete": 2,
+"Buone": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3393,
+"path": "Bambini > Bagnetto e cambio",
+"code": "KID_BATHING_CHANGING",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3393&brand_ids[]=481&order=newest_first",
+"listings": 24,
+"capped": false,
+"asking": {
+"n": 24,
+"min": 5.0,
+"p10": 11.5,
+"p25": 22.25,
+"p50": 35.5,
+"p75": 86.25,
+"p90": 390.0,
+"max": 7600.0
+},
+"likes_median": 10.5,
+"conditions": {
+"Nuovo con cartellino": 17,
+"Ottime": 4,
+"Nuovo senza cartellino": 2,
+"Buone": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3432,
+"path": "Bambini > Allattamento e alimentazione",
+"code": "NURSING_FEEDING",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3432&brand_ids[]=481&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 10.0,
+"p10": 13.0,
+"p25": 17.5,
+"p50": 25.0,
+"p75": 522.5,
+"p90": 1409.0,
+"max": 2000.0
+},
+"likes_median": 31.0,
+"conditions": {
+"Ottime": 3,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3296,
+"path": "Bambini > Sonno e biancheria da letto",
+"code": "KID_SLEEP_BEDDING",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3296&brand_ids[]=481&order=newest_first",
+"listings": 6,
+"capped": false,
+"asking": {
+"n": 6,
+"min": 15.0,
+"p10": 82.5,
+"p25": 157.5,
+"p50": 440.0,
+"p75": 925.0,
+"p90": 1345.0,
+"max": 1690.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Nuovo con cartellino": 1,
+"Nuovo senza cartellino": 5
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1501,
+"path": "Bambini > Articoli per la scuola",
+"code": "BOOKS_AND_SCHOOL_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1501&brand_ids[]=481&order=newest_first",
+"listings": 17,
+"capped": false,
+"asking": {
+"n": 17,
+"min": 3.0,
+"p10": 4.3,
+"p25": 5.0,
+"p50": 15.0,
+"p75": 25.0,
+"p90": 53.0,
+"max": 95.0
+},
+"likes_median": 6,
+"conditions": {
+"Nuovo senza cartellino": 9,
+"Ottime": 6,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1502,
+"path": "Bambini > Altri articoli per bambini",
+"code": "ALL_OTHER_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1502&brand_ids[]=481&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 4.99,
+"p10": 13.996,
+"p25": 30.0,
+"p50": 50.0,
+"p75": 82.0,
+"p90": 1651.0,
+"max": 4000.0
+},
+"likes_median": 4,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Buone": 2,
+"Ottime": 2,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3474,
+"path": "Casa > Piccoli elettrodomestici da cucina",
+"code": "SMALL_KITCHEN_APPLIANCES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3474&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 30.0,
+"p10": 30.0,
+"p25": 30.0,
+"p50": 30.0,
+"p75": 30.0,
+"p90": 30.0,
+"max": 30.0
+},
+"likes_median": 10,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3476,
+"path": "Casa > Utensili per cucina e forno",
+"code": "COOKWARE_BAKEWARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3476&brand_ids[]=481&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 35.0,
+"p10": 35.0,
+"p25": 35.0,
+"p50": 35.0,
+"p75": 35.0,
+"p90": 35.0,
+"max": 35.0
+},
+"likes_median": 11,
+"conditions": {
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3477,
+"path": "Casa > Utensili da cucina",
+"code": "KITCHEN_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3477&brand_ids[]=481&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 7.0,
+"p10": 8.6,
+"p25": 11.0,
+"p50": 15.0,
+"p75": 22.0,
+"p90": 26.2,
+"max": 29.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo senza cartellino": 2,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1920,
+"path": "Casa > Stoviglie",
+"code": "H_TABLEWARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1920&brand_ids[]=481&order=newest_first",
+"listings": 25,
+"capped": false,
+"asking": {
+"n": 25,
+"min": 10.0,
+"p10": 15.0,
+"p25": 20.0,
+"p50": 40.0,
+"p75": 150.0,
+"p90": 248.0,
+"max": 800.0
+},
+"likes_median": 10,
+"conditions": {
+"Buone": 6,
+"Nuovo senza cartellino": 7,
+"Ottime": 3,
+"Nuovo con cartellino": 8,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3478,
+"path": "Casa > Cura della casa",
+"code": "HOUSEHOLD_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3478&brand_ids[]=481&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 5.0,
+"p10": 7.0,
+"p25": 10.0,
+"p50": 15.0,
+"p75": 20.0,
+"p90": 23.0,
+"max": 25.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Ottime": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1919,
+"path": "Casa > Tessili",
+"code": "H_TEXTILES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1919&brand_ids[]=481&order=newest_first",
+"listings": 185,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 1.5,
+"p10": 11.0,
+"p25": 55.0,
+"p50": 110.0,
+"p75": 176.25,
+"p90": 374.5,
+"max": 2000.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Buone": 6,
+"Ottime": 23,
+"Nuovo senza cartellino": 36,
+"Nuovo con cartellino": 29,
+"Discrete": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 1934,
+"path": "Casa > Accessori per la casa",
+"code": "H_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1934&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 8.995000000000001,
+"p25": 10.75,
+"p50": 18.0,
+"p75": 33.5,
+"p90": 67.5,
+"max": 240.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 42,
+"Buone": 8,
+"Ottime": 38,
+"Nuovo con cartellino": 7,
+"Discrete": 1
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 5428,
+"path": "Casa > Materiale per ufficio",
+"code": "OFFICE_SUPPLIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=5428&brand_ids[]=481&order=newest_first",
+"listings": 283,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 1.0,
+"p10": 7.5,
+"p25": 15.0,
+"p50": 30.0,
+"p75": 46.25,
+"p90": 60.0,
+"max": 20000.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Nuovo con cartellino": 22,
+"Discrete": 2,
+"Nuovo senza cartellino": 43,
+"Ottime": 23,
+"Buone": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 2915,
+"path": "Casa > Festeggiamenti e feste",
+"code": "HOLIDAYS_CELEBRATIONS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2915&brand_ids[]=481&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 1.25,
+"p10": 3.0,
+"p25": 5.0,
+"p50": 10.0,
+"p75": 15.0,
+"p90": 25.4,
+"max": 790.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Ottime": 36,
+"Nuovo senza cartellino": 35,
+"Nuovo con cartellino": 21,
+"Buone": 4
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3811,
+"path": "Casa > Attrezzi e bricolage",
+"code": "H_TOOLS_DIY",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3811&brand_ids[]=481&order=newest_first",
+"listings": 17,
+"capped": false,
+"asking": {
+"n": 17,
+"min": 5.0,
+"p10": 11.8,
+"p25": 30.0,
+"p50": 55.0,
+"p75": 75.0,
+"p90": 83.4,
+"max": 110.0
+},
+"likes_median": 33,
+"conditions": {
+"Nuovo senza cartellino": 7,
+"Ottime": 3,
+"Discrete": 1,
+"Nuovo con cartellino": 6
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 3812,
+"path": "Casa > Esterni e giardino",
+"code": "H_OUTDOOR_GARDEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=3812&brand_ids[]=481&order=newest_first",
+"listings": 8,
+"capped": false,
+"asking": {
+"n": 8,
+"min": 4.0,
+"p10": 8.2,
+"p25": 11.5,
+"p50": 22.0,
+"p75": 47.5,
+"p90": 163.0,
+"max": 310.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Nuovo con cartellino": 2,
+"Ottime": 3,
+"Buone": 1,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Chanel",
+"catalog_id": 5106,
+"path": "Casa > Animali",
+"code": "H_PET_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=5106&brand_ids[]=481&order=newest_first",
+"listings": 61,
+"capped": false,
+"asking": {
+"n": 61,
+"min": 4.0,
+"p10": 15.0,
+"p25": 29.0,
+"p50": 390.0,
+"p75": 1650.0,
+"p90": 4350.0,
+"max": 6600.0
+},
+"likes_median": 8,
+"conditions": {
+"Nuovo senza cartellino": 13,
+"Buone": 14,
+"Ottime": 26,
+"Discrete": 2,
+"Nuovo con cartellino": 6
+}
+}
+]
+}

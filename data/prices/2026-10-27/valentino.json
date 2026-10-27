@@ -1,0 +1,2973 @@
+{
+"brand": "Valentino",
+"ids": [
+15450529
+],
+"at": 1793117360,
+"complete": false,
+"requests": 124,
+"rows": [
+{
+"brand": "Valentino",
+"catalog_id": 4,
+"path": "Donna > Vestiti",
+"code": "WOMENS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=4&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 35.0,
+"p25": 54.25,
+"p50": 132.5,
+"p75": 259.75,
+"p90": 950.0,
+"max": 4800.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 60,
+"Buone": 6,
+"Nuovo con cartellino": 16,
+"Nuovo senza cartellino": 13,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1037,
+"path": "Donna > Vestiti > Abbigliamento da esterno",
+"code": "COATS_JACKETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1037&brand_ids[]=15450529&order=newest_first",
+"listings": 169,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 72.0,
+"p25": 100.0,
+"p50": 237.5,
+"p75": 486.25,
+"p90": 1050.0,
+"max": 4800.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Ottime": 57,
+"Nuovo senza cartellino": 19,
+"Nuovo con cartellino": 10,
+"Buone": 10
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 13,
+"path": "Donna > Vestiti > Maglioni e pullover",
+"code": "PULLOVERS_SWEATERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=13&brand_ids[]=15450529&order=newest_first",
+"listings": 183,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 30.0,
+"p25": 50.0,
+"p50": 99.5,
+"p75": 200.0,
+"p90": 352.0,
+"max": 900.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 58,
+"Nuovo senza cartellino": 12,
+"Buone": 11,
+"Nuovo con cartellino": 14,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 8,
+"path": "Donna > Vestiti > Completi e blazer",
+"code": "BLAZERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=8&brand_ids[]=15450529&order=newest_first",
+"listings": 239,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 47.0,
+"p25": 67.375,
+"p50": 139.0,
+"p75": 251.25,
+"p90": 495.0,
+"max": 2000.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Ottime": 61,
+"Nuovo senza cartellino": 20,
+"Buone": 9,
+"Nuovo con cartellino": 5,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 10,
+"path": "Donna > Vestiti > Abiti",
+"code": "DRESSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=10&brand_ids[]=15450529&order=newest_first",
+"listings": 310,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 49.5,
+"p25": 85.0,
+"p50": 167.5,
+"p75": 406.0,
+"p90": 950.0,
+"max": 2500.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 60,
+"Buone": 11,
+"Nuovo con cartellino": 12,
+"Nuovo senza cartellino": 13
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 11,
+"path": "Donna > Vestiti > Gonne",
+"code": "SKIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=11&brand_ids[]=15450529&order=newest_first",
+"listings": 187,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 9.9,
+"p10": 23.994999999999997,
+"p25": 35.0,
+"p50": 56.455,
+"p75": 112.5,
+"p90": 250.0,
+"max": 780.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 63,
+"Nuovo con cartellino": 10,
+"Nuovo senza cartellino": 19,
+"Buone": 4
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 5491,
+"path": "Donna > Vestiti > Skort",
+"code": "SKORTS_WOMEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=5491&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 150.0,
+"p10": 151.9,
+"p25": 154.75,
+"p50": 159.5,
+"p75": 164.25,
+"p90": 167.1,
+"max": 169.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 12,
+"path": "Donna > Vestiti > Top e t-shirt",
+"code": "TOPS_T_SHIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=12&brand_ids[]=15450529&order=newest_first",
+"listings": 326,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 29.0,
+"p25": 40.0,
+"p50": 80.0,
+"p75": 157.5,
+"p90": 250.0,
+"max": 1050.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 54,
+"Nuovo senza cartellino": 18,
+"Discrete": 1,
+"Nuovo con cartellino": 16,
+"Buone": 7
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 183,
+"path": "Donna > Vestiti > Jeans",
+"code": "JEANS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=183&brand_ids[]=15450529&order=newest_first",
+"listings": 76,
+"capped": false,
+"asking": {
+"n": 76,
+"min": 7.5,
+"p10": 29.994999999999997,
+"p25": 40.0,
+"p50": 65.0,
+"p75": 120.0,
+"p90": 300.0,
+"max": 1000.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Nuovo con cartellino": 11,
+"Ottime": 42,
+"Nuovo senza cartellino": 19,
+"Buone": 4
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 9,
+"path": "Donna > Vestiti > Pantaloni e leggings",
+"code": "TROUSERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=9&brand_ids[]=15450529&order=newest_first",
+"listings": 82,
+"capped": false,
+"asking": {
+"n": 82,
+"min": 15.0,
+"p10": 28.0,
+"p25": 40.5,
+"p50": 76.0,
+"p75": 157.5,
+"p90": 249.0,
+"max": 800.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 47,
+"Nuovo con cartellino": 11,
+"Buone": 9,
+"Nuovo senza cartellino": 15
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 15,
+"path": "Donna > Vestiti > Pantaloncini e pantaloni corti",
+"code": "SHORTS_CAPRIS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=15&brand_ids[]=15450529&order=newest_first",
+"listings": 40,
+"capped": false,
+"asking": {
+"n": 40,
+"min": 15.0,
+"p10": 35.0,
+"p25": 72.5,
+"p50": 131.0,
+"p75": 280.0,
+"p90": 437.7,
+"max": 600.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 21,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 6,
+"Buone": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1035,
+"path": "Donna > Vestiti > Tute jumpsuit e playsuit",
+"code": "JUMPSUITS_UK",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1035&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 450.0,
+"p10": 500.0,
+"p25": 575.0,
+"p50": 700.0,
+"p75": 825.0,
+"p90": 900.0,
+"max": 950.0
+},
+"likes_median": 8.5,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 28,
+"path": "Donna > Vestiti > Costumi da bagno",
+"code": "SWIMWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=28&brand_ids[]=15450529&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 20.0,
+"p10": 32.0,
+"p25": 55.0,
+"p50": 80.0,
+"p75": 174.0,
+"p90": 350.0,
+"max": 390.0
+},
+"likes_median": 7,
+"conditions": {
+"Ottime": 6,
+"Nuovo senza cartellino": 4,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 29,
+"path": "Donna > Vestiti > Lingerie e indumenti da notte",
+"code": "LINGERIE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=29&brand_ids[]=15450529&order=newest_first",
+"listings": 35,
+"capped": false,
+"asking": {
+"n": 35,
+"min": 8.0,
+"p10": 10.0,
+"p25": 33.0,
+"p50": 42.0,
+"p75": 84.5,
+"p90": 106.0,
+"max": 195.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo con cartellino": 18,
+"Nuovo senza cartellino": 9,
+"Buone": 1,
+"Ottime": 7
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1176,
+"path": "Donna > Vestiti > Vestiti premaman",
+"code": "MATERNITY_CLOTHES_MAIN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1176&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 99.0,
+"p10": 111.1,
+"p25": 129.25,
+"p50": 159.5,
+"p75": 189.75,
+"p90": 207.9,
+"max": 220.0
+},
+"likes_median": 1.5,
+"conditions": {
+"Ottime": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 73,
+"path": "Donna > Vestiti > Abbigliamento sportivo",
+"code": "SPORTSWEAR_WOMEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=73&brand_ids[]=15450529&order=newest_first",
+"listings": 69,
+"capped": false,
+"asking": {
+"n": 69,
+"min": 7.0,
+"p10": 14.8,
+"p25": 35.0,
+"p50": 65.0,
+"p75": 100.0,
+"p90": 232.0,
+"max": 1800.0
+},
+"likes_median": 3,
+"conditions": {
+"Ottime": 38,
+"Buone": 16,
+"Nuovo senza cartellino": 12,
+"Nuovo con cartellino": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1782,
+"path": "Donna > Vestiti > Costumi e vestiti speciali",
+"code": "SPECIAL_OUTFITS_COSTUMES_W",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1782&brand_ids[]=15450529&order=newest_first",
+"listings": 7,
+"capped": false,
+"asking": {
+"n": 7,
+"min": 50.0,
+"p10": 110.0,
+"p25": 215.0,
+"p50": 350.0,
+"p75": 467.5,
+"p90": 676.0,
+"max": 850.0
+},
+"likes_median": 7,
+"conditions": {
+"Ottime": 5,
+"Nuovo senza cartellino": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 18,
+"path": "Donna > Vestiti > Altri capi di abbigliamento",
+"code": "OTHER_CLOTHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=18&brand_ids[]=15450529&order=newest_first",
+"listings": 9,
+"capped": false,
+"asking": {
+"n": 9,
+"min": 20.0,
+"p10": 20.0,
+"p25": 22.0,
+"p50": 25.0,
+"p75": 67.0,
+"p90": 107.0,
+"max": 195.0
+},
+"likes_median": 6,
+"conditions": {
+"Ottime": 4,
+"Nuovo con cartellino": 4,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 16,
+"path": "Donna > Scarpe",
+"code": "FOOTWEAR",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=16&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 66.5,
+"p25": 85.0,
+"p50": 164.0,
+"p75": 280.0,
+"p90": 350.0,
+"max": 800.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Buone": 22,
+"Ottime": 54,
+"Nuovo senza cartellino": 6,
+"Nuovo con cartellino": 11,
+"Discrete": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2955,
+"path": "Donna > Scarpe > Ballerine",
+"code": "WOMEN_BALLERINAS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2955&brand_ids[]=15450529&order=newest_first",
+"listings": 646,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 45.0,
+"p10": 82.5,
+"p25": 144.25,
+"p50": 220.0,
+"p75": 290.0,
+"p90": 390.0,
+"max": 680.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Ottime": 46,
+"Buone": 27,
+"Nuovo con cartellino": 12,
+"Nuovo senza cartellino": 9,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2954,
+"path": "Donna > Scarpe > Scarpe da barca, loafer e mocassini",
+"code": "WOMEN_BOAT_SHOES_LOAFERS_MOCCASINS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2954&brand_ids[]=15450529&order=newest_first",
+"listings": 234,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 75.0,
+"p25": 143.75,
+"p50": 220.0,
+"p75": 335.0,
+"p90": 430.0,
+"max": 700.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Buone": 18,
+"Ottime": 52,
+"Discrete": 3,
+"Nuovo con cartellino": 14,
+"Nuovo senza cartellino": 9
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1049,
+"path": "Donna > Scarpe > Stivali",
+"code": "W_BOOTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1049&brand_ids[]=15450529&order=newest_first",
+"listings": 947,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 35.0,
+"p10": 89.0,
+"p25": 148.75,
+"p50": 250.0,
+"p75": 321.25,
+"p90": 525.0,
+"max": 800.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Ottime": 54,
+"Nuovo con cartellino": 15,
+"Discrete": 2,
+"Buone": 19,
+"Nuovo senza cartellino": 6
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2623,
+"path": "Donna > Scarpe > Zoccoli e sabot",
+"code": "WOMEN_CLOGS_MULES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2623&brand_ids[]=15450529&order=newest_first",
+"listings": 76,
+"capped": false,
+"asking": {
+"n": 76,
+"min": 15.0,
+"p10": 88.0,
+"p25": 161.25,
+"p50": 250.0,
+"p75": 380.0,
+"p90": 450.0,
+"max": 599.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Buone": 6,
+"Ottime": 40,
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 16,
+"Discrete": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2953,
+"path": "Donna > Scarpe > Espadrillas",
+"code": "WOMEN_ESPADRILLES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2953&brand_ids[]=15450529&order=newest_first",
+"listings": 172,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 35.0,
+"p10": 55.0,
+"p25": 93.75,
+"p50": 200.0,
+"p75": 250.0,
+"p90": 395.0,
+"max": 648.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Buone": 15,
+"Ottime": 57,
+"Nuovo con cartellino": 13,
+"Nuovo senza cartellino": 10,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2952,
+"path": "Donna > Scarpe > Infradito e ciabatte",
+"code": "WOMEN_FLIPFLOPS_SLIDES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2952&brand_ids[]=15450529&order=newest_first",
+"listings": 255,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 52.5,
+"p25": 80.0,
+"p50": 150.0,
+"p75": 225.0,
+"p90": 319.5,
+"max": 650.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Nuovo con cartellino": 19,
+"Ottime": 41,
+"Buone": 21,
+"Discrete": 5,
+"Nuovo senza cartellino": 10
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 543,
+"path": "Donna > Scarpe > Scarpe con tacchi alti",
+"code": "HIGH_HEELS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=543&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 60.0,
+"p25": 112.0,
+"p50": 205.0,
+"p75": 305.0,
+"p90": 410.0,
+"max": 800.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Buone": 18,
+"Ottime": 58,
+"Nuovo con cartellino": 11,
+"Discrete": 2,
+"Nuovo senza cartellino": 7
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2951,
+"path": "Donna > Scarpe > Scarpe con i lacci",
+"code": "WOMEN_LACE_UP_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2951&brand_ids[]=15450529&order=newest_first",
+"listings": 439,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 30.0,
+"p10": 57.5,
+"p25": 100.0,
+"p50": 152.5,
+"p75": 280.0,
+"p90": 350.0,
+"max": 600.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 58,
+"Buone": 16,
+"Nuovo con cartellino": 11,
+"Discrete": 3,
+"Nuovo senza cartellino": 8
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2950,
+"path": "Donna > Scarpe > Mary Jane e scarpe a T",
+"code": "WOMEN_MARY_JANES_TBAR_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2950&brand_ids[]=15450529&order=newest_first",
+"listings": 65,
+"capped": false,
+"asking": {
+"n": 65,
+"min": 18.0,
+"p10": 86.0,
+"p25": 140.0,
+"p50": 250.0,
+"p75": 340.0,
+"p90": 450.0,
+"max": 850.0
+},
+"likes_median": 9,
+"conditions": {
+"Nuovo con cartellino": 12,
+"Ottime": 36,
+"Nuovo senza cartellino": 9,
+"Buone": 7,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2949,
+"path": "Donna > Scarpe > Sandali",
+"code": "WOMEN_SANDALS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2949&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 80.0,
+"p25": 120.0,
+"p50": 194.5,
+"p75": 280.0,
+"p90": 465.0,
+"max": 1200.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Buone": 17,
+"Ottime": 50,
+"Discrete": 7,
+"Nuovo senza cartellino": 9,
+"Nuovo con cartellino": 13
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 215,
+"path": "Donna > Scarpe > Pantofole",
+"code": "SLIPPERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=215&brand_ids[]=15450529&order=newest_first",
+"listings": 8,
+"capped": false,
+"asking": {
+"n": 8,
+"min": 75.0,
+"p10": 77.8,
+"p25": 86.5,
+"p50": 122.5,
+"p75": 236.75,
+"p90": 461.0,
+"max": 650.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Ottime": 6,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2630,
+"path": "Donna > Scarpe > Scarpe sportive",
+"code": "WOMEN_SPORT_SHOES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2630&brand_ids[]=15450529&order=newest_first",
+"listings": 180,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 50.0,
+"p25": 80.0,
+"p50": 140.0,
+"p75": 205.0,
+"p90": 325.0,
+"max": 600.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 45,
+"Discrete": 12,
+"Nuovo senza cartellino": 8,
+"Buone": 29,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2632,
+"path": "Donna > Scarpe > Scarpe da ginnastica",
+"code": "WOMEN_TRAINERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2632&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 54.0,
+"p25": 80.0,
+"p50": 115.0,
+"p75": 200.0,
+"p90": 299.5,
+"max": 700.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Ottime": 48,
+"Buone": 27,
+"Nuovo senza cartellino": 8,
+"Nuovo con cartellino": 8,
+"Discrete": 5
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 19,
+"path": "Donna > Borse",
+"code": "BAGS_BACKPACKS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=19&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 4.0,
+"p10": 77.5,
+"p25": 150.0,
+"p50": 395.0,
+"p75": 665.0,
+"p90": 1000.0,
+"max": 2600.0
+},
+"likes_median": 5.5,
+"conditions": {
+"Ottime": 47,
+"Nuovo senza cartellino": 20,
+"Buone": 14,
+"Nuovo con cartellino": 14,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 157,
+"path": "Donna > Borse > Zaini",
+"code": "BACKPACKS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=157&brand_ids[]=15450529&order=newest_first",
+"listings": 67,
+"capped": false,
+"asking": {
+"n": 67,
+"min": 5.0,
+"p10": 30.0,
+"p25": 157.5,
+"p50": 370.0,
+"p75": 598.5,
+"p90": 760.8,
+"max": 1390.0
+},
+"likes_median": 6,
+"conditions": {
+"Nuovo senza cartellino": 13,
+"Buone": 12,
+"Ottime": 30,
+"Nuovo con cartellino": 10,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2940,
+"path": "Donna > Borse > Borse da spiaggia",
+"code": "WOMEN_BEACH_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2940&brand_ids[]=15450529&order=newest_first",
+"listings": 12,
+"capped": false,
+"asking": {
+"n": 12,
+"min": 15.0,
+"p10": 41.91,
+"p25": 232.5,
+"p50": 810.0,
+"p75": 1050.0,
+"p90": 1245.0,
+"max": 1500.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Nuovo con cartellino": 7,
+"Ottime": 3,
+"Nuovo senza cartellino": 1,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2941,
+"path": "Donna > Borse > Valigette",
+"code": "WOMEN_BRIEFCASES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2941&brand_ids[]=15450529&order=newest_first",
+"listings": 14,
+"capped": false,
+"asking": {
+"n": 14,
+"min": 50.0,
+"p10": 69.0,
+"p25": 105.0,
+"p50": 222.5,
+"p75": 587.5,
+"p90": 770.0,
+"max": 1225.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Buone": 4,
+"Ottime": 7,
+"Nuovo con cartellino": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2942,
+"path": "Donna > Borse > Borse a secchiello",
+"code": "WOMEN_BUCKET_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2942&brand_ids[]=15450529&order=newest_first",
+"listings": 70,
+"capped": false,
+"asking": {
+"n": 70,
+"min": 4.0,
+"p10": 79.5,
+"p25": 125.0,
+"p50": 600.0,
+"p75": 800.0,
+"p90": 999.1,
+"max": 1500.0
+},
+"likes_median": 11.5,
+"conditions": {
+"Nuovo con cartellino": 23,
+"Ottime": 28,
+"Nuovo senza cartellino": 8,
+"Discrete": 1,
+"Buone": 10
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1848,
+"path": "Donna > Borse > Marsupio",
+"code": "W_BUM_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1848&brand_ids[]=15450529&order=newest_first",
+"listings": 35,
+"capped": false,
+"asking": {
+"n": 35,
+"min": 30.0,
+"p10": 178.0,
+"p25": 302.5,
+"p50": 420.0,
+"p75": 549.5,
+"p90": 691.4,
+"max": 1500.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo con cartellino": 6,
+"Ottime": 21,
+"Nuovo senza cartellino": 6,
+"Buone": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 159,
+"path": "Donna > Borse > Pochette",
+"code": "CLUTCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=159&brand_ids[]=15450529&order=newest_first",
+"listings": 429,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 62.5,
+"p25": 139.75,
+"p50": 260.0,
+"p75": 365.0,
+"p90": 510.0,
+"max": 1200.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Ottime": 49,
+"Nuovo con cartellino": 14,
+"Buone": 14,
+"Nuovo senza cartellino": 17,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2943,
+"path": "Donna > Borse > Porta abiti",
+"code": "WOMEN_GARMENT_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2943&brand_ids[]=15450529&order=newest_first",
+"listings": 110,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 5.0,
+"p25": 7.0,
+"p50": 10.5,
+"p75": 15.25,
+"p90": 30.0,
+"max": 750.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 50,
+"Ottime": 37,
+"Buone": 4,
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 156,
+"path": "Donna > Borse > Borsette",
+"code": "HANDBAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=156&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 18.0,
+"p10": 107.5,
+"p25": 231.25,
+"p50": 495.0,
+"p75": 860.0,
+"p90": 1249.5,
+"max": 3500.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Ottime": 61,
+"Nuovo senza cartellino": 10,
+"Nuovo con cartellino": 12,
+"Buone": 12,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2945,
+"path": "Donna > Borse > Borse hobo",
+"code": "WOMEN_HOBO_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2945&brand_ids[]=15450529&order=newest_first",
+"listings": 48,
+"capped": false,
+"asking": {
+"n": 48,
+"min": 65.0,
+"p10": 147.9,
+"p25": 295.0,
+"p50": 550.0,
+"p75": 912.5,
+"p90": 1215.0,
+"max": 2000.0
+},
+"likes_median": 18.0,
+"conditions": {
+"Ottime": 33,
+"Buone": 2,
+"Nuovo senza cartellino": 5,
+"Nuovo con cartellino": 8
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1849,
+"path": "Donna > Borse > Borsoni e sacche da viaggio",
+"code": "W_HOLDALLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1849&brand_ids[]=15450529&order=newest_first",
+"listings": 18,
+"capped": false,
+"asking": {
+"n": 18,
+"min": 15.0,
+"p10": 20.0,
+"p25": 45.75,
+"p50": 115.0,
+"p75": 355.0,
+"p90": 630.0,
+"max": 1500.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Buone": 4,
+"Ottime": 12,
+"Nuovo senza cartellino": 1,
+"Nuovo con cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1850,
+"path": "Donna > Borse > Bagagli e valigie",
+"code": "W_LUGGAGE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1850&brand_ids[]=15450529&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 19.0,
+"p10": 31.3,
+"p25": 49.75,
+"p50": 180.0,
+"p75": 405.0,
+"p90": 594.0,
+"max": 720.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 2,
+"Buone": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 161,
+"path": "Donna > Borse > Pochette per il make-up",
+"code": "MAKE_UP_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=161&brand_ids[]=15450529&order=newest_first",
+"listings": 40,
+"capped": false,
+"asking": {
+"n": 40,
+"min": 5.0,
+"p10": 8.9,
+"p25": 16.75,
+"p50": 32.5,
+"p75": 50.0,
+"p90": 82.0,
+"max": 250.0
+},
+"likes_median": 9.0,
+"conditions": {
+"Ottime": 16,
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 8,
+"Buone": 5
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1784,
+"path": "Donna > Borse > Borse a cartella e messenger",
+"code": "SATCHELS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1784&brand_ids[]=15450529&order=newest_first",
+"listings": 46,
+"capped": false,
+"asking": {
+"n": 46,
+"min": 17.0,
+"p10": 55.0,
+"p25": 88.75,
+"p50": 204.5,
+"p75": 391.25,
+"p90": 740.0,
+"max": 1500.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo senza cartellino": 8,
+"Ottime": 26,
+"Buone": 7,
+"Nuovo con cartellino": 3,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 158,
+"path": "Donna > Borse > Borse a spalla",
+"code": "SHOULDER_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=158&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 27.0,
+"p10": 119.0,
+"p25": 250.0,
+"p50": 449.5,
+"p75": 692.25,
+"p90": 975.0,
+"max": 2600.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Ottime": 47,
+"Buone": 21,
+"Nuovo senza cartellino": 14,
+"Nuovo con cartellino": 13,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 552,
+"path": "Donna > Borse > Borse tote",
+"code": "TOTE_BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=552&brand_ids[]=15450529&order=newest_first",
+"listings": 249,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 2.0,
+"p10": 35.0,
+"p25": 118.0,
+"p50": 382.5,
+"p75": 762.5,
+"p90": 1085.0,
+"max": 2000.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Nuovo senza cartellino": 9,
+"Ottime": 41,
+"Buone": 19,
+"Nuovo con cartellino": 23,
+"Discrete": 4
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 160,
+"path": "Donna > Borse > Portafogli",
+"code": "PURSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=160&brand_ids[]=15450529&order=newest_first",
+"listings": 509,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 39.0,
+"p25": 69.9975,
+"p50": 120.0,
+"p75": 200.0,
+"p90": 279.5,
+"max": 800.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Buone": 16,
+"Nuovo senza cartellino": 22,
+"Nuovo con cartellino": 17,
+"Ottime": 35,
+"Discrete": 6
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2939,
+"path": "Donna > Borse > Pochette da polso",
+"code": "WOMEN_WRISTLETS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2939&brand_ids[]=15450529&order=newest_first",
+"listings": 39,
+"capped": false,
+"asking": {
+"n": 39,
+"min": 30.0,
+"p10": 64.4,
+"p25": 130.0,
+"p50": 260.0,
+"p75": 335.0,
+"p90": 646.6,
+"max": 1500.0
+},
+"likes_median": 6,
+"conditions": {
+"Nuovo senza cartellino": 16,
+"Nuovo con cartellino": 11,
+"Ottime": 10,
+"Buone": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1187,
+"path": "Donna > Accessori",
+"code": "ACCESSORIES_JEWELLERY",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=1187&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 50.0,
+"p25": 85.0,
+"p50": 150.0,
+"p75": 222.5,
+"p90": 295.0,
+"max": 485.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 24,
+"Nuovo con cartellino": 23,
+"Ottime": 35,
+"Discrete": 1,
+"Buone": 13
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2931,
+"path": "Donna > Accessori > Bandana e fazzoletti per la testa",
+"code": "WOMEN_BANDANAS_HEADSCARVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2931&brand_ids[]=15450529&order=newest_first",
+"listings": 28,
+"capped": false,
+"asking": {
+"n": 28,
+"min": 14.0,
+"p10": 25.0,
+"p25": 39.5,
+"p50": 64.5,
+"p75": 168.75,
+"p90": 286.0,
+"max": 320.0
+},
+"likes_median": 6.5,
+"conditions": {
+"Nuovo con cartellino": 11,
+"Ottime": 9,
+"Buone": 6,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 20,
+"path": "Donna > Accessori > Cinture",
+"code": "BELTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=20&brand_ids[]=15450529&order=newest_first",
+"listings": 705,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 82.5,
+"p25": 145.5,
+"p50": 200.0,
+"p75": 250.0,
+"p90": 325.0,
+"max": 410.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo senza cartellino": 16,
+"Nuovo con cartellino": 23,
+"Ottime": 43,
+"Buone": 14
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 90,
+"path": "Donna > Accessori > Guanti",
+"code": "GLOVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=90&brand_ids[]=15450529&order=newest_first",
+"listings": 30,
+"capped": false,
+"asking": {
+"n": 30,
+"min": 15.0,
+"p10": 42.8,
+"p25": 91.25,
+"p50": 150.0,
+"p75": 236.75,
+"p90": 256.0,
+"max": 445.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Ottime": 12,
+"Nuovo con cartellino": 11,
+"Buone": 1,
+"Nuovo senza cartellino": 6
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1123,
+"path": "Donna > Accessori > Accessori per capelli",
+"code": "W_HAIR_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1123&brand_ids[]=15450529&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 72.0,
+"p10": 90.0,
+"p25": 99.0,
+"p50": 119.0,
+"p75": 177.5,
+"p90": 195.0,
+"max": 250.0
+},
+"likes_median": 5,
+"conditions": {
+"Ottime": 1,
+"Nuovo con cartellino": 4,
+"Nuovo senza cartellino": 5,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2932,
+"path": "Donna > Accessori > Fazzoletti",
+"code": "WOMEN_HANDKERCHIEFS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2932&brand_ids[]=15450529&order=newest_first",
+"listings": 13,
+"capped": false,
+"asking": {
+"n": 13,
+"min": 15.0,
+"p10": 19.2,
+"p25": 20.0,
+"p50": 60.0,
+"p75": 80.0,
+"p90": 88.6,
+"max": 120.0
+},
+"likes_median": 5,
+"conditions": {
+"Buone": 1,
+"Ottime": 7,
+"Nuovo con cartellino": 3,
+"Nuovo senza cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 88,
+"path": "Donna > Accessori > Cappelli e berretti",
+"code": "WOM_ACC_HATS_CAPS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=88&brand_ids[]=15450529&order=newest_first",
+"listings": 89,
+"capped": false,
+"asking": {
+"n": 89,
+"min": 18.0,
+"p10": 80.0,
+"p25": 100.0,
+"p50": 160.0,
+"p75": 239.0,
+"p90": 316.0,
+"max": 700.0
+},
+"likes_median": 4,
+"conditions": {
+"Ottime": 19,
+"Nuovo senza cartellino": 26,
+"Nuovo con cartellino": 40,
+"Buone": 4
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 21,
+"path": "Donna > Accessori > Gioielli",
+"code": "JEWELRY",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=21&brand_ids[]=15450529&order=newest_first",
+"listings": 602,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 48.75,
+"p25": 84.5,
+"p50": 150.0,
+"p75": 200.0,
+"p90": 310.0,
+"max": 900.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo con cartellino": 19,
+"Ottime": 34,
+"Nuovo senza cartellino": 28,
+"Buone": 14,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1852,
+"path": "Donna > Accessori > Portachiavi",
+"code": "KEY_RINGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1852&brand_ids[]=15450529&order=newest_first",
+"listings": 55,
+"capped": false,
+"asking": {
+"n": 55,
+"min": 15.0,
+"p10": 25.0,
+"p25": 49.0,
+"p50": 85.0,
+"p75": 150.0,
+"p90": 199.6,
+"max": 290.0
+},
+"likes_median": 4,
+"conditions": {
+"Nuovo con cartellino": 26,
+"Buone": 2,
+"Nuovo senza cartellino": 13,
+"Ottime": 14
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 89,
+"path": "Donna > Accessori > Sciarpe e scialli",
+"code": "WOM_ACC_SCARVES_SHAWLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=89&brand_ids[]=15450529&order=newest_first",
+"listings": 132,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 25.0,
+"p25": 40.0,
+"p50": 75.0,
+"p75": 166.25,
+"p90": 265.0,
+"max": 950.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Ottime": 47,
+"Nuovo senza cartellino": 20,
+"Nuovo con cartellino": 19,
+"Buone": 9,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 26,
+"path": "Donna > Accessori > Occhiali da sole",
+"code": "SUNGLASSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=26&brand_ids[]=15450529&order=newest_first",
+"listings": 397,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 32.0,
+"p25": 50.0,
+"p50": 90.0,
+"p75": 152.5,
+"p90": 232.5,
+"max": 400.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 42,
+"Discrete": 4,
+"Nuovo con cartellino": 20,
+"Buone": 15,
+"Nuovo senza cartellino": 15
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1851,
+"path": "Donna > Accessori > Ombrelli",
+"code": "W_ACC_UMBRELLAS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1851&brand_ids[]=15450529&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 10.0,
+"p10": 13.0,
+"p25": 17.5,
+"p50": 35.0,
+"p75": 69.75,
+"p90": 105.3,
+"max": 129.0
+},
+"likes_median": 7.5,
+"conditions": {
+"Buone": 1,
+"Ottime": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 22,
+"path": "Donna > Accessori > Orologi",
+"code": "WATCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=22&brand_ids[]=15450529&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 60.0,
+"p10": 66.0,
+"p25": 75.0,
+"p50": 170.0,
+"p75": 180.0,
+"p90": 186.0,
+"max": 190.0
+},
+"likes_median": 3,
+"conditions": {
+"Ottime": 4,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1140,
+"path": "Donna > Accessori > Altri accessori",
+"code": "W_OTHER_ACCESSORIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1140&brand_ids[]=15450529&order=newest_first",
+"listings": 198,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 3.0,
+"p10": 7.0,
+"p25": 12.975,
+"p50": 27.5,
+"p75": 100.0,
+"p90": 172.5,
+"max": 350.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Nuovo senza cartellino": 34,
+"Buone": 11,
+"Ottime": 32,
+"Nuovo con cartellino": 18,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 146,
+"path": "Donna > Bellezza",
+"code": "COSMETICS_AND_BEAUTY_PRODUCTS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=146&brand_ids[]=15450529&order=newest_first",
+"listings": 50,
+"capped": false,
+"asking": {
+"n": 50,
+"min": 5.0,
+"p10": 12.0,
+"p25": 20.0,
+"p50": 41.5,
+"p75": 67.25,
+"p90": 91.0,
+"max": 200.0
+},
+"likes_median": 7.0,
+"conditions": {
+"Nuovo con cartellino": 50
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 964,
+"path": "Donna > Bellezza > Make-up",
+"code": "WOM_COS_MAK_COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=964&brand_ids[]=15450529&order=newest_first",
+"listings": 21,
+"capped": false,
+"asking": {
+"n": 21,
+"min": 5.0,
+"p10": 12.0,
+"p25": 15.0,
+"p50": 23.0,
+"p75": 43.0,
+"p90": 80.0,
+"max": 200.0
+},
+"likes_median": 5,
+"conditions": {
+"Nuovo con cartellino": 21
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 152,
+"path": "Donna > Bellezza > Profumi",
+"code": "WOM_COS_PERFUME",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=152&brand_ids[]=15450529&order=newest_first",
+"listings": 22,
+"capped": false,
+"asking": {
+"n": 22,
+"min": 7.0,
+"p10": 15.5,
+"p25": 36.25,
+"p50": 65.0,
+"p75": 86.75,
+"p90": 136.0,
+"max": 180.0
+},
+"likes_median": 8.0,
+"conditions": {
+"Nuovo con cartellino": 22
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 948,
+"path": "Donna > Bellezza > Cura del viso",
+"code": "COSMETICS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=948&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 31.0,
+"p10": 32.4,
+"p25": 34.5,
+"p50": 38.0,
+"p75": 41.5,
+"p90": 43.6,
+"max": 45.0
+},
+"likes_median": 17.0,
+"conditions": {
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1906,
+"path": "Donna > Bellezza > Accessori di bellezza",
+"code": "W_BEAUTY_TOOLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1906&brand_ids[]=15450529&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 17.0,
+"p10": 30.2,
+"p25": 50.0,
+"p50": 55.0,
+"p75": 55.0,
+"p90": 61.0,
+"max": 65.0
+},
+"likes_median": 7,
+"conditions": {
+"Nuovo con cartellino": 5
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2050,
+"path": "Uomo > Vestiti",
+"code": "MEN_CLOTHING",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=2050&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 25.0,
+"p25": 39.0,
+"p50": 77.5,
+"p75": 199.25,
+"p90": 357.5,
+"max": 1250.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Buone": 8,
+"Nuovo senza cartellino": 14,
+"Ottime": 66,
+"Nuovo con cartellino": 7,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 257,
+"path": "Uomo > Vestiti > Jeans",
+"code": "MEN_TRO_JEANS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=257&brand_ids[]=15450529&order=newest_first",
+"listings": 59,
+"capped": false,
+"asking": {
+"n": 59,
+"min": 10.0,
+"p10": 19.6,
+"p25": 35.0,
+"p50": 60.0,
+"p75": 100.0,
+"p90": 209.99200000000002,
+"max": 360.0
+},
+"likes_median": 3,
+"conditions": {
+"Ottime": 34,
+"Nuovo con cartellino": 10,
+"Buone": 7,
+"Nuovo senza cartellino": 7,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1206,
+"path": "Uomo > Vestiti > Abbigliamento da esterno",
+"code": "MEN_OUTERWEAR_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1206&brand_ids[]=15450529&order=newest_first",
+"listings": 176,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 25.0,
+"p10": 69.5,
+"p25": 95.0,
+"p50": 245.0,
+"p75": 428.5,
+"p90": 700.0,
+"max": 2000.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Buone": 12,
+"Ottime": 52,
+"Nuovo senza cartellino": 16,
+"Nuovo con cartellino": 15,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 76,
+"path": "Uomo > Vestiti > Camicie e t-shirt",
+"code": "MEN_TOPS_T_SHIRTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=76&brand_ids[]=15450529&order=newest_first",
+"listings": 403,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 1.0,
+"p10": 17.494999999999997,
+"p25": 25.0,
+"p50": 40.0,
+"p75": 91.25,
+"p90": 199.0,
+"max": 500.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Nuovo senza cartellino": 16,
+"Ottime": 58,
+"Nuovo con cartellino": 10,
+"Discrete": 3,
+"Buone": 9
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 32,
+"path": "Uomo > Vestiti > Completi e blazer",
+"code": "SUITS_BLAZERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=32&brand_ids[]=15450529&order=newest_first",
+"listings": 140,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.0,
+"p10": 30.0,
+"p25": 43.975,
+"p50": 77.5,
+"p75": 163.75,
+"p90": 285.0,
+"max": 750.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 71,
+"Nuovo senza cartellino": 13,
+"Nuovo con cartellino": 3,
+"Buone": 8,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 79,
+"path": "Uomo > Vestiti > Maglioni e pullover",
+"code": "MEN_PULLOVERS_SWEATERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=79&brand_ids[]=15450529&order=newest_first",
+"listings": 203,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 15.99,
+"p10": 30.0,
+"p25": 50.0,
+"p50": 98.5,
+"p75": 176.25,
+"p90": 300.0,
+"max": 1200.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 55,
+"Nuovo con cartellino": 12,
+"Buone": 13,
+"Nuovo senza cartellino": 14,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 34,
+"path": "Uomo > Vestiti > Pantaloni",
+"code": "MEN_TROUSERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=34&brand_ids[]=15450529&order=newest_first",
+"listings": 60,
+"capped": false,
+"asking": {
+"n": 60,
+"min": 5.0,
+"p10": 22.8,
+"p25": 30.0,
+"p50": 67.5,
+"p75": 102.5,
+"p90": 250.0,
+"max": 999.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 33,
+"Buone": 9,
+"Nuovo senza cartellino": 11,
+"Nuovo con cartellino": 7
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 80,
+"path": "Uomo > Vestiti > Pantaloncini",
+"code": "SHORTS_CAPRI_PANTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=80&brand_ids[]=15450529&order=newest_first",
+"listings": 13,
+"capped": false,
+"asking": {
+"n": 13,
+"min": 15.0,
+"p10": 55.8,
+"p25": 135.0,
+"p50": 150.0,
+"p75": 280.0,
+"p90": 339.8,
+"max": 570.0
+},
+"likes_median": 3,
+"conditions": {
+"Nuovo con cartellino": 5,
+"Ottime": 5,
+"Nuovo senza cartellino": 2,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 85,
+"path": "Uomo > Vestiti > Calzini e intimo",
+"code": "UNDERWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=85&brand_ids[]=15450529&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 25.0,
+"p10": 27.0,
+"p25": 30.0,
+"p50": 30.0,
+"p75": 55.0,
+"p90": 55.0,
+"max": 55.0
+},
+"likes_median": 4,
+"conditions": {
+"Ottime": 2,
+"Nuovo con cartellino": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2910,
+"path": "Uomo > Vestiti > Pigiama",
+"code": "MEN_SLEEPWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2910&brand_ids[]=15450529&order=newest_first",
+"listings": 5,
+"capped": false,
+"asking": {
+"n": 5,
+"min": 15.0,
+"p10": 21.0,
+"p25": 30.0,
+"p50": 60.0,
+"p75": 80.0,
+"p90": 80.0,
+"max": 80.0
+},
+"likes_median": 37,
+"conditions": {
+"Ottime": 3,
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 84,
+"path": "Uomo > Vestiti > Costumi da bagno",
+"code": "MEN_SWIMWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=84&brand_ids[]=15450529&order=newest_first",
+"listings": 10,
+"capped": false,
+"asking": {
+"n": 10,
+"min": 20.0,
+"p10": 38.0,
+"p25": 63.0,
+"p50": 139.5,
+"p75": 208.75,
+"p90": 336.0,
+"max": 390.0
+},
+"likes_median": 2.5,
+"conditions": {
+"Ottime": 5,
+"Nuovo con cartellino": 4,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 30,
+"path": "Uomo > Vestiti > Abbigliamento sportivo",
+"code": "SPORTSWEAR",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=30&brand_ids[]=15450529&order=newest_first",
+"listings": 19,
+"capped": false,
+"asking": {
+"n": 19,
+"min": 35.0,
+"p10": 44.0,
+"p25": 67.5,
+"p50": 160.0,
+"p75": 260.0,
+"p90": 820.0,
+"max": 900.0
+},
+"likes_median": 2,
+"conditions": {
+"Nuovo con cartellino": 9,
+"Ottime": 7,
+"Nuovo senza cartellino": 2,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 92,
+"path": "Uomo > Vestiti > Costumi e vestiti speciali",
+"code": "SPECIALISED_CLOTHING_COSTUMES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=92&brand_ids[]=15450529&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 40.0,
+"p10": 88.0,
+"p25": 160.0,
+"p50": 275.0,
+"p75": 407.5,
+"p90": 511.0,
+"max": 580.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Ottime": 3,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 83,
+"path": "Uomo > Vestiti > Altri capi di abbigliamento",
+"code": "MEN_OTHER",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=83&brand_ids[]=15450529&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 12.0,
+"p10": 25.99,
+"p25": 44.0,
+"p50": 200.0,
+"p75": 400.0,
+"p90": 500.0,
+"max": 550.0
+},
+"likes_median": 2,
+"conditions": {
+"Ottime": 4,
+"Nuovo senza cartellino": 4,
+"Buone": 2,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1231,
+"path": "Uomo > Scarpe",
+"code": "MEN_SHOES_NEW",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=1231&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 54.0,
+"p25": 80.0,
+"p50": 127.5,
+"p75": 202.5,
+"p90": 335.0,
+"max": 499.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Buone": 20,
+"Ottime": 58,
+"Nuovo senza cartellino": 6,
+"Discrete": 4,
+"Nuovo con cartellino": 8
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2656,
+"path": "Uomo > Scarpe > Scarpe da barca, loafer e mocassini",
+"code": "MEN_BOAT_LOAFERS_MOCCASINS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2656&brand_ids[]=15450529&order=newest_first",
+"listings": 148,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 29.0,
+"p10": 70.0,
+"p25": 99.0,
+"p50": 220.0,
+"p75": 305.0,
+"p90": 550.0,
+"max": 800.0
+},
+"likes_median": 3.0,
+"conditions": {
+"Ottime": 42,
+"Nuovo senza cartellino": 15,
+"Nuovo con cartellino": 16,
+"Buone": 21,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1233,
+"path": "Uomo > Scarpe > Stivali",
+"code": "MEN_BOOTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1233&brand_ids[]=15450529&order=newest_first",
+"listings": 83,
+"capped": false,
+"asking": {
+"n": 83,
+"min": 10.0,
+"p10": 96.0,
+"p25": 159.5,
+"p50": 250.0,
+"p75": 390.0,
+"p90": 532.0,
+"max": 760.0
+},
+"likes_median": 3,
+"conditions": {
+"Nuovo con cartellino": 15,
+"Ottime": 46,
+"Buone": 7,
+"Nuovo senza cartellino": 14,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2970,
+"path": "Uomo > Scarpe > Zoccoli e sabot",
+"code": "MEN_CLOGS_MULES_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2970&brand_ids[]=15450529&order=newest_first",
+"listings": 3,
+"capped": false,
+"asking": {
+"n": 3,
+"min": 95.0,
+"p10": 106.0,
+"p25": 122.5,
+"p50": 150.0,
+"p75": 220.0,
+"p90": 262.0,
+"max": 290.0
+},
+"likes_median": 10,
+"conditions": {
+"Nuovo con cartellino": 1,
+"Ottime": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2657,
+"path": "Uomo > Scarpe > Espadrillas",
+"code": "MEN_ESPADRILLES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2657&brand_ids[]=15450529&order=newest_first",
+"listings": 34,
+"capped": false,
+"asking": {
+"n": 34,
+"min": 50.0,
+"p10": 75.0,
+"p25": 96.0,
+"p50": 130.0,
+"p75": 215.0,
+"p90": 250.0,
+"max": 380.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Nuovo con cartellino": 4,
+"Discrete": 1,
+"Ottime": 21,
+"Nuovo senza cartellino": 5,
+"Buone": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2969,
+"path": "Uomo > Scarpe > Infradito e ciabatte",
+"code": "MEN_FLIPFLOPS_SLIDES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2969&brand_ids[]=15450529&order=newest_first",
+"listings": 75,
+"capped": false,
+"asking": {
+"n": 75,
+"min": 20.0,
+"p10": 54.0,
+"p25": 80.0,
+"p50": 130.0,
+"p75": 173.0,
+"p90": 249.6,
+"max": 550.0
+},
+"likes_median": 5,
+"conditions": {
+"Nuovo senza cartellino": 13,
+"Ottime": 34,
+"Nuovo con cartellino": 16,
+"Buone": 12
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1238,
+"path": "Uomo > Scarpe > Scarpe formali",
+"code": "MEN_FORMAL",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1238&brand_ids[]=15450529&order=newest_first",
+"listings": 555,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 23.0,
+"p10": 58.0,
+"p25": 88.0,
+"p50": 150.0,
+"p75": 250.0,
+"p90": 335.0,
+"max": 550.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Ottime": 48,
+"Nuovo con cartellino": 7,
+"Buone": 22,
+"Nuovo senza cartellino": 13,
+"Discrete": 6
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2968,
+"path": "Uomo > Scarpe > Sandali",
+"code": "MEN_SANDALS_NEW",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2968&brand_ids[]=15450529&order=newest_first",
+"listings": 31,
+"capped": false,
+"asking": {
+"n": 31,
+"min": 25.0,
+"p10": 100.0,
+"p25": 150.0,
+"p50": 250.0,
+"p75": 394.5,
+"p90": 450.0,
+"max": 600.0
+},
+"likes_median": 10,
+"conditions": {
+"Nuovo con cartellino": 9,
+"Ottime": 16,
+"Nuovo senza cartellino": 4,
+"Buone": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2659,
+"path": "Uomo > Scarpe > Pantofole",
+"code": "MEN_SLIPPERS_2",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2659&brand_ids[]=15450529&order=newest_first",
+"listings": 4,
+"capped": false,
+"asking": {
+"n": 4,
+"min": 65.0,
+"p10": 90.5,
+"p25": 128.75,
+"p50": 158.0,
+"p75": 187.0,
+"p90": 224.8,
+"max": 250.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 2,
+"Nuovo senza cartellino": 1,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1452,
+"path": "Uomo > Scarpe > Scarpe sportive",
+"code": "SPORT_SHOES_MEN",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1452&brand_ids[]=15450529&order=newest_first",
+"listings": 139,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 20.0,
+"p10": 59.0,
+"p25": 93.75,
+"p50": 150.0,
+"p75": 250.0,
+"p90": 335.0,
+"max": 600.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Ottime": 43,
+"Nuovo con cartellino": 8,
+"Nuovo senza cartellino": 11,
+"Buone": 28,
+"Discrete": 6
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 1242,
+"path": "Uomo > Scarpe > Scarpe da ginnastica",
+"code": "MEN_SNEAKERS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=1242&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 52.0,
+"p25": 80.0,
+"p50": 120.0,
+"p75": 199.9625,
+"p90": 310.0,
+"max": 499.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Buone": 21,
+"Ottime": 57,
+"Nuovo senza cartellino": 6,
+"Discrete": 4,
+"Nuovo con cartellino": 8
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 82,
+"path": "Uomo > Accessori",
+"code": "MEN_ACCESSORIES",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=82&brand_ids[]=15450529&order=newest_first",
+"listings": 960,
+"capped": true,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 19.0,
+"p25": 34.0,
+"p50": 44.0,
+"p75": 102.475,
+"p90": 200.0,
+"max": 700.0
+},
+"likes_median": 2.0,
+"conditions": {
+"Nuovo con cartellino": 15,
+"Nuovo senza cartellino": 19,
+"Ottime": 51,
+"Buone": 9,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 94,
+"path": "Uomo > Accessori > Borse e zaini",
+"code": "BAGS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=94&brand_ids[]=15450529&order=newest_first",
+"listings": 786,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 10.0,
+"p10": 27.5,
+"p25": 56.75,
+"p50": 150.0,
+"p75": 380.0,
+"p90": 700.0,
+"max": 2000.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo con cartellino": 27,
+"Nuovo senza cartellino": 21,
+"Ottime": 29,
+"Buone": 13,
+"Discrete": 6
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 96,
+"path": "Uomo > Accessori > Cinture",
+"code": "MEN_ACC_BELTS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=96&brand_ids[]=15450529&order=newest_first",
+"listings": 244,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 12.0,
+"p10": 43.95,
+"p25": 88.74249999999999,
+"p50": 200.0,
+"p75": 300.0,
+"p90": 350.0,
+"max": 6900.0
+},
+"likes_median": 5.0,
+"conditions": {
+"Nuovo con cartellino": 26,
+"Nuovo senza cartellino": 19,
+"Ottime": 36,
+"Buone": 12,
+"Discrete": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 91,
+"path": "Uomo > Accessori > Guanti",
+"code": "MEN_ACC_GLOVES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=91&brand_ids[]=15450529&order=newest_first",
+"listings": 11,
+"capped": false,
+"asking": {
+"n": 11,
+"min": 23.0,
+"p10": 45.0,
+"p25": 92.5,
+"p50": 150.0,
+"p75": 249.5,
+"p90": 250.0,
+"max": 255.0
+},
+"likes_median": 8,
+"conditions": {
+"Nuovo con cartellino": 7,
+"Ottime": 3,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2958,
+"path": "Uomo > Accessori > Fazzoletti",
+"code": "MEN_HANDKERCHIEFS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2958&brand_ids[]=15450529&order=newest_first",
+"listings": 1,
+"capped": false,
+"asking": {
+"n": 1,
+"min": 25.0,
+"p10": 25.0,
+"p25": 25.0,
+"p50": 25.0,
+"p75": 25.0,
+"p90": 25.0,
+"max": 25.0
+},
+"likes_median": 3,
+"conditions": {
+"Ottime": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 86,
+"path": "Uomo > Accessori > Cappelli e berretti",
+"code": "HATS_CAPS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=86&brand_ids[]=15450529&order=newest_first",
+"listings": 81,
+"capped": false,
+"asking": {
+"n": 81,
+"min": 18.0,
+"p10": 75.0,
+"p25": 96.0,
+"p50": 140.0,
+"p75": 195.0,
+"p90": 280.0,
+"max": 700.0
+},
+"likes_median": 4,
+"conditions": {
+"Ottime": 17,
+"Nuovo con cartellino": 37,
+"Buone": 5,
+"Nuovo senza cartellino": 22
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 95,
+"path": "Uomo > Accessori > Gioielli",
+"code": "APPAREL",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=95&brand_ids[]=15450529&order=newest_first",
+"listings": 190,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 8.0,
+"p10": 55.0,
+"p25": 68.0,
+"p50": 100.0,
+"p75": 139.25,
+"p90": 195.0,
+"max": 399.0
+},
+"likes_median": 13.0,
+"conditions": {
+"Nuovo senza cartellino": 22,
+"Ottime": 43,
+"Discrete": 2,
+"Nuovo con cartellino": 20,
+"Buone": 9
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2957,
+"path": "Uomo > Accessori > Fazzoletto da taschino",
+"code": "MEN_POCKET_SQUARES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2957&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 25.0,
+"p10": 26.5,
+"p25": 28.75,
+"p50": 32.5,
+"p75": 36.25,
+"p90": 38.5,
+"max": 40.0
+},
+"likes_median": 3.5,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 87,
+"path": "Uomo > Accessori > Sciarpe e scialli",
+"code": "SCARVES_SHAWLS",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=87&brand_ids[]=15450529&order=newest_first",
+"listings": 18,
+"capped": false,
+"asking": {
+"n": 18,
+"min": 18.0,
+"p10": 27.0,
+"p25": 90.0,
+"p50": 119.5,
+"p75": 176.25,
+"p90": 229.0,
+"max": 350.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Nuovo con cartellino": 9,
+"Ottime": 5,
+"Nuovo senza cartellino": 3,
+"Buone": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 98,
+"path": "Uomo > Accessori > Occhiali da sole",
+"code": "MEN_ACC_SUNGLASSES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=98&brand_ids[]=15450529&order=newest_first",
+"listings": 165,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 5.0,
+"p10": 27.5,
+"p25": 50.0,
+"p50": 95.0,
+"p75": 150.0,
+"p90": 225.0,
+"max": 400.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Buone": 13,
+"Nuovo con cartellino": 16,
+"Nuovo senza cartellino": 16,
+"Ottime": 49,
+"Discrete": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 2956,
+"path": "Uomo > Accessori > Cravatte e papillon",
+"code": "MEN_TIES_BOWTIES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=2956&brand_ids[]=15450529&order=newest_first",
+"listings": 371,
+"capped": false,
+"asking": {
+"n": 96,
+"min": 1.0,
+"p10": 15.4,
+"p25": 24.0,
+"p50": 34.0,
+"p75": 39.0,
+"p90": 44.0,
+"max": 80.0
+},
+"likes_median": 1.0,
+"conditions": {
+"Ottime": 82,
+"Nuovo senza cartellino": 9,
+"Nuovo con cartellino": 2,
+"Buone": 3
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 97,
+"path": "Uomo > Accessori > Orologi",
+"code": "MEN_ACC_WATCHES",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=97&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 60.0,
+"p10": 71.0,
+"p25": 87.5,
+"p50": 115.0,
+"p75": 142.5,
+"p90": 159.0,
+"max": 170.0
+},
+"likes_median": 1.5,
+"conditions": {
+"Ottime": 1,
+"Nuovo senza cartellino": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 99,
+"path": "Uomo > Accessori > Altro",
+"code": "MEN_ACC_OTHER",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=99&brand_ids[]=15450529&order=newest_first",
+"listings": 56,
+"capped": false,
+"asking": {
+"n": 56,
+"min": 3.0,
+"p10": 10.5,
+"p25": 20.0,
+"p50": 95.0,
+"p75": 184.75,
+"p90": 250.0,
+"max": 360.0
+},
+"likes_median": 4.0,
+"conditions": {
+"Nuovo senza cartellino": 14,
+"Buone": 6,
+"Ottime": 14,
+"Nuovo con cartellino": 21,
+"Discrete": 1
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 139,
+"path": "Uomo > Cura del corpo",
+"code": "COSMETICS_AND_BEAUTY_ITEMS",
+"level": "group",
+"filter": "https://www.vinted.it/catalog?catalog[]=139&brand_ids[]=15450529&order=newest_first",
+"listings": 19,
+"capped": false,
+"asking": {
+"n": 19,
+"min": 15.0,
+"p10": 21.6,
+"p25": 35.0,
+"p50": 54.989999999999995,
+"p75": 71.5,
+"p90": 89.2,
+"max": 170.0
+},
+"likes_median": 5,
+"conditions": {
+"Nuovo con cartellino": 19
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 141,
+"path": "Uomo > Cura del corpo > Cura del corpo",
+"code": "BODY_CARE",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=141&brand_ids[]=15450529&order=newest_first",
+"listings": 2,
+"capped": false,
+"asking": {
+"n": 2,
+"min": 75.0,
+"p10": 75.5,
+"p25": 76.25,
+"p50": 77.5,
+"p75": 78.75,
+"p90": 79.5,
+"max": 80.0
+},
+"likes_median": 4.5,
+"conditions": {
+"Nuovo con cartellino": 2
+}
+},
+{
+"brand": "Valentino",
+"catalog_id": 145,
+"path": "Uomo > Cura del corpo > Dopobarba e colonia",
+"code": "PERFUME",
+"level": "type",
+"filter": "https://www.vinted.it/catalog?catalog[]=145&brand_ids[]=15450529&order=newest_first",
+"listings": 16,
+"capped": false,
+"asking": {
+"n": 16,
+"min": 15.0,
+"p10": 21.0,
+"p25": 34.5,
+"p50": 52.495000000000005,
+"p75": 62.0,
+"p90": 89.5,
+"max": 170.0
+},
+"likes_median": 6.0,
+"conditions": {
+"Nuovo con cartellino": 16
+}
+}
+]
+}

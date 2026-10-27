@@ -74,6 +74,12 @@ MISSES_TO_CHECK = 2
 # 0 of one of them. A band partitions a brand cleanly, and a listing's band
 # follows from its own price, so coverage needs no guessing.
 BANDS = os.path.join(DIR, "bands.json")
+# Brands narrowed to some of their Vinted brand titles. The plain "Valentino"
+# id turned out to be 87% of Valentino uploads and almost all cheap bags sold
+# under that label (median asking price EUR 50 for a handbag), so only
+# "Valentino Garavani" is tracked from 2026-10-27. Watched listings whose
+# card names another title are dropped, not closed: they never belonged.
+TITLES = os.path.join(DIR, "titles.json")
 
 # Most cycles sweep only the newest SHALLOW_H hours, where nearly all steals
 # happen (median time to sale 1.2h; 10% of sales come after 12h); every
@@ -365,6 +371,14 @@ def main() -> int:
     ev = {"at": int(now), "new": 0, "absent": 0, "checked": 0, "closed": {},
           "swept": {}, "incomplete": []}
     watch, frontier, closed = st["watch"], st["frontier"], []
+    try:
+        titles = json.load(open(TITLES))
+    except (OSError, ValueError):
+        titles = {}
+    off = [k for k, r in watch.items() if r["group"] in titles and r.get("brand") not in titles[r["group"]]]
+    for k in off:
+        watch.pop(k)
+    ev["dropped_title"] = len(off)
 
     cycle_no = len(st.get("cycles") or [])
     deep = cycle_no % DEEP_EVERY == 0
@@ -393,11 +407,18 @@ def main() -> int:
     for unit, brand, ids, band in units:
         mine = [r for r in watch.values() if r["group"] == brand and unit_of(r) == unit
                 and (deep or r["first_seen"] >= shallow_cut)]
-        prev_at = (st.get("swept_at") or {}).get(unit) or (st.get("swept_at") or {}).get(brand)
-        # A new unit starts from the highest frontier its brand has: a listing
-        # missed as new for one cycle is better than an old one taken for new.
-        prev = frontier.get(unit) or max([v for k, v in frontier.items()
-                                          if k == brand or k.startswith(brand + "|")] or [0]) or None
+        swept_at = st.get("swept_at") or {}
+        mine_keys = [k for k in frontier if k == brand or k.startswith(brand + "|")]
+        # A unit's own frontier is only trusted if that unit was swept lately.
+        # A new unit, or a renamed one - Valentino went from four price bands
+        # back to one unit called "Valentino", whose frontier dated from a week
+        # earlier - starts from its brand's highest frontier instead: a listing
+        # missed as new for one cycle beats a week of old ones taken for new.
+        if frontier.get(unit) and swept_at.get(unit, 0) > now - 2 * 3600:
+            prev, prev_at = frontier[unit], swept_at[unit]
+        else:
+            prev = max([frontier[k] for k in mine_keys] or [0]) or None
+            prev_at = max([swept_at.get(k, 0) for k in mine_keys] or [0]) or None
         stop_below = min(int(r["id"]) for r in mine) if mine else prev
         t0 = time.time()
         got, floor, complete = sweep(s, ids, band, stop_below)

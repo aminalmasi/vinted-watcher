@@ -49,7 +49,12 @@ LAST=/extra/malmasik/vinted_sched/last_dispatch
 # constant ~1,700 requests per cycle, which was not true across days when
 # per-cycle bursts differed. The interval and the observed 403 rate are the
 # measurements worth pacing on.
-MIN_GAP_MIN=${VT_MIN_GAP_MIN:-92}
+#
+# 2026-10-27: 92 -> 85. This script runs every 30 minutes, so 92 meant "wait
+# for the 120-minute slot" and T drifted to 1.84h; 85 fires on the 90-minute
+# slot for the 1.5h the owner asked for. Measured beforehand: 0 refusals in
+# the last 15 cycles, 0.03% over the week.
+MIN_GAP_MIN=${VT_MIN_GAP_MIN:-85}
 
 log() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $*" >> "$LOG"; }
 

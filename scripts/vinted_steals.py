@@ -89,6 +89,7 @@ TITLES = os.path.join(DIR, "titles.json")
 SHALLOW_H = float(os.environ.get("VS_SHALLOW_H", "12"))
 DEEP_EVERY = int(os.environ.get("VS_DEEP_EVERY", "4"))
 HARD_END_H = WATCH_H + 6           # closed regardless, so state stays bounded
+HISTORY_KEEP = 500                 # cycle summaries kept in the state file
 
 # A cycle that runs out of time is cancelled by Actions and saves NOTHING -
 # three in a row were lost that way. So the cycle stops itself first.
@@ -380,7 +381,13 @@ def main() -> int:
         watch.pop(k)
     ev["dropped_title"] = len(off)
 
-    cycle_no = len(st.get("cycles") or [])
+    # Its own counter. This was len(st["cycles"]), but that history is capped
+    # at HISTORY_KEEP + 1 entries, so once full the length froze at 501 -
+    # 501 % 4 == 1 - and no deep cycle ran from 2026-11-01 11:03 on. Listings
+    # past 12h were then never swept again: sales 12-24h after upload went
+    # unseen and 24,314 listings were closed "unresolved". A state without the
+    # counter starts at 0, so the first run after this fix is a deep one.
+    cycle_no = st.get("cycle_no", 0)
     deep = cycle_no % DEEP_EVERY == 0
     ev["deep"] = deep
     shallow_cut = now - SHALLOW_H * 3600
@@ -519,7 +526,8 @@ def main() -> int:
 
     write_closed(closed)
     st["last_at"] = now
-    st["cycles"] = (st.get("cycles") or [])[-500:] + [ev]
+    st["cycles"] = (st.get("cycles") or [])[-HISTORY_KEEP:] + [ev]
+    st["cycle_no"] = cycle_no + 1
     os.makedirs(DIR, exist_ok=True)
     json.dump(st, open(STATE, "w"), ensure_ascii=False, separators=(",", ":"))
     return 0

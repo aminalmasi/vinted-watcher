@@ -102,6 +102,20 @@ HISTORY_KEEP = 500                 # cycle summaries kept in the state file
 REBASE_H = float(os.environ.get("VS_REBASE_H", "3"))
 MAX_WINDOW_H = float(os.environ.get("VS_MAX_WINDOW_H", "6"))
 
+# Vinted ids are one counter for the whole site, handed out at upload. So the
+# highest id any sweep has seen by time t says every listing below it was
+# uploaded before t - whatever its brand or band. Each cycle records
+# [end time, highest id seen]; a listing claimed as uploaded after u must have
+# an id above the clock at u. This checks the per-unit frontier bookkeeping
+# from outside: on 2026-11-21 a unit's frontier stayed 15 days stale while its
+# sweep time was refreshed, and 6,000 old listings were admitted at 12:34 with
+# 40-minute windows - 12 of them closed as steals the next hours.
+CLOCK_KEEP = 200
+
+
+def clock_at(clock: list, t: float) -> int:
+    return max((i for at, i in clock if at <= t), default=0)
+
 # A cycle that runs out of time is cancelled by Actions and saves NOTHING -
 # three in a row were lost that way. So the cycle stops itself first.
 BUDGET_S = float(os.environ.get("VS_BUDGET_MIN", "21")) * 60
@@ -365,6 +379,53 @@ def close(rec: dict, outcome: str, now: float) -> dict:
     return rec
 
 
+def repair_1121(st: dict, watch: dict) -> int:
+    """One-off: undo the 12:34 UTC run of 2026-11-21, which trusted a 15-day
+    stale frontier and admitted ~6,000 old listings with 40-minute windows.
+
+    The id clock cannot catch them - it has no point before that day's
+    restart - so the line is drawn by hand: 10905728307 is the highest id the
+    restart's first sweep (Gucci, 12:03:58 UTC) saw, so anything at or below
+    it was uploaded before about 12:04, not after the run's ~11:56 claim; ids
+    from those runs reach back to 10701298365, which is ~6 November. Above
+    the line, 554 watched and 34 closed listings are kept as genuine.
+
+    Dropped from the watch; in the day file the closed ones lose their steal
+    flag and are marked window_bad. Every sold record of the day also gets
+    the 4-hour spread rule, which the runs before 19:33 closed without.
+    """
+    if st.get("repair_1121"):
+        return 0
+    lo, hi, line = 1795264200, 1795266000, 10905728307
+    bad = lambda r: lo <= r["first_seen"] < hi and int(r["id"]) <= line
+    gone = [k for k, r in watch.items() if bad(r)]
+    for k in gone:
+        watch.pop(k)
+    path = os.path.join(DIR, "days", "2026-11-21.jsonl")
+    fixed = 0
+    if os.path.exists(path):
+        out = []
+        for line_ in open(path):
+            r = json.loads(line_)
+            if r.get("outcome") == "sold":
+                if bad(r):
+                    r.update(steal=False, steal_uncertain=False, window_bad=True)
+                    fixed += 1
+                else:
+                    spread = r["sold_h_max"] - r["sold_h_min"]
+                    r["steal"] = r["sold_h_est"] <= STEAL_H and spread <= 4
+                    r["steal_uncertain"] = r["sold_h_est"] <= STEAL_H and spread > 4
+            elif bad(r):
+                r["window_bad"] = True
+            out.append(json.dumps(r, ensure_ascii=False, separators=(",", ":")))
+        tmp = path + ".tmp"
+        with open(tmp, "w") as fh:
+            fh.write("\n".join(out) + "\n")
+        os.replace(tmp, path)
+    st["repair_1121"] = {"watch_dropped": len(gone), "closed_marked": fixed}
+    return len(gone)
+
+
 def write_closed(recs: list[dict]) -> None:
     os.makedirs(os.path.join(DIR, "days"), exist_ok=True)
     by_day: dict[str, list] = {}
@@ -401,7 +462,14 @@ def main() -> int:
     for k in wide:
         watch.pop(k)
     ev["dropped_wide_window"] = len(wide)
+    clock = st.get("id_clock") or []
+    old = [k for k, r in watch.items() if int(r["id"]) <= clock_at(clock, r.get("up_after", r["first_seen"]))]
+    for k in old:
+        watch.pop(k)
+    ev["dropped_old_id"] = len(old)
+    ev["repaired_1121"] = repair_1121(st, watch)
     ev["rebased"] = []
+    ev["old_by_clock"] = 0
 
     # Its own counter. This was len(st["cycles"]), but that history is capped
     # at HISTORY_KEEP + 1 entries, so once full the length froze at 501 -
@@ -432,6 +500,7 @@ def main() -> int:
 
     seen_now: dict[str, dict] = {}
     passed: dict[str, int] = {}
+    cycle_top = 0
     BUDGET_S = DEEP_BUDGET_S if deep else float(os.environ.get("VS_BUDGET_MIN", "21")) * 60
     for unit, brand, ids, band in units:
         mine = [r for r in watch.values() if r["group"] == brand and unit_of(r) == unit
@@ -481,13 +550,24 @@ def main() -> int:
                 # search index can lag, which the page's own upload time
                 # corrects for every listing that gets checked.
                 up_after = (prev_at or t0 - 3600) - 600
+                if c["id"] <= clock_at(clock, up_after):
+                    ev["old_by_clock"] += 1    # older than the claim: frontier was stale
+                    continue
                 watch[k] = dict(c, group=brand, first_seen=t0, up_after=up_after,
                                 up_lo=up_after, up_hi=t0, last_live=t0,
                                 likes=[[int(t0), c["likes"]]], checks=0)
                 seen_now[k] = watch[k]
                 ev["new"] += 1
-        if top is not None and (prev is None or top > prev):
-            frontier[unit] = top
+        # Store the frontier this sweep actually used, not only a higher top.
+        # When a unit's own frontier is stale the sweep starts from its
+        # brand's, and a band whose newest listing is below that kept its
+        # stale one while swept_at below was refreshed - so the next cycle
+        # trusted a 15-day-old frontier as fresh (2026-11-21, 12:34 run).
+        best = max([x for x in (top, prev) if x is not None], default=None)
+        if best is not None:
+            frontier[unit] = best
+        if top is not None:
+            cycle_top = max(cycle_top, top)
         st.setdefault("swept_at", {})[unit] = t0
         print(f"  {unit:<34} {len(got):>4} cards, floor {floor}, "
               f"{'complete' if complete else 'CUT SHORT'}", flush=True)
@@ -551,6 +631,8 @@ def main() -> int:
     print(f"cycle: {ev}", flush=True)
 
     write_closed(closed)
+    if cycle_top:
+        st["id_clock"] = (clock + [[int(time.time()), cycle_top]])[-CLOCK_KEEP:]
     st["last_at"] = now
     st["cycles"] = (st.get("cycles") or [])[-HISTORY_KEEP:] + [ev]
     st["cycle_no"] = cycle_no + 1

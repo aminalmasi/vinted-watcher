@@ -91,6 +91,17 @@ DEEP_EVERY = int(os.environ.get("VS_DEEP_EVERY", "4"))
 HARD_END_H = WATCH_H + 6           # closed regardless, so state stays bounded
 HISTORY_KEEP = 500                 # cycle summaries kept in the state file
 
+# After a gap in the runs, the old frontier would admit every listing uploaded
+# during the gap as "new", with an upload window as wide as the gap. That
+# happened on 2026-11-21 after 15 days of no runs: ~20,000 old listings came
+# in with 15-day windows, their sweeps had to reach back past the 960 cap,
+# every band was cut short and no checks ran. So a unit not swept for
+# REBASE_H hours re-baselines - its sweep sets the frontier and admits nothing
+# - and a watched listing whose upload cannot be pinned within MAX_WINDOW_H
+# is dropped: it gives no time to sale, so it is not data for this tracker.
+REBASE_H = float(os.environ.get("VS_REBASE_H", "3"))
+MAX_WINDOW_H = float(os.environ.get("VS_MAX_WINDOW_H", "6"))
+
 # A cycle that runs out of time is cancelled by Actions and saves NOTHING -
 # three in a row were lost that way. So the cycle stops itself first.
 BUDGET_S = float(os.environ.get("VS_BUDGET_MIN", "21")) * 60
@@ -344,7 +355,13 @@ def close(rec: dict, outcome: str, now: float) -> dict:
         rec["sold_h_est"] = round(((rec["last_live"] + now) / 2 - up) / 3600, 2)
         rec["sold_h_min"] = round((rec["last_live"] - rec["up_hi"]) / 3600, 2)
         rec["sold_h_max"] = round((now - rec["up_lo"]) / 3600, 2)
-        rec["steal"] = rec["sold_h_est"] <= STEAL_H
+        # A steal only when the sale time is known to within 4 hours. After a
+        # gap in the runs the sale window spans the gap, and its midpoint can
+        # fall under 12h for a listing that took longer; those are kept but
+        # marked uncertain instead.
+        spread = rec["sold_h_max"] - rec["sold_h_min"]
+        rec["steal"] = rec["sold_h_est"] <= STEAL_H and spread <= 4
+        rec["steal_uncertain"] = rec["sold_h_est"] <= STEAL_H and spread > 4
     return rec
 
 
@@ -380,6 +397,11 @@ def main() -> int:
     for k in off:
         watch.pop(k)
     ev["dropped_title"] = len(off)
+    wide = [k for k, r in watch.items() if r["first_seen"] - r.get("up_lo", r["first_seen"]) > MAX_WINDOW_H * 3600]
+    for k in wide:
+        watch.pop(k)
+    ev["dropped_wide_window"] = len(wide)
+    ev["rebased"] = []
 
     # Its own counter. This was len(st["cycles"]), but that history is capped
     # at HISTORY_KEEP + 1 entries, so once full the length froze at 501 -
@@ -428,6 +450,10 @@ def main() -> int:
             prev_at = max([swept_at.get(k, 0) for k in mine_keys] or [0]) or None
         stop_below = min(int(r["id"]) for r in mine) if mine else prev
         t0 = time.time()
+        rebase = prev_at is None or t0 - prev_at > REBASE_H * 3600
+        if rebase:
+            ev["rebased"].append(unit)
+            stop_below = None              # just read page one and set the frontier
         got, floor, complete = sweep(s, ids, band, stop_below)
         ev["swept"][unit] = len(got)
         if not complete:
@@ -449,7 +475,7 @@ def main() -> int:
                     rec["likes"].append([int(t0), c["likes"]])
                 rec["price_now"] = c["price"]
                 seen_now[k] = rec
-            elif prev is not None and c["id"] > prev and not c["promoted"]:
+            elif not rebase and prev is not None and c["id"] > prev and not c["promoted"]:
                 # Uploaded after the newest listing the previous sweep saw,
                 # so after roughly that sweep - less the few minutes Vinted's
                 # search index can lag, which the page's own upload time

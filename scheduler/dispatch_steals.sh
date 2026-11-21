@@ -19,9 +19,21 @@ log() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $*" >> "$LOG"; }
 [[ -f "$STOP" ]] && { log "STOP_STEALS present - not triggering"; exit 0; }
 cd "$REPO_DIR" || { log "cannot cd $REPO_DIR"; exit 1; }
 
-state=$("$GH" run list --workflow="$WORKFLOW" --limit 1 \
-        --json status -q '.[0].status' 2>/dev/null)
-if [[ "$state" == "in_progress" || "$state" == "queued" || "$state" == "pending" ]]; then
+# A run QUEUED far longer than any real queue wait is stuck, not waiting.
+# On 2026-11-06 a dispatch returned an error yet GitHub created the run and
+# never started it; it stayed "queued" (cancel and force-cancel both refused
+# it), and because this check skipped whenever the newest run was queued, the
+# steals tracker dispatched nothing for 15 days. So: a queued run older than
+# STUCK_MIN is logged, cancelled if GitHub allows, and dispatching goes ahead.
+# A run in progress is never touched - the workflow's own timeout ends it.
+STUCK_MIN=${STUCK_MIN:-45}
+read -r state created run_id <<< "$("$GH" run list --workflow="$WORKFLOW" --limit 1 \
+        --json status,createdAt,databaseId -q '.[0] | "\(.status) \(.createdAt) \(.databaseId)"' 2>/dev/null)"
+age_min=$(( ( $(date +%s) - $(date -d "${created:-now}" +%s) ) / 60 ))
+if [[ ( "$state" == "queued" || "$state" == "pending" ) && $age_min -gt $STUCK_MIN ]]; then
+  log "run $run_id $state for ${age_min}m - stuck; cancelling and dispatching anyway"
+  "$GH" run cancel "$run_id" >/dev/null 2>&1 || true
+elif [[ "$state" == "in_progress" || "$state" == "queued" || "$state" == "pending" ]]; then
   log "skip - a run is already $state"
   exit 0
 fi
